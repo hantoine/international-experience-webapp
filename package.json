@@ -1,0 +1,20 @@
+{
+  "name": "projetbdd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodejs app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "gogs@4.legendia.fr:hantoine/projetBDD.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.3.0",
+    "express": "^4.15.2",
+    "mysql": "^2.13.0"
+  }
+}
