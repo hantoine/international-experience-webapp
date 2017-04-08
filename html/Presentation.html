@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+
+<html>
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title> International Dataset </title>
+		<link rel="stylesheet" href="Style.css" />
+
+	</head>
+
+	<body>
+
+<header>
+
+		<h1>
+		<img class="logo" src="Logo.jpg" />
+		</h1>
+
+		<div id="Banniere">
+
+		<nav>
+			<ul>
+
+			<li><a href="intro.html">Accueil</a></li>
+			<li><a href="Analyse.html">Analyse des résultats</a></li>
+			<li><a href="Formulaire.html">Formulaire</a></li>
+			<li><a href="Renseignements.html">Renseignements</a></li>
+			<li><a href="Ajouter.html">Ajouter une question</a></li>
+
+			</ul>
+		</nav>
+		</div>
+		<br/>
+
+</header>
+	</div>
+
+	<form action="/ma-page-de-traitement" method="post">
+	<div>
+        <label for="id">Your student id</label>
+        <input type="text" id="id" />
+    </div>
+    <div>
+        <label for="year">Your year of study at the time of your mission</label>
+        <input type="text" id="year" />
+    </div>
+    <div>
+        <label for="age">Your age at the time of your mission</label>
+        <input type="text" id="age" />
+    </div>
+    <div>
+        <label for="enrich">I believe that mission... (will enrich me as a person)</label>
+        <textarea id="enrich"></textarea>
+        <div>
+        <label for="improve">I believe that mission... (will help me to improve my language skills)</label>
+        <textarea id="improve"></textarea>
+    </div>
+    <div>
+        <label for="understand">I believe that mission... (will help me better understand and put into practice what I have learnt during my studies)</label>
+        <textarea id="understand"></textarea>
+    </div>
+    <div>
+        <label for="interesting">I believe that mission... (will make me a more interesting candidate for recruiters)</label>
+        <textarea id="interesting"></textarea>
+    </div>
+    <div>
+        <label for="feelings">How do you feel about going on the mission ?</label>
+        <textarea id="feelings"></textarea>
+    </div>
+    <div>
+        <label for="financial">Financial concerns ?</label>
+        <textarea id="financial"></textarea>
+    </div>
+    <div>
+        <label for="languageskills">How would you evaluate your language skills before going on the mission ?</label>
+        <textarea id="languageskills"></textarea>
+    </div>
+    <div>
+        <label for="dealingwithunknown">How do you feel about facing new and unknown situations and environments ?</label>
+        <textarea id="dealingwithunknown"></textarea>
+    </div>
+    <div>
+        <label for="meetingnewpeople">How do you react when you are meeting peole for the first time ?</label>
+        <textarea id="meetingnewpeople"></textarea>
+    </div>
+    <div>
+        <label for="adaptability">How would you evaluate your ability to adapt to new situations ans environments ?</label>
+        <textarea id="adaptability"></textarea>
+    </div>
+    <div>
+        <label for="campus">Your campus ?</label>
+        <textarea id="campus"></textarea>
+    </div>
+    <div>
+        <label for="loan">Did you take a loan (prêt bancaire) to finance your mission ?</label>
+        <textarea id="loan"></textarea>
+    </div>
+    <div>
+        <label for="borrow">How much did you borrow ?</label>
+        <textarea id="borrow"></textarea>
+    </div>
+    <div>
+        <label for="study">Where do you study ?</label>
+        <textarea id="study"></textarea>
+    </div>
+    </div>
+    </br>
+    <div class="button">
+    	<button id="Next" type="submit">Next Page</button>
+    	</div>
+    	<div class="button">
+    	<button id="Cancel" type="submit">Cancel</button>
+    	</div>
+</form>
+
+<script type="text/javascript">
+	if (click("Next"))
+	{
+		open("Ville.html");
+	}
+	else if (click("Cancel"))
+	{
+		alert("Êtes vous sur de vouloir arreter de remplir le formulaire ?");
+		if(confirm("Êtes vous sur de vouloir arreter de remplir le formulaire ?"))
+		{
+			onclick(location='intro.html');
+		}
+		else
+		{
+			onclick(location='Presentation.html');
+		}
+
+	}
+</script>
+	</body>
+</html>

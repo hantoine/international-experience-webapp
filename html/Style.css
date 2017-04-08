@@ -1,0 +1,73 @@
+h1
+{
+	display: flex;
+	flex-direction: column;
+	font-size: 60px;
+	text-align: center;
+	font-family:'Book Antiqua';
+	font-weight: bold;
+	color: blue;
+}
+
+.logo
+{
+	display: flex;
+	justify-content: center;
+	margin: 30px;
+	margin-top: 20px;
+	margin: auto;
+	width: 300px;
+}
+
+
+nav ul
+{
+	display: flex;
+	margin: auto;
+	border: solid black 2px;
+	border	margin-top: 10px;
+}
+
+nav li
+{
+	display: flex;
+	margin: auto;
+	list-style-type: none;
+}
+
+nav a
+{
+	color: blue;
+	text-decoration: underline; /* Souligner le texte */
+	font-size: 1em;
+	font-weight: bold; /* Texte en gras*/
+	font-style: italic; /* Texte en italique*/
+
+}
+
+
+.Welcome
+{
+ display: flex; /* Mettre des flexbox*/
+ flex-direction: column;
+ margin: auto; /* Impératif pour faire des justify-content (alignement) */
+ justify-content: center;
+
+/* Réalisation d'une bordure */ 
+
+ border-width:1px 2px 3px 1px;
+ border-color: black;
+ border: groove;
+ padding:0 10px;
+ width: 400px;
+ text-align: center;
+}
+
+button 
+{
+	display: flex;
+	margin: auto;
+	flex-direction: row;
+	justify-content: space between;
+}
+
