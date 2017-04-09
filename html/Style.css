@@ -63,11 +63,66 @@ nav a
  text-align: center;
 }
 
-button 
+.button 
+{
+	display:flex;
+	justify-content: center;
+	justify-content: space-around;
+	height: 25px;
+	padding-right: 40%;
+	padding-left: 40%;
+}
+
+section article
+{
+	text-align: left;
+	padding-left: 20%;
+	padding-right: 30%;
+}
+
+h3
+{
+	font-weight: bold; /* Texte en gras*/
+	text-decoration: underline; /* Souligner le texte */
+}
+
+nav h2
 {
 	display: flex;
 	margin: auto;
-	flex-direction: row;
-	justify-content: space between;
+	color: black;
+	justify-content: center;
+	list-style-type: none;
 }
 
+.country
+{
+	border-width:1px 2px 3px 1px;
+ border-color: black;
+ border: groove;
+ padding:0 30px;
+}
+
+.domains
+{
+	border-width:1px 2px 3px 1px;
+ border-color: black;
+ border: groove;
+ padding:0 30px;
+}
+
+.university
+{
+	border-width:1px 2px 3px 1px;
+ border-color: black;
+ border: groove;
+ padding:0 30px;
+}
+
+.object
+{
+	border-width:1px 2px 3px 1px;
+ border-color: black;
+ border: groove;
+ padding:0 30px;
+}

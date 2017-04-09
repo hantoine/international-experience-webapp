@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 
 
+<!DOCTYPE html>
+
+
 <html>
 
 	<head>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title> Renseignements </title>
+		<title> Ville/Pays </title>
 		<link rel="stylesheet" href="Style.css" />
 
 	</head>
@@ -33,28 +36,7 @@
 			</ul>
 		</nav>
 		</div>
-
 		<br/>
 
 </header>
-
-<article class="Welcome"> 
-
-		<h3>You need to do a specific request ?</br></h3>
-		<p>Here are 4 principal requests. If you click on them, you will be able to find what you are looking specifically. </p>
-
-		</article>
-
-		</br>
-<nav>
-<h2><a class="country" href="Country.html">Country</a></h2>
-</br>
-<h2><a class="domains" href="Domains.html">Domains</a></h2>
-</br>
-<h2><a class="university" href="University.html">University</a></h2>
-</br>
-<h2><a class="object" href="Object.html">Object</a></h2>
-</nav>
-
-	</body>
-</html>
+	</div>

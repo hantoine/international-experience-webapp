@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+
+<html>
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title> Logement </title>
+		<link rel="stylesheet" href="Style.css" />
+
+	</head>
+
+	<body>
+
+<header>
+
+		<h1>
+		<img class="logo" src="Logo.jpg" />
+		</h1>
+
+		<div id="Banniere">
+
+		<nav>
+			<ul>
+
+			<li><a href="intro.html">Accueil</a></li>
+			<li><a href="Analyse.html">Analyse des résultats</a></li>
+			<li><a href="Formulaire.html">Formulaire</a></li>
+			<li><a href="Renseignements.html">Renseignements</a></li>
+			<li><a href="Ajouter.html">Ajouter une question</a></li>
+
+			</ul>
+		</nav>
+		</div>
+		<br/>
+
+</header>
+	</div>
+
+	<section>
+
+	<article>
+
+	<form action="rent" method="post">
+	<div>
+        <label for="rent">What was the cost of the rent per month ?</label>
+        <input type="text" id="rent"/>
+    </div>
+    <div>
+        <label for="accomodation">Which choice best describe your accomodation during the mission ?</label>
+        <input type="text" id="accomodation"/>
+    </div>
+    <div>
+        <label for="share">Were you alone in your accomodation or did you share with someone else ?</label>
+        <input type="text" id="share"/>
+    </div>
+    <div>
+        <label for="findAccomodation">How did you find your accomodation ?</label>
+        <input type="text" id="findAccomodation"/>
+    </div>
+    <div>
+        <label for="bestThing">What was the best thing about your accomodation ?</label>
+        <input type="text" id="bestThing"/>
+    </div>
+    <div>
+        <label for="worseThing">What was the worse thing about your accomodation ?</label>
+        <input type="text" id="worseThing"/>
+    </div>
+
+    </form>
+
+    </article>
+
+    </section>
+
+    </br>
+
+    <div class="button">
+        <button id="Back" type="submit" onclick="location.href='Organisation.html'">Come Back</button>
+    	<button id="Cancel" type="button" onclick="if(confirm('Êtes vous sur de vouloir arreter de remplir le formulaire ?'))
+		{
+			onclick(location='intro.html');
+		}
+		else
+		{
+			onclick(location='Logement.html');
+		}">Quit</button>
+    	<button id="Valid" type="submit">Valid</button>
+    	<button id="Next" type="submit" onclick="location.href='After.html'">Next Page</button>
+    	</div>
+
+   </body>
+    </html>
