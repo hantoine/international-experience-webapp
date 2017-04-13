@@ -1,0 +1,18 @@
+<% var title = 'Form' %>
+<% include partials/header.ejs %>
+		<ul>
+	<% for(var i=0; i< formgroup.length; i++) { %>
+		<li> 
+		<% if(formgroup[i].done || formgroup[i].todo) { %>
+			<a href="/form/<%= idexp%>/<%= formgroup[i].nom %>"><%= formgroup[i].nom %> 
+			<% if(formgroup[i].todo) { %>
+				(next to fill in)
+			<% } %>
+			</a>
+		<% } else { %>
+			<%= formgroup[i].nom %>
+		<% } %>
+		</li>
+	<% } %>
+	</ul>
+<% include partials/footer.ejs %>

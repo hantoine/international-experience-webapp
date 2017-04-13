@@ -1,5 +1,5 @@
-MODE_TEST = 'mode_test'
-MODE_PRODUCTION = 'mode_production'
+MODE_TEST = 'test'
+MODE_PRODUCTION = 'prod'
 
 module.exports = {
 	listeningPort: 8080,

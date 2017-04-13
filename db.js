@@ -4,8 +4,8 @@ var mysql = require('mysql')
 var PRODUCTION_DB = 'projetbdd'
   , TEST_DB = 'app_test_database'
 
-exports.MODE_TEST = 'projetbdd_test'
-exports.MODE_PRODUCTION = 'projetbdd'
+exports.MODE_TEST = 'test'
+exports.MODE_PRODUCTION = 'prod'
 
 var state = {
   pool: null,
