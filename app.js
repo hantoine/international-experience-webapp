@@ -13,6 +13,7 @@ app.use(morgan('combined')); // Logging
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/form', require('./controllers/form'))
+app.use('/', require('./controllers/home'))
 app.use(function(req, res, next){
 	res.setHeader('Content-type', 'text/plain');
 	res.status(404).send('Page introuvable !');

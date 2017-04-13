@@ -14,3 +14,13 @@ exports.createNewEmptyExperience = function(studentid, done) {
 	});
 };
 
+exports.checkStudentHasAccess = function(studentid, expid, hasAccessFct, hasNotAccessFct) {
+	db.get().query('SELECT id_experience FROM experience WHERE id_experience = ? AND id_etudiant = ?', [expid, studentid], function(err, result) {
+		if (err) return hasNotAccessFct(err);
+		if(result.length) {
+			hasAccessFct();
+		} else {
+			hasNotAccessFct();
+		}
+	});
+};

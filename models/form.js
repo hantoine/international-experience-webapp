@@ -31,7 +31,14 @@ exports.getFormGroupsStates = function(expid, done) {
 		console.log(rows);
 		done(null, rows);
 	});
-}
+};
+
+exports.getFormGroupNameByOrder = function(order, done) {
+	db.get().query('SELECT nom FROM `groupe_questions` WHERE ordre = ?', order, function(err, rows) {
+		if(err) return done(err);
+		done(null, rows[0].nom);
+	});
+};
 
 var getFormGroup = function(byName, identifier, done) {
 	var dealWithQuestions = function(err, rows) {
@@ -62,24 +69,64 @@ var getFormGroup = function(byName, identifier, done) {
 		}
 		async.parallel(asyncRequests, function(err){
 			if(err) return done(err);
+			
+			// Removing no more necessary attribute
+			for (var i = 0 ; i < rows.length ; i++) {
+				delete rows[i].identifiant;
+			}
+			
 			done(null, rows);
 		});
-		// Removing no more necessary attribute
-		for (var i = 0 ; i < rows.length ; i++) {
-			delete rows[i].identifiant;
-		}
 	};
 	if(byName) {
-		db.get().query('SELECT q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM groupe_questions AS g JOIN `question` AS q ON q.id_groupe_questions = g.id_groupe_questions LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE g.nom = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
+		db.get().query('SELECT q.id_question AS id, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM groupe_questions AS g JOIN `question` AS q ON q.id_groupe_questions = g.id_groupe_questions LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE g.nom = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
 	} else {
-		db.get().query('SELECT q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM `question` AS q LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE q.id_groupe_questions = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
+		db.get().query('SELECT q.id_question AS if, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM `question` AS q LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE q.id_groupe_questions = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
 	}
 };
 
 exports.getFormGroupById = function(id, done) {
 	getFormGroup(false, id, done);
-}
+};
 
 exports.getFormGroupByName = function(name, done) {
 	getFormGroup(true, name, done);
+};
+
+exports.validateFormGroup = function(questions_completed, formgroupname, expid, done) {
+	// We check that all required questions for this formgroup were answered
+	db.get().query('SELECT q.id_question AS id FROM `groupe_questions` AS g	JOIN `question` AS q ON g.id_groupe_questions = q.id_groupe_questions WHERE g.nom = ? AND q.optionelle = "0"', formgroupname, function(err, result) {
+		if(err) return done(err);
+		questions_completed = questions_completed.map(Number);
+		for( var i=0; i < result.length; i++) {
+			if(questions_completed.indexOf(result[i].id) < 0) {
+				return done("Required question " + result[i].id + " was not answered");
+			}
+		}
+		// We get next formgroup id and name
+		db.get().query('SELECT r.id_groupe_questions AS id, r.nom AS nextformgroupname FROM `groupe_questions` as g JOIN `groupe_questions` as r ON r.ordre = g.ordre + 1 WHERE g.nom = ?', formgroupname, function(err, result_nextone) {
+			if(err) return done(err);
+				
+			// We update next formgroup id to fillin and send next formgroup name
+			if(result_nextone.length > 0) {
+				db.get().query('UPDATE `experience` SET id_groupe_questions = ? WHERE id_experience = ?', [result_nextone[0].id, expid], function(err, result_update) {
+					if(err) return done(err);
+					done(null, result_nextone[0].nextformgroupname);
+				});
+			} else {
+				db.get().query('UPDATE `experience` SET id_groupe_questions = NULL WHERE id_experience = ?', expid, function(err, result_update) {
+					if(err) return done(err);
+					done(null, null);
+				});
+			}
+		});
+	});
+};
+
+exports.saveAnswers = function(data, done) {
+	console.log(data);
+	//TODO : Save data here
+		//for each answer in data get type, identifiant from id_questions and save accordingly
+	
+	done(null);	
 }
