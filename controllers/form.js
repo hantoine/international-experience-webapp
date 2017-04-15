@@ -40,9 +40,29 @@ router.get('/:idexp/:formgroup', function(req, res, next) {
 	if(! req.session.studentid) {
 		return res.redirect('/form/login');
 	}
-	form.getFormGroupByName(req.params.formgroup, function(err, result) {
+	form.getFormGroupsStates(req.params.idexp, function(err, formgroupslist) {
 		if(err) return next(err);
-		res.render('formgroup.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
+		for(var i = 0 ; i < formgroupslist.length; i++) {
+			if(formgroupslist[i].nom == req.params.formgroup) {
+				return form.getFormGroupByName(req.params.formgroup, function(err, result) {
+					if(err) return next(err);
+					(function(callback) {
+						if( ! formgroupslist[i].done) {
+							// directement renvoyer le formulaire vide
+							callback();
+						} else {
+							// obtenir les réponses puis renvoyer le formulaire complété
+							form.addAnswers(req.params.idexp, result, callback);
+						}
+					})(function(err) {
+						if (err) return next(err);
+						res.render('formgroup.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
+					});
+				});
+			}
+		}
+		//if formgroup not found, try other routes then 404
+		next();
 	});
 });
 
@@ -53,7 +73,7 @@ router.post('/:idexp/:formgroup', function(req, res, next) {
 	}
 	experience.checkStudentHasAccess(req.session.studentid, req.params.idexp, function(err) {
 		if(err) return next(err);
-		form.saveAnswers(req.body, function(err) {
+		form.saveAnswers(req.params.idexp, req.body, function(err) {
 			if(err) return next(err);
 			form.validateFormGroup(Object.keys(req.body), req.params.formgroup, req.params.idexp, function(err, nextformgroupname) {
 				if(err) return next(err);
@@ -75,6 +95,7 @@ router.post('/:idexp/:formgroup', function(req, res, next) {
 router.get('/:idexp', function(req, res, next) {
 	form.getFormGroupsStates(req.params.idexp, function(err, result) {
 		if(err) return next(err);
+		console.log(result);
 		res.render('formroot.ejs', {formgroup: result, idexp: req.params.idexp});
 	});
 });

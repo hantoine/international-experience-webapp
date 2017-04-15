@@ -14,7 +14,7 @@
 		<select name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %>>
 		<option value></option>
 	<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
-		<option value="<%= j %>"><%= formgroup[i].reponses[j] %></option>
+		<option value="<%= j %>" <%= (formgroup[i].prec_reponse == j) ? 'selected' : '' %> ><%= formgroup[i].reponses[j] %></option>
 	<% } %>
 		</select><br />
 	<%		
@@ -23,20 +23,20 @@
 	%>
 		<%= formgroup[i].texte %> <br />
 	<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
-		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
+		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
 		<label for="<%= j %>"><%= formgroup[i].reponses[j] %></label><br />
 	<% } %>
 	<%		break;
 			case 2: //INT
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
-		<input type="number" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
+		<input type="number" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" value="<%= formgroup[i].prec_reponse %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
 	<%
 				break;
 			case 3: //TEXT
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
-		<input type="text" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
+		<input type="text" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" value="<%= formgroup[i].prec_reponse %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
 	<%
 				break;
 			case 4: //EXT
@@ -45,7 +45,7 @@
 		<select name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %> >
 		<option value></option>
 	<% for(var reponse in formgroup[i].reponses) { %>
-		<option value="<%= reponse %>"><%= formgroup[i].reponses[reponse] %></option>
+		<option value="<%= reponse %>" <%= (formgroup[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= formgroup[i].reponses[reponse] %></option>
 	<% } %>
 		</select><br />
 	<%

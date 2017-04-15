@@ -16,11 +16,13 @@ exports.getFormGroupsStates = function(expid, done) {
 		for(var i = 0; i < rows.length; i++) {
 			if(to_fillin_passed) {
 				delete rows[i].to_fillin;
+				rows[i].done = false;
 				continue;
 			}
 			if(rows[i].to_fillin) {
 				delete rows[i].to_fillin;
 				rows[i].todo = true;
+				rows[i].done = false;
 				to_fillin_passed = true
 				continue;
 			}
@@ -28,7 +30,6 @@ exports.getFormGroupsStates = function(expid, done) {
 			rows[i].done = true;
 
 		}
-		console.log(rows);
 		done(null, rows);
 	});
 };
@@ -55,7 +56,7 @@ var getFormGroup = function(byName, identifier, done) {
 			// If question is a selection in an object list, get the possible answers
 			if(rows[i].type == exports.QuestionType.EXT) {
 				asyncRequests.push((function(j) { return function(callback) {
-					db.get().query('SELECT id_' + rows[j].identifiant + ' AS id, nom FROM ' + rows[j].identifiant, function(err, result) {
+					db.get().query('SELECT ' + rows[j].identifiant + ' AS id, nom FROM ' + rows[j].identifiant.substr(3), function(err, result) {
 						if(err) return callback(err);
 						reponses = {};
 						for (var k = 0 ; k < result.length ; k++) {
@@ -69,12 +70,6 @@ var getFormGroup = function(byName, identifier, done) {
 		}
 		async.parallel(asyncRequests, function(err){
 			if(err) return done(err);
-			
-			// Removing no more necessary attribute
-			for (var i = 0 ; i < rows.length ; i++) {
-				delete rows[i].identifiant;
-			}
-			
 			done(null, rows);
 		});
 	};
@@ -123,10 +118,59 @@ exports.validateFormGroup = function(questions_completed, formgroupname, expid, 
 	});
 };
 
-exports.saveAnswers = function(data, done) {
-	console.log(data);
-	//TODO : Save data here
-		//for each answer in data get type, identifiant from id_questions and save accordingly
+exports.saveAnswers = function(expid, data, done) {
+	for (var question in data) {
+		(function (question) {
+		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
+			if(err) return console.log("Error while saving question " + question + " : " + err);
+			switch(result[0].type) {
+				case exports.QuestionType.SELECT:
+				case exports.QuestionType.CHOICE:
+					db.get().query('INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `numero` = ?', [data[question], expid, question, data[question]], function(err) {
+						if(err) console.log("Error while saving question " + question + " : " + err);
+					});
+					break;
+				case exports.QuestionType.INT:
+				case exports.QuestionType.TEXT:
+				case exports.QuestionType.EXT:
+					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
+						if(err) console.log("Error while saving question " + question + " : " + err);
+					});
+			}
+
+		});
+		})(question);
+	}
 	
-	done(null);	
+	// Saving while be done eventually, no need to wait for it
+	done(null);
 }
+
+exports.addAnswers = function(expid, formgroup, done) {
+	async.each(formgroup, function(question, callback) {
+		switch(question.type) {
+			case exports.QuestionType.SELECT:
+			case exports.QuestionType.CHOICE:
+				db.get().query('SELECT `numero` FROM `avoir_reponse` WHERE `id_experience` = ? AND `id_question` = ?', [expid, question.id], function(err, result) {
+					if(err) {
+						console.log("Error while reading answer to question " + question + " : " + err);
+					} else if(result.length > 0) {
+						question.prec_reponse = result[0].numero;
+					}
+					callback()
+				});
+				break;
+			case exports.QuestionType.INT:
+			case exports.QuestionType.TEXT:
+			case exports.QuestionType.EXT:
+				db.get().query('SELECT ' + question.identifiant + ' AS reponse FROM experience WHERE id_experience = ?', expid, function(err, result) {
+					if(err) {
+						console.log("Error while reading answer to question " + question + " : " + err);
+					} else if (result.length >0) {
+						question.prec_reponse = result[0].reponse;
+					}
+					callback();
+				});
+		}
+	}, done);
+};
