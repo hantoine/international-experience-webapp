@@ -1,6 +1,7 @@
 <% var title = 'Form' %>
 <% include partials/header.ejs %>
-		<ul>
+		<div id="Choice">
+		<ul align="left">
 	<% for(var i=0; i< explist.length; i++) { %>
 		<li> <a href="/form/<%= explist[i].id%>/"><%= explist[i].id %> 
 		<% if(explist[i].age) { %>
@@ -12,4 +13,5 @@
 	<form action="/form/new">
 	    <input type="submit" value="Add new experience" />
 	    </form>
+	</div>
 <% include partials/footer.ejs %>

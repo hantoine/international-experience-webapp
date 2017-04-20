@@ -1,7 +1,10 @@
 <% var title = 'Login' %>
 <% include partials/header.ejs %>
+
+<div id="ID" name="studentID">
 	<form method="post" action="/form/login" >
-		<label for="studentif">Please enter your student id:</label>
+		<label for="studentid">Please enter your student id: </label>
 		<input type="text" name="studentid" id="studentid" />
 	</form>
+</div>
 <% include partials/footer.ejs %>
