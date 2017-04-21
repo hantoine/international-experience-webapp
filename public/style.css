@@ -172,3 +172,15 @@ nav h2
  padding-top: 10px;
  padding-bottom: 10px;
 }
+
+table 
+{
+	margin-left: 10%;
+	margin-right: 10%;
+	border-collapse: collapse;
+}
+
+td, th
+{
+	border: 1px black;
+}
