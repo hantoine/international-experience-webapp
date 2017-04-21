@@ -56,7 +56,6 @@ router.get('/:idexp/:formgroup', function(req, res, next) {
 						}
 					})(function(err) {
 						if (err) return next(err);
-						console.log(result);
 						res.render('formgroup.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
 					});
 				});
