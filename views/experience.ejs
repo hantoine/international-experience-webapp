@@ -8,16 +8,23 @@
 	<% for(var i = 0; i < country.length; i++) { %>
 		<div role="listitem" style="margin:1.5em;">
 
-	<label for="<%= experience[i].id %>"><%= experience[i].texte %></label><br />
-		<select name="<%= experience[i].id %>" id="<%= experience[i].id %>" <%= experience[i].optionelle ? '' : 'required' %>>
+	<label for="<%= country[i].id %>"><%= country[i].texte %></label><br />
+		<select name="<%= country[i].id %>" id="<%= country[i].id %>" <%= country[i].optionelle ? '' : 'required' %> >
 		<option value></option>
-	<% for(var j=0; j < experience[i].reponses.length; j++) { %>
-		<option value="<%= j %>" <%= (experience[i].prec_reponse == j) ? 'selected' : '' %> ><%= experience[i].reponses[j] %></option>
+	<% for(var reponse in country[i].reponses) { %>
+		<option value="<%= reponse %>" <%= (country[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= country[i].reponses[reponse] %></option>
 	<% } %>
 		</select><br />
+	<%
+		}
+	%>
 
+
+
+	
 		</div>
 	</ol>
+	
 	<input type="submit" value="Send" />
 	</fieldset>
 </form>

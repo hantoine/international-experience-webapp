@@ -1,14 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/:continent', function(req, res, next) {
-	res.render('experience.ejs', {experiences: [
-			{id_etudiant: 48, pays: 'Canada'},
-			{id_etudiant: 47, pays: 'US'}
-		]
+router.get('/:country', function(req, res, next) {
+	res.render('experience.ejs', {
+		experiences: [
+			{id_etudiant: 48, country: 'Canada'},
+			{id_etudiant: 47, country: 'US'}
+		], 
 	});
 });
 
-router.get('/show/:idExp')
+
+router.get('/:country/:city', function(req, res, next) {
+	res.render('experience.ejs', {
+		experiences: [
+			{id_etudiant: 48, city: 'ex1'},
+			
+		], 
+	});
+});
+
+
+router.get('/:country/:city/:univerty', function(req, res, next) {
+	res.render('experience.ejs', {
+		experiences: [
+			{id_etudiant: 48, univertity: 'Universtité1'},
+		], 
+	});
+});
 
 module.exports = router;
