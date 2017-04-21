@@ -5,8 +5,13 @@ router.get('/show/:idexp', function(req, res, next) {
 	res.render('show_experience.ejs', {});
 });
 
-router.get('/:country', function(req, res, next) {
+router.get('/:continent', function(req, res, next) {
 	res.render('experience.ejs', {
+		continents: [
+			{id: 0, nom: "Europe"}
+		],
+		continent: req.params.continent
+
 		experiences: [
 			{id_etudiant: 48, country: 'Canada'},
 			{id_etudiant: 47, country: 'US'}
@@ -14,9 +19,18 @@ router.get('/:country', function(req, res, next) {
 	});
 });
 
-
-router.get('/:country/:city', function(req, res, next) {
+router.get('/:continent/:country', function(req, res, next) {
 	res.render('experience.ejs', {
+		continents: [
+			{id: 0, nom: "Europe"}
+		],
+		continent: req.params.continent
+
+		Country: [
+			{id: 0, nom: "France"}
+		],
+		country: req.params.country
+		
 		experiences: [
 			{id_etudiant: 48, city: 'ex1'},
 			
@@ -25,10 +39,55 @@ router.get('/:country/:city', function(req, res, next) {
 });
 
 
-router.get('/:country/:city/:univerty', function(req, res, next) {
+router.get('/:continent/:country/:city', function(req, res, next) {
 	res.render('experience.ejs', {
+		continents: [
+			{id: 0, nom: "Europe"}
+		],
+		continent: req.params.continent
+
+		Country: [
+			{id: 0, nom: "France"}
+		],
+		country: req.params.country
+
+		City: [
+			{id: 0, nom: "Paris"}
+		],
+		city: req.params.city
+
 		experiences: [
-			{id_etudiant: 48, univertity: 'Universtité1'},
+			{id_etudiant: 48, city: 'ex1'},
+			
+		], 
+	});
+});
+
+
+router.get('/:continent/:country/:city/:university', function(req, res, next) {
+	res.render('experience.ejs', {
+		continents: [
+			{id: 0, nom: "Europe"}
+		],
+		continent: req.params.continent
+
+		Country: [
+			{id: 0, nom: "France"}
+		],
+		country: req.params.country
+
+		City: [
+			{id: 0, nom: "Paris"}
+		],
+		city: req.params.city
+
+		university: [
+			{id: 0, nom: "Paris"}
+		],
+		university: req.params.university
+
+		experiences: [
+			{id_etudiant: 48, city: 'ex1'},
 		], 
 	});
 });

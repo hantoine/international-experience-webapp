@@ -1,27 +1,50 @@
 <% var title = 'Experience' %>
 <% include partials/header.ejs %>
-<form method="post" action="/experience/<%= expid %>/<%= experiencename %>">
-	<fieldset>
-	<legend><%= experiencename %></legend>
-	<ol>
+	
 
-	<% for(var i = 0; i < country.length; i++) { %>
-		<div role="listitem" style="margin:1.5em;">
+	<select id="Continent" required >
+	<option value>Continent</option>
 
-	<label for="<%= country[i].id %>"><%= country[i].texte %></label><br />
-		<select name="<%= country[i].id %>" id="<%= country[i].id %>" <%= country[i].optionelle ? '' : 'required' %> >
-		<option value></option>
-	<% for(var reponse in country[i].reponses) { %>
-		<option value="<%= reponse %>" <%= (country[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= country[i].reponses[reponse] %></option>
+	<% for(var i = 0; i < continents.length; i++) { %>
+		<option value="<%=continents[i].id %>" <%= (continents[].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
-		</select><br />
+	</select><br />
 	<%
 		}
 	%>
 
+	<select id="Country" required >
+	<option value>Country</option>
 
+	<% for(var i = 0; i < country.length; i++) { %>
+		<option value="<%=country[i].id %>" <%= (country[].nom == country) ? 'selected' : '' %> ><%= country[i].nom %></option>
+	<% } %>
+	</select><br />
+	<%
+		}
+	%>
 
-	
+	<select id="City" required >
+	<option value>City</option>
+
+	<% for(var i = 0; i < city.length; i++) { %>
+		<option value="<%=country[i].id %>" <%= (city[].nom == city) ? 'selected' : '' %> ><%= city[i].nom %></option>
+	<% } %>
+	</select><br />
+	<%
+		}
+	%>
+
+	<select id="University" required >
+	<option value>University</option>
+
+	<% for(var i = 0; i < university.length; i++) { %>
+		<option value="<%=university[i].id %>" <%= (university[].nom == university) ? 'selected' : '' %> ><%= university[i].nom %></option>
+	<% } %>
+	</select><br />
+	<%
+		}
+	%>
 		</div>
 	</ol>
 	
