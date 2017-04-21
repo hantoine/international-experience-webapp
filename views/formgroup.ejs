@@ -65,11 +65,19 @@
 </form>
 <% include partials/socket.io.ejs %>
 <script>
-	socket.on('receiveData', function(data) {
-		var select = document.getElementsByClassName(data.identifiant)[0];
+	var clearOptions = function(id) {
+		var select = document.getElementById(id);
 		while (select.options.length > 1) {
 			select.remove(1);
 		}
+	}
+	socket.on('receiveData', function(data) {
+		var select = document.getElementsByClassName(data.identifiant);
+		if(select.length < 0) {
+			console.log('Select ' + data.identifiant + ' not found.');
+			return;
+		}
+		select = select[0];
 		for (var i=0; i < data.options.length; i++) {
 			var option = document.createElement("option");
 			option.text = data.options[i].nom;
@@ -77,6 +85,21 @@
 			select.add(option);
 		}
 	});
-	socket.emit('getData', {table: 'pays'});
+	var selectCountry = document.getElementById('22');
+	var selectCity = document.getElementById('23');
+	var selectOrganisation = document.getElementById('25');
+	if(selectCountry) {
+		selectCountry.addEventListener('change', function(event) {
+			clearOptions('23');
+			socket.emit('getData', {table: 'ville', conditions: [{attribute: 'id_pays', value: event.target.value}] });
+		})
+	}
+	if(selectCity) {
+		selectCity.addEventListener('change', function(event) {
+
+			clearOptions('25');
+			socket.emit('getData', {table: 'ecole', conditions: [{attribute: 'id_ville', value: event.target.value}] });
+		})
+	}
 </script>
 <% include partials/footer.ejs %>

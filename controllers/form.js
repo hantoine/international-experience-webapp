@@ -100,7 +100,7 @@ router.get('/:idexp', function(req, res, next) {
 	});
 });
 
-router.use('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	if(! req.session.studentid) {
 		return res.redirect('/form/login');
 	}

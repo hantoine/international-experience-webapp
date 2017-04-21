@@ -3,10 +3,10 @@ var authorizedTables= ['pays', 'ville', 'ecole'];
 module.exports = function(socket) {
 
 	return function(req) {
-		if (! req.table in authorizedTables) {
-			return;
+		if (authorizedTables.includes(req.table)) {
+			//return;
 		}
-		genericModel(req.table).getList(null, function(err, results) {
+		genericModel(req.table).getList(req.conditions, function(err, results) {
 			if(err) return console.log(err);
 			socket.emit('receiveData', {
 				identifiant: 'id_'+req.table,
