@@ -1,7 +1,7 @@
 <% var title = 'Form' %>
 <% include partials/header.ejs %>
 		<div id="Choice">
-		<ul align="left">
+		<ul>
 	<% for(var i=0; i< explist.length; i++) { %>
 		<li> <a href="/form/<%= explist[i].id%>/"><%= explist[i].id %> 
 		<% if(explist[i].age) { %>

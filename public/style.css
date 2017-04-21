@@ -52,15 +52,15 @@ nav a
  flex-direction: column;
  margin: auto; /* Impératif pour faire des justify-content (alignement) */
  justify-content: center;
-
 /* Réalisation d'une bordure */ 
-
- border-width:1px 2px 3px 1px;
- border-color: black;
- border: groove;
- padding:0 10px;
  width: 400px;
  text-align: center;
+ border-color: black;
+ border: 2px solid;
+ text-align: center;
+ margin-top: 10%;
+ padding-top: 10px;
+ padding-bottom: 10px;
 }
 
 .button 
@@ -105,7 +105,7 @@ nav h2
 
 .domains
 {
-	border-width:1px 2px 3px 1px;
+ border-width:1px 2px 3px 1px;
  border-color: black;
  border: groove;
  padding:0 30px;
@@ -113,7 +113,7 @@ nav h2
 
 .university
 {
-	border-width:1px 2px 3px 1px;
+ border-width:1px 2px 3px 1px;
  border-color: black;
  border: groove;
  padding:0 30px;
@@ -126,6 +126,7 @@ nav h2
  border: groove;
  padding:0 30px;
 }
+
 
 #ID
 {
