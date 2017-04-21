@@ -1,9 +1,9 @@
-var table = "pays"
+var db = require('../db.js')
 
 module.exports = function(table) {
 	var model = {}
-	model.getList(conditions, done) {
-		query = 'SELECT ' + db.get().escape('id_'+ table) + ', nom FROM ' + db.get().escape(table);
+	model.getList = function(conditions, done) {
+		query = 'SELECT ' + db.get().escape('id_'+ table) + ' AS id, nom FROM ' + table;
 		if(conditions && conditions.length > 0) {
 			query += ' WHERE ';
 			for (var i = 0; i < conditions.length; i++) {
@@ -13,8 +13,11 @@ module.exports = function(table) {
 				}
 			}
 		}
+		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
 			done(null, rows);
 		});
-
+	}
+	return model;
+}
