@@ -5,31 +5,31 @@
 	<table>
 		<tr>
 			<th>Id étudiant</th>
-			<td> </td>
+			<td> <%= exp.id_etudiant %> </td>
 		</tr>
 		<tr>
 			<th>Age</th>
-			<td> </td>
+			<td> <%= exp.age %> </td>
 		</tr>
 		<tr>
 			<th>Type d'experience</th>
-			<td> </td>
+			<td> <%= exp.id_type_experience %> </td>
 		</tr>
 		<tr>
-			<th>Ecole/Entreprise</th>
-			<td> </td>
+			<th> <%= (exp.estEcole) ? 'Ecole' : 'Organisation' %></th>
+			<td> <%= exp.Organisation %> </td>
 		</tr>
 		<tr>
 			<th>Langue parlé</th>
-			<td> </td>
+			<td> <%= id_langue %> </td>
 		</tr>
 		<tr>
 			<th>Emprunt ?</th>
-			<td> </td>
+			<td> <%= exp.pret %> </td>
 		</tr>
 		<tr>
 			<th>Si oui, Combien ?</th>
-			<td> </td>
+			<td> <%= exp.somme_empruntee %> </td>
 		</tr>
 	</table>
 
@@ -38,75 +38,84 @@
 	<table>
 		<tr>
 			<th>Cout</th>
-			<td> </td>
+			<td> <%= exp.cout %> </td>
 		</tr>
 		<tr>
 			<th>Cout de location</th>
-			<td> </td>
+			<td> <%= exp.cout_location %> </td>
 		</tr>
 		<tr>
 			<th>Cout alimentation</th>
-			<td> </td>
+			<td> <%= exp.cout_alimentation %> </td>
 		</tr>
 		<tr>
 			<th>Cout formation</th>
-			<td> </td>
+			<td> <%= exp.cout_formation %> </td>
 		</tr>
 		<tr>
 			<th>Cout recherche agence</th>
-			<td> </td>
+			<td> <%= exp.cout_recherche_agence %> </td>
 		</tr>
 	</table>
 
 	<h1> After the experience </h1>
 	<table>
 		<tr>
+			<th>Competences acquises</th>
+			<td> <%= exp.competences_acquises %> </td>
+		</tr>
+		<tr>
+			<th>Choses faites</th>
+			<td> <%= exp.choses_faites %> </td>
+		</tr>
+
+		<tr>
 			<th>Recommande(oui/non)</th>
-			<td> </td>
+			<td> <%= exp.recommande %> </td>
 		</tr>
 		<tr>
 			<th>Ressenti langue</th>
-			<td> </td>
+			<td> <%= exp.ressenti_langue %> </td>
 		</tr>
 		<tr>
 			<th>Surprise</th>
-			<td> </td>
+			<td> <%= exp.surprise %> </td>
 		</tr>
 		<tr>
 			<th>Made angry</th>
-			<td> </td>
+			<td> <%= exp.made_angry %> </td>
 		</tr>
 		<tr>
 			<th>Made laugh</th>
-			<td> </td>
+			<td> <%= exp.made_laugh %> </td>
 		</tr>
 		<tr>
 			<th>What missed</th>
-			<td> </td>
+			<td> <%= exp.what_missed %> </td>
 		</tr>
 		<tr>
 			<th>Things appreciated want integrate now</th>
-			<td> </td>
+			<td> <%= exp.things_appreciated_want_integrate_now %> </td>
 		</tr>
 		<tr>
 			<th>Interact same ways </th>
-			<td> </td>
+			<td> <%= exp.interact_same_way %> </td>
 		</tr>
 		<tr>
 			<th>Differences time organization</th>
-			<td> </td>
+			<td> <%= exp.differences_time_organization %> </td>
 		</tr>
 		<tr>
 			<th>Advice</th>
-			<td> </td>
+			<td> <%= exp.advice %> </td>
 		</tr>
 		<tr>
 			<th>Most Difficult</th>
-			<td> </td>
+			<td> <%= exp.most_difficult %> </td>
 		</tr>
 		<tr>
 			<th>agresso iu</th>
-			<td> </td>
+			<td> <%= exp.agresso_ui %> </td>
 		</tr>
 	</table>
 
