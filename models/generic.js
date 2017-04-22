@@ -17,6 +17,7 @@ module.exports = function(table) {
 		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
+			console.log(rows)
 			done(null, rows);
 		});
 	}

@@ -26,15 +26,15 @@ exports.checkStudentHasAccess = function(studentid, expid, hasAccessFct, hasNotA
 };
 
 
-exports.getListWithLocation = function(continentsid,contryid,cityid, universityid, done) {
-	query = 'SELECT e.id_experience, o.nom, v.nom, p.nom, c.nom, e.age, e.duree FROM experience e
-
-		JOIN organisation o ON e.id_organisation = o.id_organisation
-		JOIN ville v ON o.id_ville = v.id_ville
-		JOIN pays p ON v.id_pays = p.id_pays
+exports.getListWithLocation = function(continentid,countryid,cityid, universityid, done) {
+	query = 'SELECT e.id_experience, o.nom, v.nom, p.nom, c.nom, e.age, e.duree FROM experience e\
+\
+		JOIN organisation o ON e.id_organisation = o.id_organisation\
+		JOIN ville v ON o.id_ville = v.id_ville\
+		JOIN pays p ON v.id_pays = p.id_pays\
 		JOIN continent c ON p.id_continent = c.id_continent';
 
-	if (continentid || contryid || cityid || universityid){
+	if (continentid || countryid || cityid || universityid){
 		query += ' WHERE ';
 
 		if (universityid)
@@ -45,9 +45,9 @@ exports.getListWithLocation = function(continentsid,contryid,cityid, universityi
 		{
 			query += 'v.id_ville = ' + db.escape(cityid)
 		}
-		else if (contryid)
+		else if (countryid)
 		{
-			query += 'p.id_pays = ' + db.escape(contryid)
+			query += 'p.id_pays = ' + db.escape(countryid)
 		}
 		else if (continentid)
 		{
@@ -60,4 +60,3 @@ exports.getListWithLocation = function(continentsid,contryid,cityid, universityi
 		done(null, rows);
 	});
 }
-
