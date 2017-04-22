@@ -17,6 +17,7 @@ app.use(morgan('combined')); // Logging
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/form', require('./controllers/form'))
 app.use('/experience', require('./controllers/experience'))
+app.use('/admin', require('./controllers/admin'))
 app.get('/', require('./controllers/home'))
 app.use(function(req, res, next){
 	res.setHeader('Content-type', 'text/plain');
