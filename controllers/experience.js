@@ -12,9 +12,20 @@ router.get('/:continent', function(req, res, next) {
 		],
 		continent: req.params.continent,
 
+		countries: [
+			{id: 0, nom: "France"}
+		],
+		country: null,
+
+		cities: [
+			{id: 0, nom: "Paris"}
+		],
+		city: null,
+
+		universities: [],
+		university: null,
 		experiences: [
-			{id_etudiant: 48, country: 'Canada'},
-			{id_etudiant: 47, country: 'US'}
+			{id_etudiant: 48, city: 'ex1'},	
 		]
 	});
 });
@@ -26,7 +37,7 @@ router.get('/:continent/:country', function(req, res, next) {
 		],
 		continent: req.params.continent,
 
-		Country: [
+		countries: [
 			{id: 0, nom: "France"}
 		],
 		country: req.params.country,
