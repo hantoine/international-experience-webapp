@@ -1,14 +1,15 @@
 <% var title = 'Experience' %>
 <% include partials/header.ejs %>
-	
-
+	<br />
+	<br />
+	<div id="Selection" >
 	<select id="Continent" required >
 	<option value>Continent</option>
 
 	<% for(var i = 0; i < continents.length; i++) { %>
 		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
-	</select><br />
+	</select> 
 
 
 	<select id="Country" required >
@@ -17,7 +18,7 @@
 	<% for(var i = 0; i < countries.length; i++) { %>
 		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
 	<% } %>
-	</select><br />
+	</select>
 
 
 	<select id="City" required >
@@ -26,7 +27,7 @@
 	<% for(var i = 0; i < cities.length; i++) { %>
 		<option value="<%=cities[i].id %>" <%= (cities[i].nom == city) ? 'selected' : '' %> ><%= cities[i].nom %></option>
 	<% } %>
-	</select><br />
+	</select>
 
 	<select id="University" required >
 	<option value>University</option>
@@ -34,12 +35,14 @@
 	<% for(var i = 0; i < universities.length; i++) { %>
 		<option value="<%=universities[i].id %>" <%= (universities[i].nom == university) ? 'selected' : '' %> ><%= universities[i].nom %></option>
 	<% } %>
-	</select><br />
-
-		</div>
+	</select>
+	</div>
+	<br />
+	<br />	
 	</ol>
-	
+	<div id="Selection" >
 	<input type="submit" value="Send" />
 	</fieldset>
+	</div>
 </form>
 <% include partials/footer.ejs %>

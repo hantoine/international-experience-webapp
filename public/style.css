@@ -143,6 +143,15 @@ nav h2
  padding-bottom: 10px;
 }
 
+#Selection
+{
+ display: flex; /* Mettre des flexbox*/
+ flex-direction: row;
+ margin: auto; /* Impératif pour faire des justify-content (alignement) */
+ justify-content: center;
+ text-align: center;
+}
+
 #Choice
 {
  display: flex; /* Mettre des flexbox*/
