@@ -16,6 +16,10 @@ router.get('/login', function(req, res, next) {
 		res.render('login.ejs');
 	}
 });
+router.get('/logout', function(req, res, next) {
+	req.session.studentid = null;
+	res.redirect('/');
+});
 
 // Create a new experience with only studentid
 router.get('/new', function(req, res, next) {
