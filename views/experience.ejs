@@ -6,7 +6,7 @@
 	<option value>Continent</option>
 
 	<% for(var i = 0; i < continents.length; i++) { %>
-		<option value="<%=continents[i].id %>" <%= (continents[].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
+		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
 	</select><br />
 
@@ -14,8 +14,8 @@
 	<select id="Country" required >
 	<option value>Country</option>
 
-	<% for(var i = 0; i < country.length; i++) { %>
-		<option value="<%=country[i].id %>" <%= (country[].nom == country) ? 'selected' : '' %> ><%= country[i].nom %></option>
+	<% for(var i = 0; i < countries.length; i++) { %>
+		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
 	<% } %>
 	</select><br />
 
@@ -23,16 +23,16 @@
 	<select id="City" required >
 	<option value>City</option>
 
-	<% for(var i = 0; i < city.length; i++) { %>
-		<option value="<%=country[i].id %>" <%= (city[].nom == city) ? 'selected' : '' %> ><%= city[i].nom %></option>
+	<% for(var i = 0; i < cities.length; i++) { %>
+		<option value="<%=cities[i].id %>" <%= (cities[i].nom == city) ? 'selected' : '' %> ><%= cities[i].nom %></option>
 	<% } %>
 	</select><br />
 
 	<select id="University" required >
 	<option value>University</option>
 
-	<% for(var i = 0; i < university.length; i++) { %>
-		<option value="<%=university[i].id %>" <%= (university[].nom == university) ? 'selected' : '' %> ><%= university[i].nom %></option>
+	<% for(var i = 0; i < universities.length; i++) { %>
+		<option value="<%=universities[i].id %>" <%= (universities[i].nom == university) ? 'selected' : '' %> ><%= universities[i].nom %></option>
 	<% } %>
 	</select><br />
 
