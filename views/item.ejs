@@ -1,0 +1,20 @@
+<% var title = 'List - ' + item_name %>
+<% include partials/header.ejs %>
+
+<table>
+		<tr>
+			<% for(var coll in colls { %>
+				<th><%= colls[coll] %></th>
+			<% } %>
+		</tr>
+		<% for(var i=0; i<items.length[i];i++) { %>
+			<tr>
+			<% for (var item in items[i]) { %>
+				<td> <%= item[items] %> </td>
+			<% } %>
+			<td> <li><a href="/show/<%= item_id %>/<%= items[i].id %>">More Details</a></li> </td>
+			</tr>
+
+</table>
+
+<% include partials/footer.ejs %> 
