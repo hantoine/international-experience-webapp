@@ -1,7 +1,14 @@
 var db = require('../db.js');
 
 exports.getExperienceListWithStudentId = function(studentid, done) {
-	db.get().query('SELECT id_experience AS id, age FROM `experience` WHERE id_etudiant = ?', studentid, function(err, rows) {
+	query = 'SELECT \
+		e.id_experience AS id, \
+		COALESCE(CONCAT(\'Experience at \',o.nom, \' (\',v.nom,\')\'), CONCAT(\'Experience at the age of \', e.age), CONCAT(\'Experience \', e.id_experience)) AS name \
+		FROM experience e \
+		LEFT JOIN organisation o ON e.id_organisation = o.id_organisation \
+		LEFT JOIN ville v ON o.id_ville = v.id_ville\
+		WHERE e.id_etudiant = ?'
+	db.get().query(query, studentid, function(err, rows) {
 		if(err) return done(err);
 		done(null, rows);
 	});
@@ -54,7 +61,6 @@ exports.getListWithLocation = function(continentid,countryid,cityid, universityi
 			query += 'c.id_continent = ' + db.escape(continentid)
 		}
 	}
-	console.log(query);
 	db.get().query(query, function(err,rows) {
 		if(err) return done(err);
 		done(null, rows);

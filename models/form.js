@@ -1,6 +1,6 @@
 var async = require('async');
 var db = require('../db.js')
-
+var newAuthorizations = require('../config/new');
 exports.QuestionType = {
 	SELECT : 0,
 	CHOICE: 1,
@@ -68,6 +68,10 @@ var getFormGroup = function(byName, identifier, done) {
 						callback();
 					});
 				}})(i));
+				rows[i].role = newAuthorizations[rows[i].identifiant.substr(3)];
+				if(rows[i].role) {
+					rows[i].role = 10;
+				}
 			}
 		}
 		async.parallel(asyncRequests, function(err){

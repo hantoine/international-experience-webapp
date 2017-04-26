@@ -13,5 +13,26 @@ module.exports = {
 			type_logement: "Type of accommodation"
 		},
 		unlinkedVar: ['type_logement']
+	},
+	pays: {
+		role: Roles.PUBLIC,
+		name: "Country",
+		legend: {
+			id_pays: null,
+			nom: "Name",
+			continent: "Continent"
+		},
+		unlinkedVar: ['continent']
+	},
+	ville: {
+		roles: Roles.PUBLIC,
+		name: "City",
+		legend: {
+			id_ville: null,
+			nom: "Name",
+			nb_habitants: "Number of Inhabitants",
+			nb_etudiants: "Number of Students"
+		},
+		unlinkedVar: []
 	}
 }

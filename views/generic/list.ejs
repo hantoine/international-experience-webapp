@@ -20,7 +20,7 @@
 	<% } %>
 </table>
 	<% if(allowNew) { %>
-	<form method="post" action="/new/<%= item_id %>" >
+	<form method="get" action="/new/<%= item_id %>" >
 		<input type="submit" value="New <%= item_name %>" />
 	</form>
 	<% } %>

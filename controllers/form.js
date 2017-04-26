@@ -2,6 +2,7 @@ var express = require('express');
 var form = require('../models/form.js');
 var experience = require('../models/experience.js');
 var router = express.Router();
+var roleManager = require('../util/roles.js');
 
 router.post('/login', function(req, res, next) {
 	// Login pas sécurisé du tout, mais à voir plus tard si on peut mieux faire
@@ -60,7 +61,7 @@ router.get('/:idexp/:formgroup', function(req, res, next) {
 						}
 					})(function(err) {
 						if (err) return next(err);
-						res.render('form/questions_group.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
+						res.render('form/questions_group.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp, role: roleManager.getRole(req.session)});
 					});
 				});
 			}
@@ -110,6 +111,7 @@ router.get('/', function(req, res, next) {
 	}
 	experience.getExperienceListWithStudentId(req.session.studentid, function(err, result) {
 		if(err) return next(err);
+		console.log(result);
 		res.render('form/experience_list.ejs', {explist: result});
 	});
 });

@@ -221,7 +221,7 @@ th, tr, td
 {
 	margin: auto;
 	justify-content: center;
-	text-align: center;
+	text-align: left;
 	margin-top: 150px;
  	display: inline-block;
 	padding: 15px;
@@ -241,6 +241,7 @@ input, select
 fieldset
 {
 	display: inline-block;
+	padding-left: 50px;
 }
 .inline-block 
 {

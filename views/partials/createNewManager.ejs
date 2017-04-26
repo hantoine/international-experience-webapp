@@ -1,0 +1,46 @@
+<script>
+	var getCookie = function(cname) {
+    		var name = cname + "=";
+    		var decodedCookie = decodeURIComponent(document.cookie);
+    		var ca = decodedCookie.split(';');
+    		for(var i = 0; i <ca.length; i++) {
+        		var c = ca[i];
+        		while (c.charAt(0) == ' ') {
+            			c = c.substring(1);
+        		}
+        		if (c.indexOf(name) == 0) {
+            			return c.substring(name.length, c.length);
+        		}
+    		}
+   		return null;
+	}
+	var setCookie = function(cname, cvalue, exseconds) {
+    		var d = new Date();
+    		d.setTime(d.getTime() + (exseconds * 1000));
+    		var expires = "expires="+d.toUTCString();
+    		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	var extSelect = document.getElementsByClassName("extselect");
+	for (var i=0; i < extSelect.length ; i++) {
+		extSelect[i].addEventListener("change", function(evt) {
+			if(evt.target.value == "new") {
+					window.open('/new/' + evt.target.id.substr(3), '_blank');
+					var checkCreationFinished = function() {
+						var newObject = getCookie("lastCreated_"+evt.target.id.substr(3));
+						if(newObject) {
+							newObject = {id: newObject.split(' ')[0], name: newObject.split(' ').slice(1).join(' ')};
+							var option = document.createElement("option");
+							option.text = newObject.name;
+							option.value = newObject.id;
+							evt.target.add(option);
+							evt.target.value = newObject.id;
+						} else {
+							window.setTimeout(checkCreationFinished, 500)
+						}
+					};
+					window.setTimeout(checkCreationFinished, 500)
+			}
+		});
+	}
+</script>

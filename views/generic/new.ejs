@@ -1,4 +1,4 @@
-<% var title = 'Edit - ' + item_name %>
+<% var title = 'Create- ' + item_name %>
 <% include ../partials/header.ejs %>
 <% /*
 	Variables : 
@@ -10,11 +10,9 @@
 			- legend[column_name].type config
 			- legend[column_name].answers config ou bdd
 			"select column_name, is_nullable, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='logement'"
-		- object : information sur l'objet brute issue de la bdd
-			- object[column_name] : valeurs brutes pour l'objet
 */ %>
 <div id="main-container-noborder" >
-<form method="post" action="/edit/<%= item_id %>/<%= object.id %>" id="main-form">
+<form method="post" action="/new/<%= item_id %>" id="main-form">
 	<fieldset>
 	<legend><%= item_name %></legend>
 	<ul>
@@ -28,7 +26,7 @@
 		<select name="<%= key %>" id="<%= key %>" <%= legend[key].optionel ? '' : 'required' %>>
 		<option value></option>
 	<% for(var value in legend[key].answers) { %>
-		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
+		<option value="<%= value %>" ><%= legend[key].answers[value] %></option>
 	<% } %>
 		</select><br />
 	<%		
@@ -37,26 +35,26 @@
 	%>
 		<%= legend[key].text %> <br />
 	<% for(var value in legend[key].answers) { %>
-		<input type="radio" name="<%= key %>" value="<%= value %>" id="<%= key %>.<%= value %>" <%= legend[key].optionel ? '' : 'required' %> <%= (value == object[key]) ? 'checked' : '' %> />
+		<input type="radio" name="<%= key %>" value="<%= value %>" id="<%= key %>.<%= value %>" <%= legend[key].optionel ? '' : 'required' %> />
 		<label for="<%= key %>.<%= value %>"><%= legend[key].answsers[value] %></label><br />
 	<% } %>
 	<%		break;
 			case 2: //INT
 	%>
 		<label for="<%= key %>"><%= legend[key].text %></label><br />
-		<input type="number" name="<%= key %>" id="<%= key %>" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> />
+		<input type="number" name="<%= key %>" id="<%= key %>" <%= legend[key].optionel ? '' : 'required' %> />
 	<%
 				break;
 			case 3: //TEXT
 	%>
 		<label for="<%= key %>"><%= legend[key].text %></label><br />
-		<input type="text" name="<%= key %>" id="<%= key %>" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> />
+		<input type="text" name="<%= key %>" id="<%= key %>" <%= legend[key].optionel ? '' : 'required' %> />
 	<% 
 				break;
 			case 5: //TEXTAREA
 	%>
 		<label for="<%= ket %>"><%= legend[i].text %></label><br />
-		<textarea name="<%= key %>" id="<%= key %>" cols="80" rows="4" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> ></textarea>
+		<textarea name="<%= key %>" id="<%= key %>" cols="80" rows="4" <%= legend[key].optionel ? '' : 'required' %> ></textarea>
 	<%
 				break;
 			case 4: //EXT
@@ -65,7 +63,7 @@
 		<select name="id_<%= key %>" class="extselect" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
 		<option value></option>
 	<% for(var value in legend[key].answers ) { %>
-		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
+		<option value="<%= value %>" ><%= legend[key].answers[value] %></option>
 	<% } %>
 		<option value="new" > Create a new one </option>
 		</select><br />
@@ -74,9 +72,9 @@
 			case 6: //BOOL 
 	%>
 		<%= legend[key].text %> <br />
-		<input type="radio" name="<%= key %>" value="1" id="<%= key %>.1" <%= legend[key].optionel ? '' : 'required' %> <%= (object[key] == 1) ? 'checked' : '' %> />
+		<input type="radio" name="<%= key %>" value="1" id="<%= key %>.1" <%= legend[key].optionel ? '' : 'required' %> />
 		<label for="<%= key %>.1">Yes</label><br />
-		<input type="radio" name="<%= key %>" value="0" id="<%= key %>.0" <%= legend[key].optionel ? '' : 'required' %> <%= (object[key] == 0) ? 'checked' : '' %> />
+		<input type="radio" name="<%= key %>" value="0" id="<%= key %>.0" <%= legend[key].optionel ? '' : 'required' %> />
 		<label for="<%= key %>.0">No</label><br />
 	<%			break;
 		}

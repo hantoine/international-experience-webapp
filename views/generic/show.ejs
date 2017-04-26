@@ -2,6 +2,7 @@
 <% include ../partials/header.ejs %>
 
 <div id="main-container-noborder" >
+<a href="/list/<%= item_id %>" >&lt; Back to the list </a>
 <table>
 <% 
 	for(var key in object) { 
@@ -32,7 +33,8 @@
 <form method="get" action="/edit/<%= item_id %>/<%= object.id %>" class="inline-block">
 	<input type="submit" value="Edit" />
 </form>
-<% } if(allowDelete) { %>
+<% } 
+if(allowDelete) { %>
 <form method="post" action="/delete/<%= item_id %>/<%= object.id %>" class="inline-block">
 	<input type="submit" value="Delete" />
 </form>

@@ -25,6 +25,8 @@ exports.get = function(table) {
 				}
 			}
 		}
+		console.log(conditions);
+		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
 			done(null, rows);
@@ -44,7 +46,6 @@ exports.get = function(table) {
 			}
 		}
 		var query = 'INSERT INTO ' + table + ' (' + attributes + ') VALUES (' + values + ')'
-		console.log(query);
 		db.get().query(query, function(err, result) {
 			if(err) return done(err);
 			done(null, result.insertId); 
@@ -129,7 +130,7 @@ exports.get = function(table) {
 		if(! legend) {
 			return done("legend should be defined");
 		}
-		db.get().query("SELECT column_name, is_nullable, data_type, character_maximum_length  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'logement'", function(err, result) {
+		db.get().query("SELECT column_name, is_nullable, data_type, character_maximum_length  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = " + db.escape(table), function(err, result) {
 			if(err) return done(err);
 			for (var i=0; i < result.length; i++) {
 				if(result[i].column_name == 'id_' + table) {
@@ -138,6 +139,9 @@ exports.get = function(table) {
 					var key = result[i].column_name.substr(3);
 				} else {
 					var key = result[i].column_name;
+				}
+				if(! legend[key]) {
+					return done("Erreur : L'attribut " + key + " n'est pas configuré pour " + table); 
 				}
 				legend[key].optionel = (result[i].is_nullable == 'YES')
 				legend[key].data_type = result[i].data_type;		

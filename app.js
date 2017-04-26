@@ -2,6 +2,7 @@ var config = require('./config');
 var express = require('express');
 var morgan  = require('morgan'); // Utilisé pour les logs
 var session = require('cookie-session');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser'); // Permettra de récupérer les données issues d'un formulaire
 var ent = require('ent');
 var db = require('./db');
@@ -15,6 +16,7 @@ app.use(session({secret: 'xDqgDkEIiRX9CVdHS3UhyZYtDD4ovK+W2VNIbPBWMJ0vwsSznNc/sA
 app.use(morgan('combined')); // Logging
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 app.use('/form', require('./controllers/form'));
 app.use('/experience', require('./controllers/experience'));
 app.use('/admin', require('./controllers/admin'));
