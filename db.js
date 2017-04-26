@@ -2,7 +2,7 @@ var mysql = require('mysql')
   , async = require('async')
 
 var PRODUCTION_DB = 'projetbdd'
-  , TEST_DB = 'app_test_database'
+  , TEST_DB = 'projetbdd'
 
 exports.MODE_TEST = 'test'
 exports.MODE_PRODUCTION = 'prod'

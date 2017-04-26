@@ -15,15 +15,15 @@ app.use(session({secret: 'xDqgDkEIiRX9CVdHS3UhyZYtDD4ovK+W2VNIbPBWMJ0vwsSznNc/sA
 app.use(morgan('combined')); // Logging
 
 app.use(bodyParser.urlencoded({extended: false}));
-app.use('/form', require('./controllers/form'))
-app.use('/experience', require('./controllers/experience'))
-app.use('/admin', require('./controllers/admin'))
-app.use('/list', require('./controllers/list'))
-app.use('/show', require('./controllers/show'))
-app.use('/delete', require('./controllers/delete'))
-app.use('/new', require('./controllers/new'))
-app.use('/edit', require('./controllers/edit'))
-app.get('/', require('./controllers/home'))
+app.use('/form', require('./controllers/form'));
+app.use('/experience', require('./controllers/experience'));
+app.use('/admin', require('./controllers/admin'));
+app.use('/list', require('./controllers/list'));
+app.use('/show', require('./controllers/show'));
+app.use('/delete', require('./controllers/delete'));
+app.use('/new', require('./controllers/new'));
+app.use('/edit', require('./controllers/edit'));
+app.get('/', require('./controllers/home'));
 
 app.use(function(req, res, next){
 	res.setHeader('Content-type', 'text/plain');

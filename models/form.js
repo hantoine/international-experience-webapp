@@ -7,7 +7,8 @@ exports.QuestionType = {
 	INT: 2,
 	TEXT: 3,
 	EXT: 4,
-	TEXTAREA: 5
+	TEXTAREA: 5,
+	BOOL: 6
 };
 
 exports.getFormGroupsStates = function(expid, done) {
@@ -133,6 +134,7 @@ exports.saveAnswers = function(expid, data, done) {
 					break;
 				case exports.QuestionType.INT:
 				case exports.QuestionType.TEXT:
+				case exports.QuestionType.BOOL:
 				case exports.QuestionType.TEXTAREA:
 				case exports.QuestionType.EXT:
 					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
@@ -164,6 +166,7 @@ exports.addAnswers = function(expid, formgroup, done) {
 				break;
 			case exports.QuestionType.INT:
 			case exports.QuestionType.TEXT:
+			case exports.QuestionType.BOOL:
 			case exports.QuestionType.TEXTAREA:
 			case exports.QuestionType.EXT:
 				db.get().query('SELECT ' + question.identifiant + ' AS reponse FROM experience WHERE id_experience = ?', expid, function(err, result) {

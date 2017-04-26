@@ -1,0 +1,28 @@
+<% var title = 'List - ' + item_name %>
+<% include ../partials/header.ejs %>
+
+<div id="main-container-noborder" >
+<table>
+		<% if(legend) { %>
+		<tr>
+			<% for(var key in legend) { %>
+				<th><%= legend[key] %></th>
+			<% } %>
+		</tr>
+		<% } %>
+	<% for(var i=0; i<objects.length ;i++) { %>
+		<tr>
+		<% for (var key in objects[i]) { %>
+			<td> <%= objects[i][key] %> </td>
+		<% } %>
+			<td><a href="/show/<%= item_id %>/<%= objects[i].id %>">More Details</a></td>
+		</tr>
+	<% } %>
+</table>
+	<% if(allowNew) { %>
+	<form method="post" action="/new/<%= item_id %>" >
+		<input type="submit" value="New <%= item_name %>" />
+	</form>
+	<% } %>
+</div>
+<% include ../partials/footer.ejs %> 

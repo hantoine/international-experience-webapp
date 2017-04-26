@@ -9,7 +9,7 @@ router.get('/show/:idexp', function(req, res, next) {
 
 router.get('/:continent', function(req, res, next) {
 	experience.getListWithLocation(req.params.continent,null,null, null, function(err, experiences) {
-		genericModel('continents').getList(null,function(err, continents) {
+		genericModel.get('continents').getList(null,function(err, continents) {
 			res.render('experience.ejs', {
 				continents: continents,
 				continent: req.params.continent,
@@ -106,7 +106,7 @@ router.get('/:continent/:country/:city/:university', function(req, res, next) {
 router.get('/', function(req, res, next) {
 
 	experience.getListWithLocation(null,null,null, null, function(err, experiences) {
-		genericModel('continents').getList(null,function(err, continents) {
+		genericModel.get('continents').getList(null,function(err, continents) {
 			res.render('experience.ejs', {
 				continents: continents,
 				continent: req.params.continent,

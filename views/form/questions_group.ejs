@@ -1,5 +1,5 @@
 <% var title = 'Form' %>
-<% include partials/header.ejs %>
+<% include ../partials/header.ejs %>
 <form method="post" action="/form/<%= expid %>/<%= formgroupname %>">
 	<fieldset>
 	<legend><%= formgroupname %></legend>
@@ -22,9 +22,10 @@
 			case 1: //CHOICE 
 	%>
 		<%= formgroup[i].texte %> <br />
-	<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
-		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
-		<label for="<%= j %>"><%= formgroup[i].reponses[j] %></label><br />
+	<% console.log(formgroup[i].id); 
+	for(var j=0; j < formgroup[i].reponses.length; j++) { %>
+		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
+		<label for="<%= formgroup[i].id %>.<%= j %>"><%= formgroup[i].reponses[j] %></label><br />
 	<% } %>
 	<%		break;
 			case 2: //INT
@@ -54,7 +55,16 @@
 		<option value="<%= reponse %>" <%= (formgroup[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= formgroup[i].reponses[reponse] %></option>
 	<% } %>
 		</select><br />
-	<%
+	<%		
+				break;
+			case 6: //BOOL 
+	%>
+		<%= formgroup[i].texte %> <br />
+		<input type="radio" name="<%= formgroup[i].id %>" value="1" id="<%= formgroup[i].id %>.1" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == 1) ? 'checked' : '' %> />
+		<label for="<%= formgroup[i].id %>.1">Yes</label><br />
+		<input type="radio" name="<%= formgroup[i].id %>" value="0" id="<%= formgroup[i].id %>.0" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == 0) ? 'checked' : '' %> />
+		<label for="<%= formgroup[i].id %>.0">No</label><br />
+	<%			break;
 		}
 	%>
 		</div>
@@ -63,7 +73,7 @@
 	<input type="submit" value="Send" />
 	</fieldset>
 </form>
-<% include partials/socket.io.ejs %>
+<% include ../partials/socket.io.ejs %>
 <script>
 	var clearOptions = function(id) {
 		var select = document.getElementById(id);
@@ -98,8 +108,8 @@
 		selectCity.addEventListener('change', function(event) {
 
 			clearOptions('25');
-			socket.emit('getData', {table: 'ecole', conditions: [{attribute: 'id_ville', value: event.target.value}] });
+			socket.emit('getData', {table: 'organisation', conditions: [{attribute: 'id_ville', value: event.target.value}] });
 		})
 	}
 </script>
-<% include partials/footer.ejs %>
+<% include ../partials/footer.ejs %>

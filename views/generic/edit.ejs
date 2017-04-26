@@ -1,0 +1,147 @@
+<% var title = 'Edit - ' + item_name %>
+<% include ../partials/header.ejs %>
+<% /*
+	Variables : 
+		- legend : informations sur les formulaires issue de la configuration et de la bdd
+			- legend[column_name].text config
+			- legend[column_name].optionel bdd
+			- legend[column_name].data_type bdd
+			- legend[column_name].max_length bdd
+			- legend[column_name].type config
+			- legend[column_name].answers config ou bdd
+			"select column_name, is_nullable, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='logement'"
+		- object : information sur l'objet brute issue de la bdd
+			- object[column_name] : valeurs brutes pour l'objet
+*/ %>
+<div id="main-container-noborder" >
+<form method="post" action="/edit/<%= item_id %>/<%= object.id %>" id="main-form">
+	<fieldset>
+	<legend><%= item_name %></legend>
+	<ul>
+	<% for(var key in legend) { %>
+		<div role="listitem" style="margin:1.5em;">
+	<%
+		switch (legend[key].type) {
+			case 0: //SELECT
+	%>
+		<label for="<%= key %>"><%= legend[key].text %></label><br />
+		<select name="<%= key %>" id="<%= key %>" <%= legend[key].optionel ? '' : 'required' %>>
+		<option value></option>
+	<% for(var value in legend[key].answers) { %>
+		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
+	<% } %>
+		</select><br />
+	<%		
+			break;
+			case 1: //CHOICE 
+	%>
+		<%= legend[key].text %> <br />
+	<% for(var value in legend[key].answers) { %>
+		<input type="radio" name="<%= key %>" value="<%= value %>" id="<%= key %>.<%= value %>" <%= legend[key].optionel ? '' : 'required' %> <%= (value == object[key]) ? 'checked' : '' %> />
+		<label for="<%= key %>.<%= value %>"><%= legend[key].answsers[value] %></label><br />
+	<% } %>
+	<%		break;
+			case 2: //INT
+	%>
+		<label for="<%= key %>"><%= legend[key].text %></label><br />
+		<input type="number" name="<%= key %>" id="<%= key %>" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> />
+	<%
+				break;
+			case 3: //TEXT
+	%>
+		<label for="<%= key %>"><%= legend[key].text %></label><br />
+		<input type="text" name="<%= key %>" id="<%= key %>" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> />
+	<% 
+				break;
+			case 5: //TEXTAREA
+	%>
+		<label for="<%= ket %>"><%= legend[i].text %></label><br />
+		<textarea name="<%= key %>" id="<%= key %>" cols="80" rows="4" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> ></textarea>
+	<%
+				break;
+			case 4: //EXT
+	%>
+		<label for="id_<%= key %>"><%= legend[key].text %></label><br />
+		<select name="id_<%= key %>" class="extselect" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
+		<option value></option>
+	<% for(var value in legend[key].answers ) { %>
+		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
+	<% } %>
+		<option value="new" > Create a new one </option>
+		</select><br />
+	<%		
+				break;
+			case 6: //BOOL 
+	%>
+		<%= legend[key].text %> <br />
+		<input type="radio" name="<%= key %>" value="1" id="<%= key %>.1" <%= legend[key].optionel ? '' : 'required' %> <%= (object[key] == 1) ? 'checked' : '' %> />
+		<label for="<%= key %>.1">Yes</label><br />
+		<input type="radio" name="<%= key %>" value="0" id="<%= key %>.0" <%= legend[key].optionel ? '' : 'required' %> <%= (object[key] == 0) ? 'checked' : '' %> />
+		<label for="<%= key %>.0">No</label><br />
+	<%			break;
+		}
+	%>
+		</div>
+	<% } %>
+	</ol>
+	<input type="submit" value="Send" />
+	</fieldset>
+</form>
+</div>
+<script>
+	var getCookie = function(cname) {
+    		var name = cname + "=";
+    		var decodedCookie = decodeURIComponent(document.cookie);
+    		var ca = decodedCookie.split(';');
+    		for(var i = 0; i <ca.length; i++) {
+        		var c = ca[i];
+        		while (c.charAt(0) == ' ') {
+            			c = c.substring(1);
+        		}
+        		if (c.indexOf(name) == 0) {
+            			return c.substring(name.length, c.length);
+        		}
+    		}
+   		return null;
+	}
+	var setCookie = function(cname, cvalue, exseconds) {
+    		var d = new Date();
+    		d.setTime(d.getTime() + (exseconds * 1000));
+    		var expires = "expires="+d.toUTCString();
+    		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	var extSelect = document.getElementsByClassName("extselect");
+	for (var i=0; i < extSelect.length ; i++) {
+		extSelect[i].addEventListener("change", function(evt) {
+			if(evt.target.value == "new") {
+					var f = document.createElement('form');
+					f.action = '/new/' + evt.target.id.substr(3);
+					f.method = 'post';
+					f.target = '_blank';
+					document.getElementById('main-container-noborder').appendChild(f);
+					f.submit();
+					var checkCreationFinished = function() {
+						var newObject = getCookie("lastCreated_"+evt.target.id.substr(3));
+						if(newObject) {
+							newObject = {id: newObject.split(' ')[0], name: newObject.split(' ')[1]};
+							var option = document.createElement("option");
+							option.text = newObject.name;
+							option.value = newObject.id;
+							event.target.add(option);
+							event.target.value = newObject.id;
+						} else {
+							console.log('Trying again...');
+							window.setTimeout(checkCreationFinished, 500)
+						}
+					};
+					window.setTimeout(checkCreationFinished, 500)
+			}
+		});
+	}
+	document.getElementById('main-form').addEventListener('submit', function(evt) {
+		var name = document.getElementById('nom').value;
+		setCookie('lastCreated_<%= item_id %>', '<%= object.id %> ' + name, 2);
+	});
+</script>
+<% include ../partials/footer.ejs %>

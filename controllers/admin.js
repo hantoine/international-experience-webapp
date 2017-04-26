@@ -11,17 +11,17 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
 	if(req.body.password == "troisdeuxun") {
-		req.session.logged = true;
+		req.session.adminLogged = true;
 		res.redirect('/admin');
 	}
 });
 router.get('/logout', function(req, res, next) {
-	req.session.logged = false;
+	req.session.adminLogged = false;
 	res.redirect('/');
 });
 
 router.get('/', function(req, res, next) {
-	if(! req.session.logged) {
+	if(! req.session.adminLogged) {
 		res.redirect('/admin/login');
 		return;
 	}

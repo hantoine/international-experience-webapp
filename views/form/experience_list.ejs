@@ -1,13 +1,10 @@
 <% var title = 'Form' %>
-<% include partials/header.ejs %>
-		<div id="Choice">
+<% include ../partials/header.ejs %>
+	<div id="main-container">
+		<h2> Your abroad experiences</h2>
 		<ul>
 	<% for(var i=0; i< explist.length; i++) { %>
-		<li> <a href="/form/<%= explist[i].id%>/"><%= explist[i].id %> 
-		<% if(explist[i].age) { %>
-		(<%=explist[i].age%> years old)
-		<% } %>
-		</a></li>
+		<li> <a href="/form/<%= explist[i].id%>/"><%= explist[i].name %> </a></li>
 	<% } %>
 	</ul>
 	<form action="/form/new">
@@ -17,4 +14,4 @@
 	    <input type="submit" value="Log out" />
 	</form>
 	</div>
-<% include partials/footer.ejs %>
+<% include ../partials/footer.ejs %>

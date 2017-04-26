@@ -13,7 +13,7 @@ router.get('/login', function(req, res, next) {
 	if(req.session.studentid) {
 		res.redirect('/form');
 	} else {
-		res.render('login.ejs');
+		res.render('form/login.ejs');
 	}
 });
 router.get('/logout', function(req, res, next) {
@@ -36,7 +36,7 @@ router.get('/new', function(req, res, next) {
 });
 
 router.get('/:idexp/done', function(req, res, next) {
-	res.render('formdone.ejs');
+	res.render('form/done.ejs');
 });
 
 // Show the form for given experience and formgroup
@@ -60,7 +60,7 @@ router.get('/:idexp/:formgroup', function(req, res, next) {
 						}
 					})(function(err) {
 						if (err) return next(err);
-						res.render('formgroup.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
+						res.render('form/questions_group.ejs', {formgroup: result, formgroupname: req.params.formgroup, expid: req.params.idexp});
 					});
 				});
 			}
@@ -100,7 +100,7 @@ router.get('/:idexp', function(req, res, next) {
 	form.getFormGroupsStates(req.params.idexp, function(err, result) {
 		if(err) return next(err);
 		console.log(result);
-		res.render('formroot.ejs', {formgroup: result, idexp: req.params.idexp});
+		res.render('form/experience_progress.ejs', {formgroup: result, idexp: req.params.idexp});
 	});
 });
 
@@ -110,7 +110,7 @@ router.get('/', function(req, res, next) {
 	}
 	experience.getExperienceListWithStudentId(req.session.studentid, function(err, result) {
 		if(err) return next(err);
-		res.render('formexplist.ejs', {explist: result});
+		res.render('form/experience_list.ejs', {explist: result});
 	});
 });
 

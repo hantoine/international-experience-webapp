@@ -1,0 +1,42 @@
+<% var title = 'Show - ' + item_name %>
+<% include ../partials/header.ejs %>
+
+<div id="main-container-noborder" >
+<table>
+<% 
+	for(var key in object) { 
+		if(legend[key]) {
+%>
+	<tr>
+		<th><%= legend[key] %></th>
+		<td>
+		<% if(object[key]) {
+			if(typeof object[key] == 'object') { %>
+				<a href="/show/<%= key %>/<%= object[key].id %>" ><%= object[key].nom %></a>
+			<% } else { %>
+				<%= object[key] %>
+		<% 
+		  	} 
+		  } else {
+		%>
+			Unknown
+		<% } %>
+		</td>
+	</tr>
+<% 
+		}
+	} 
+%>
+</table>
+<% if(allowEdit) { %>
+<form method="get" action="/edit/<%= item_id %>/<%= object.id %>" class="inline-block">
+	<input type="submit" value="Edit" />
+</form>
+<% } if(allowDelete) { %>
+<form method="post" action="/delete/<%= item_id %>/<%= object.id %>" class="inline-block">
+	<input type="submit" value="Delete" />
+</form>
+<% } %>
+</div>
+
+<% include ../partials/footer.ejs %> 

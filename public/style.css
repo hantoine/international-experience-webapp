@@ -154,18 +154,19 @@ nav h2
 
 #Choice
 {
- display: flex; /* Mettre des flexbox*/
- flex-direction: column;
  margin: auto; /* Impératif pour faire des justify-content (alignement) */
  justify-content: center;
  border-color: black;
  border: 2px solid;
- width: 300px;
  text-align: center;
+ width: 300px;
  margin-top: 10%;
  padding-top: 10px;
  padding-bottom: 10px;
 }
+
+
+
 
 #Liste
 {
@@ -189,11 +190,59 @@ table
 
 }
 
-th, tr
+th, tr, td
 {
 	border:  solid black;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	padding-right: 10px;
 	padding-left: 10px;
+}
+
+#parent
+{
+	text-align: center;
+	margin: 0 auto;	
+}
+
+#main-container
+{
+	margin: auto;
+	justify-content: center;
+	border-color: black;
+	border: 2px solid;
+	text-align: center;
+	margin-top: 150px;
+ 	display: inline-block;
+	padding: 15px;
+}
+
+#main-container-noborder
+{
+	margin: auto;
+	justify-content: center;
+	text-align: center;
+	margin-top: 150px;
+ 	display: inline-block;
+	padding: 15px;
+}
+
+ul 
+{
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+input, select
+{
+	margin: 5px;
+}
+
+fieldset
+{
+	display: inline-block;
+}
+.inline-block 
+{
+	display: inline-block;
 }
