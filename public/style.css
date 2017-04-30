@@ -52,7 +52,7 @@ nav a
  flex-direction: column;
  margin: auto; /* Impératif pour faire des justify-content (alignement) */
  justify-content: center;
-/* Réalisation d'une bordure */ 
+/* Réalisation d'une bordure */
  width: 400px;
  text-align: center;
  border-color: black;
@@ -63,7 +63,7 @@ nav a
  padding-bottom: 10px;
 }
 
-.button 
+.button
 {
 	display:flex;
 	justify-content: center;
@@ -183,7 +183,7 @@ nav h2
  padding-bottom: 10px;
 }
 
-table 
+table
 {
 	border-collapse: collapse;
 	margin: auto;
@@ -202,7 +202,7 @@ th, tr, td
 #parent
 {
 	text-align: center;
-	margin: 0 auto;	
+	margin: 0 auto;
 }
 
 #main-container
@@ -227,7 +227,7 @@ th, tr, td
 	padding: 15px;
 }
 
-ul 
+.no-list-style
 {
 	list-style-type: none;
 	padding-left: 0px;
@@ -243,7 +243,22 @@ fieldset
 	display: inline-block;
 	padding-left: 50px;
 }
-.inline-block 
+.inline-block
 {
 	display: inline-block;
+}
+
+.horizontal-choice
+{
+	text-align: center;
+}
+
+.horizontal-choice td
+{
+	padding: 0px;
+	border: none;
+}
+.horizontal-choice tr
+{
+	border: none;
 }

@@ -13,7 +13,8 @@ for (var objectType in objectsAuthorizations) {
 		}
 		models[objectType].delete(req.params.id, function(err) {
 			if(err) return next(err);
-			res.redirect('/list/'+objectType);
+			req.session.refererUsed = true;
+			res.redirect(req.session.referer.pop());
 		});
 	}})(objectType));
 }

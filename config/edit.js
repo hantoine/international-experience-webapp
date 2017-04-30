@@ -30,5 +30,14 @@ module.exports = {
 			nom: {text: "Name", type: QuestionType.TEXT },
 			continent: {text: "Continent", type: QuestionType.EXT }		
 		}
+	},
+	avantage_inconvenient: {
+		role: Roles.ADMIN,
+		name: "Advantage/Disadvantage",
+		legend: {
+			contenu: {text: "Text", type: QuestionType.TEXTAREA },	
+			avantage: {text: "Is it an advantage ?", type: QuestionType.BOOL },
+			displayed: {text: "Should it be displayed ?", type: QuestionType.BOOL}
+		}
 	}
 }

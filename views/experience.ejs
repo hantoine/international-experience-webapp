@@ -1,7 +1,7 @@
 <% var title = 'Experience' %>
 <% include partials/header.ejs %>
-	<br />
-	<br />
+<% console.log(experiences); %>
+	<div id="main-container">
 	<div id="Selection" >
 	<select id="Continent" required >
 	<option value>Continent</option>
@@ -37,13 +37,46 @@
 	<% } %>
 	</select>
 	</div>
-	<br />
-	<br />	
-	</ol>
-	<div id="Selection" >
-	<input type="submit" value="Send" />
-	</fieldset>
+	<table>
+		<tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th>Date</th><th></th></tr>
+			<% for(var i = 0 ; i < experiences.length ; i++) { %>
+				<tr><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><%= experiences[i].date %></td><td><a href="/show/experience/<%= experiences[i].id %>">More details</a></td></tr>
+			<% } %>
+	</table>
 	</div>
-</form>
+<script>
+	var selectContinent = document.getElementById('Continent');
+	var selectCountry = document.getElementById('Country');
+	var selectCity = document.getElementById('City');
+	var selectUniversity = document.getElementById('University');
 
+	selectContinent.addEventListener('change', function(evt) {
+		if(selectContinent.selectedIndex == 0) {
+			window.location.replace('/experience/');
+		} else {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text);
+		}
+	});
+	selectCountry.addEventListener('change', function(evt) {
+		if(selectCountry.selectedIndex == 0) {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text);
+		} else {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+		}
+	});
+	selectCity.addEventListener('change', function(evt) {
+		if(selectCity.selectedIndex == 0) {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+		} else {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+		}
+	});
+	selectUniversity.addEventListener('change', function(evt) {
+		if(selectUniversity.selectedIndex == 0) {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+		} else {
+			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectUniversity[selectUniversity.selectedIndex].text);
+		}
+	});
+</script>
 <% include partials/footer.ejs %>

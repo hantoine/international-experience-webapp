@@ -45,14 +45,17 @@ router.get('/:idexp/:formgroup', function(req, res, next) {
 	if(! req.session.studentid) {
 		return res.redirect('/form/login');
 	}
-	form.getFormGroupsStates(req.params.idexp, function(err, formgroupslist) {
+	form.getFormGroupsStates(req.params.idexp, function(err, formgroupsInfos) {
 		if(err) return next(err);
-		for(var i = 0 ; i < formgroupslist.length; i++) {
-			if(formgroupslist[i].nom == req.params.formgroup) {
+		for(var i = 0 ; i < formgroupsInfos.formgroups.length; i++) {
+			if(formgroupsInfos.formgroups[i].nom == req.params.formgroup) {
+				if(formgroupsInfos.formgroups[i].need_experience_done && (! formgroupsInfos.expDone)) {
+					return res.render('form/predeparture_part_done.ejs', {formgroupname: req.params.formgroup, expid: req.params.idexp});
+				}
 				return form.getFormGroupByName(req.params.formgroup, function(err, result) {
 					if(err) return next(err);
 					(function(callback) {
-						if( ! formgroupslist[i].done) {
+						if( ! formgroupsInfos.formgroups[i].done) {
 							// directement renvoyer le formulaire vide
 							callback();
 						} else {
@@ -85,14 +88,14 @@ router.post('/:idexp/:formgroup', function(req, res, next) {
 				if(! nextformgroupname) {
 					res.redirect('/form/'+req.params.idexp+'/done');
 				} else {
-					res.redirect('/form/'+req.params.idexp+'/'+nextformgroupname);
+					res.redirect('/form/'+req.params.idexp+'/'+encodeURIComponent(nextformgroupname));
 				}
 			});
 		});
 	}, function(err) {
 		if(err) return next(err);
 		res.status(403).send('Access denied !');
-		
+
 	});
 });
 
@@ -100,8 +103,7 @@ router.post('/:idexp/:formgroup', function(req, res, next) {
 router.get('/:idexp', function(req, res, next) {
 	form.getFormGroupsStates(req.params.idexp, function(err, result) {
 		if(err) return next(err);
-		console.log(result);
-		res.render('form/experience_progress.ejs', {formgroup: result, idexp: req.params.idexp});
+		res.render('form/experience_progress.ejs', {needDoneToContinue: result.state, formgroup: result.formgroups, idexp: req.params.idexp});
 	});
 });
 
@@ -111,7 +113,6 @@ router.get('/', function(req, res, next) {
 	}
 	experience.getExperienceListWithStudentId(req.session.studentid, function(err, result) {
 		if(err) return next(err);
-		console.log(result);
 		res.render('form/experience_list.ejs', {explist: result});
 	});
 });

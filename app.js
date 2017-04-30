@@ -25,6 +25,7 @@ app.use('/show', require('./controllers/show'));
 app.use('/delete', require('./controllers/delete'));
 app.use('/new', require('./controllers/new'));
 app.use('/edit', require('./controllers/edit'));
+app.use('/util', require('./controllers/util'));
 app.get('/', require('./controllers/home'));
 
 app.use(function(req, res, next){

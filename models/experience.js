@@ -34,7 +34,7 @@ exports.checkStudentHasAccess = function(studentid, expid, hasAccessFct, hasNotA
 
 
 exports.getListWithLocation = function(continentid,countryid,cityid, universityid, done) {
-	query = 'SELECT e.id_experience, o.nom, v.nom, p.nom, c.nom, e.age, e.duree FROM experience e\
+	query = 'SELECT e.id_experience AS id, o.nom AS organisation, v.nom AS ville, p.nom AS pays, c.nom AS continent, e.duree AS duree, DATE_FORMAT(e.date, \'%e %b %Y\') AS date FROM experience e\
 \
 		JOIN organisation o ON e.id_organisation = o.id_organisation\
 		JOIN ville v ON o.id_ville = v.id_ville\
@@ -61,6 +61,7 @@ exports.getListWithLocation = function(continentid,countryid,cityid, universityi
 			query += 'c.id_continent = ' + db.escape(continentid)
 		}
 	}
+	console.log(query);
 	db.get().query(query, function(err,rows) {
 		if(err) return done(err);
 		done(null, rows);

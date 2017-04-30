@@ -13,20 +13,39 @@ for (var objectType in objectList) {
 		if (rolesManager.getRole(req.session) < objectList[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}
-		models[objectType].getById(req.params.id, false, function(err, object) {
+		models[objectType].getById(req.params.id, false, objectList[objectType].legend, function(err, object) {
 			if(err) return next(err);
 			if(objectList[objectType].unlinkedVar) {
 				for (var i=0; i < objectList[objectType].unlinkedVar.length; i++) {
 					object[objectList[objectType].unlinkedVar[i]] = (object[objectList[objectType].unlinkedVar[i]]) ? object[objectList[objectType].unlinkedVar[i]].nom : null;
 				}
 			}
+			var role = rolesManager.getRole(req.session);
+			for(var key in objectList[objectType].legend) {
+				var value = objectList[objectType].legend[key]
+				if(value && (typeof value == 'object') && value.type == 'list') {
+					value.canEdit = (objectEditInfos[value.contentTable]) ? (role >= objectEditInfos[value.contentTable].role) : false; 
+				}
+			}
+			for (var key in object) {
+				if(typeof objectList[objectType].legend[key] == 'undefined') {
+					return next('Error : No legend for entry ' + key + ' in ' + objectType + '.');
+				}
+			}
+			if(typeof req.session.referer == 'undefined') {
+				req.session.referer = [];
+			}
+			if(! req.session.refererUsed) {
+				req.session.referer.push(req.headers.referer);
+			}
+			req.session.refererUsed = false;
 			res.render('generic/show.ejs', {
 				item_name: objectList[objectType].name,
 				item_id: objectType,
 				object: object,
 				legend: objectList[objectType].legend,
-				allowEdit: (rolesManager.getRole(req.session) >= objectEditInfos[objectType].role), 
-				allowDelete: (rolesManager.getRole(req.session) >= objectDeleteInfos[objectType]) 
+				allowEdit: (role >= objectEditInfos[objectType].role), 
+				allowDelete: (role >= objectDeleteInfos[objectType]),
 			});
 		});
 	}})(objectType));

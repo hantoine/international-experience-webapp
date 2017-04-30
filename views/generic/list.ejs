@@ -14,8 +14,12 @@
 		<tr>
 		<% for (var key in objects[i]) { %>
 			<td> <%= objects[i][key] %> </td>
-		<% } %>
+		<% 
+		   } 
+		   if(allowShow) {
+		%>
 			<td><a href="/show/<%= item_id %>/<%= objects[i].id %>">More Details</a></td>
+		<% } %>
 		</tr>
 	<% } %>
 </table>

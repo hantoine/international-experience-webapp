@@ -1,23 +1,10 @@
 <% var title = 'Edit - ' + item_name %>
 <% include ../partials/header.ejs %>
-<% /*
-	Variables : 
-		- legend : informations sur les formulaires issue de la configuration et de la bdd
-			- legend[column_name].text config
-			- legend[column_name].optionel bdd
-			- legend[column_name].data_type bdd
-			- legend[column_name].max_length bdd
-			- legend[column_name].type config
-			- legend[column_name].answers config ou bdd
-			"select column_name, is_nullable, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='logement'"
-		- object : information sur l'objet brute issue de la bdd
-			- object[column_name] : valeurs brutes pour l'objet
-*/ %>
 <div id="main-container-noborder" >
 <form method="post" action="/edit/<%= item_id %>/<%= object.id %>" id="main-form">
 	<fieldset>
 	<legend><%= item_name %></legend>
-	<ul>
+	<ul class="no-list-style">
 	<% for(var key in legend) { %>
 		<div role="listitem" style="margin:1.5em;">
 	<%
@@ -31,9 +18,9 @@
 		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
 	<% } %>
 		</select><br />
-	<%		
+	<%
 			break;
-			case 1: //CHOICE 
+			case 1: //CHOICE
 	%>
 		<%= legend[key].text %> <br />
 	<% for(var value in legend[key].answers) { %>
@@ -51,12 +38,12 @@
 	%>
 		<label for="<%= key %>"><%= legend[key].text %></label><br />
 		<input type="text" name="<%= key %>" id="<%= key %>" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> />
-	<% 
+	<%
 				break;
 			case 5: //TEXTAREA
 	%>
-		<label for="<%= ket %>"><%= legend[i].text %></label><br />
-		<textarea name="<%= key %>" id="<%= key %>" cols="80" rows="4" value="<%= object[key] %>" <%= legend[key].optionel ? '' : 'required' %> ></textarea>
+		<label for="<%= key %>"><%= legend[key].text %></label><br />
+		<textarea name="<%= key %>" id="<%= key %>" cols="80" rows="4" <%= legend[key].optionel ? '' : 'required' %> ><%= object[key] %></textarea>
 	<%
 				break;
 			case 4: //EXT
@@ -69,9 +56,9 @@
 	<% } %>
 		<option value="new" > Create a new one </option>
 		</select><br />
-	<%		
+	<%
 				break;
-			case 6: //BOOL 
+			case 6: //BOOL
 	%>
 		<%= legend[key].text %> <br />
 		<input type="radio" name="<%= key %>" value="1" id="<%= key %>.1" <%= legend[key].optionel ? '' : 'required' %> <%= (object[key] == 1) ? 'checked' : '' %> />

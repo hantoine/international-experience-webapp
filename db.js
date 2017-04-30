@@ -55,3 +55,7 @@ exports.drop = function(tables, done) {
 exports.escape = function(string) {
 	return mysql.escape(string);
 }
+
+exports.e = function(string) {
+	return '`' + string.replace(/`/g, '``') + '`';
+}

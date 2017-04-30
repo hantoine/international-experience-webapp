@@ -1,7 +1,7 @@
-<% var title = 'Form' %>
+<% var title = 'Form - ' + formgroupname %>
 <% include ../partials/header.ejs %>
 <div id="main-container-noborder">
-<form method="post" action="/form/<%= expid %>/<%= formgroupname %>">
+<form method="post" action="/form/<%= expid %>/<%= encodeURIComponent(formgroupname) %>">
 	<fieldset>
 	<legend><%= formgroupname %></legend>
 	<ol>
@@ -18,9 +18,9 @@
 		<option value="<%= j %>" <%= (formgroup[i].prec_reponse == j) ? 'selected' : '' %> ><%= formgroup[i].reponses[j] %></option>
 	<% } %>
 		</select><br />
-	<%		
+	<%
 			break;
-			case 1: //CHOICE 
+			case 1: //CHOICE
 	%>
 		<%= formgroup[i].texte %> <br />
 	<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
@@ -38,12 +38,14 @@
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
 		<input type="text" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" value="<%= formgroup[i].prec_reponse %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
-	<% 
+	<%
 				break;
 			case 5: //TEXTAREA
+			case 8: //EXT_TEXTAREA
+
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
-		<textarea name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" cols="80" rows="4" value="<%= formgroup[i].prec_reponse %>" <%= formgroup[i].optionelle ? '' : 'required' %> ></textarea>
+		<textarea name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" cols="80" rows="4" <%= formgroup[i].optionelle ? '' : 'required' %> ><%= formgroup[i].prec_reponse %></textarea>
 	<%
 				break;
 			case 4: //EXT
@@ -58,9 +60,9 @@
 		<option value="new" > Create a new one </option>
 		<% } %>
 		</select><br />
-	<%		
+	<%
 				break;
-			case 6: //BOOL 
+			case 6: //BOOL
 	%>
 		<%= formgroup[i].texte %> <br />
 		<input type="radio" name="<%= formgroup[i].id %>" value="1" id="<%= formgroup[i].id %>.1" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == 1) ? 'checked' : '' %> />
@@ -68,6 +70,28 @@
 		<input type="radio" name="<%= formgroup[i].id %>" value="0" id="<%= formgroup[i].id %>.0" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == 0) ? 'checked' : '' %> />
 		<label for="<%= formgroup[i].id %>.0">No</label><br />
 	<%			break;
+			case 7: //HORIZONTAL_CHOICE
+  %>
+	<%= formgroup[i].texte %> <br />
+	<table class="horizontal-choice" >
+	<tr><td></td>
+		<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
+			<td>
+			<label for="<%= formgroup[i].id %>.<%= j %>"><%= j+1 %></label>
+			</td>
+		<% } %>
+		<td></td></tr>
+	<tr><td><%= formgroup[i].reponses[0] %></td>
+<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
+	<td>
+	<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
+</td>
+<% } %>
+	<td>
+	<%= formgroup[i].reponses[formgroup[i].reponses.length - 1] %></td></tr>
+	</table>
+	<%
+					break;
 		}
 	%>
 		</div>

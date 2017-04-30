@@ -2,26 +2,50 @@
 <% include ../partials/header.ejs %>
 
 <div id="main-container-noborder" >
-<a href="/list/<%= item_id %>" >&lt; Back to the list </a>
+<a href="/util/back" >&lt; Back </a>
 <table>
 <% 
-	for(var key in object) { 
+	for(var key in legend) { 
 		if(legend[key]) {
 %>
 	<tr>
+		<% 	
+			if(typeof legend[key] == 'object') { 
+				switch(legend[key].type) {
+					case 'list':
+		%>
+		<th><%= legend[key].text %></th>
+		<td>
+			<ul>
+		<%				for(var i=0 ; i < object[key].length ; i++) { %> 
+				<li><%= object[key][i].nom %>
+		<%					if(legend[key].canEdit) { %>
+				<a href="/show/<%= legend[key].contentTable %>/<%= object[key][i].id %>" >(More details)</a>
+		<% 					} %>
+			</li>
+		<%
+						} 
+		%>
+			</ul>
+		<%				
+				}
+		%>
+		<% 	} else { %>
 		<th><%= legend[key] %></th>
 		<td>
-		<% if(object[key]) {
-			if(typeof object[key] == 'object') { %>
+		<% 		if(object[key]) {
+					if(typeof object[key] == 'object') { %>
 				<a href="/show/<%= key %>/<%= object[key].id %>" ><%= object[key].nom %></a>
-			<% } else { %>
+					<% } else { %>
 				<%= object[key] %>
 		<% 
-		  	} 
-		  } else {
+		  		} 
+		  		} else {
 		%>
 			Unknown
-		<% } %>
+		<% 		}
+			}
+		%>
 		</td>
 	</tr>
 <% 

@@ -1,11 +1,17 @@
 <% var title = 'Form' %>
 <% include ../partials/header.ejs %>
 <div id="main-container">
-		<ul>
+		<% if(needDoneToContinue) { %>
+		<div style="width: 500px; font-size: 0.6em; text-align: left" >
+			You completed the before-departure part of the formular. You will come back to fill in the rest of the formular after your experience, to tell us the amazing things you did there.
+			The international office wish you a great internation experience. Have fun !
+		</div>
+		<% } %>
+		<ul class="no-list-style" >
 	<% for(var i=0; i< formgroup.length; i++) { %>
-		<li> 
+		<li>
 		<% if(formgroup[i].done || formgroup[i].todo) { %>
-			<a href="/form/<%= idexp%>/<%= formgroup[i].nom %>"><%= formgroup[i].nom %> 
+			<a href="/form/<%= idexp%>/<%= encodeURIComponent(formgroup[i].nom) %>"><%= formgroup[i].nom %> 
 			<% if(formgroup[i].todo) { %>
 				(next to fill in)
 			<% } %>

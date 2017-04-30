@@ -1,4 +1,5 @@
 exports.Roles = {
+	NOBODY: 10,
 	ADMIN: 2,
 	STUDENT: 1,
 	PUBLIC: 0

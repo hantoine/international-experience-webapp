@@ -8,31 +8,44 @@ exports.QuestionType = {
 	TEXT: 3,
 	EXT: 4,
 	TEXTAREA: 5,
-	BOOL: 6
+	BOOL: 6,
+	HORIZONTAL_CHOICE: 7,
+	EXT_TEXTAREA: 8
 };
 
 exports.getFormGroupsStates = function(expid, done) {
-	db.get().query('SELECT g.id_groupe_questions AS id, g.nom, MAX(e.id_experience = ?) AS to_fillin FROM `groupe_questions` AS g LEFT JOIN `experience` AS e ON g.id_groupe_questions = e.id_groupe_questions GROUP BY g.id_groupe_questions ORDER BY `ordre`', expid, function(err, rows) {
+	db.get().query('SELECT g.id_groupe_questions AS id, g.need_experience_done, g.nom, MAX(e.id_experience = ?) AS to_fillin FROM `groupe_questions` AS g LEFT JOIN `experience` AS e ON g.id_groupe_questions = e.id_groupe_questions GROUP BY g.id_groupe_questions ORDER BY `ordre`', expid, function(err, rows) {
 		if (err) return done(err);
-		var to_fillin_passed = false;
-		for(var i = 0; i < rows.length; i++) {
-			if(to_fillin_passed) {
+		db.get().query('SELECT done FROM experience WHERE id_experience = ?', expid, function(err, result) {
+			if(err) return done(err);
+			if(result.length < 1) return done('Erreur while getting form group states : No experience by that id (' + expid + ')');
+			var to_fillin_passed = false;
+			var need_done_to_continue = false;
+			for(var i = 0; i < rows.length; i++) {
+				if(to_fillin_passed) {
+					delete rows[i].to_fillin;
+					rows[i].done = false;
+					continue;
+				}
+				if(rows[i].to_fillin) {
+					delete rows[i].to_fillin;
+					if(rows[i].need_experience_done && (! result[0].done)) {
+						rows[i].todo = false;
+						rows[i].done = false;
+						need_done_to_continue = true;
+					} else {
+						rows[i].todo = true;
+						rows[i].done = false;
+					}
+					to_fillin_passed = true
+					continue;
+				}
 				delete rows[i].to_fillin;
-				rows[i].done = false;
-				continue;
+				rows[i].done = true;
+	
 			}
-			if(rows[i].to_fillin) {
-				delete rows[i].to_fillin;
-				rows[i].todo = true;
-				rows[i].done = false;
-				to_fillin_passed = true
-				continue;
-			}
-			delete rows[i].to_fillin;
-			rows[i].done = true;
-
-		}
-		done(null, rows);
+			done(null, {state: need_done_to_continue, formgroups: rows, expDone: result[0].done});
+		});
 	});
 };
 
@@ -54,7 +67,7 @@ var getFormGroup = function(byName, identifier, done) {
 			}
 			// Transform optionelle into boolean
 			rows[i].optionelle = (rows[i].optionelle != 0);
-			
+
 			// If question is a selection in an object list, get the possible answers
 			if(rows[i].type == exports.QuestionType.EXT) {
 				asyncRequests.push((function(j) { return function(callback) {
@@ -68,8 +81,10 @@ var getFormGroup = function(byName, identifier, done) {
 						callback();
 					});
 				}})(i));
+				console.log(rows[i].identifiant.substr(3));
+				console.log(newAuthorizations);
 				rows[i].role = newAuthorizations[rows[i].identifiant.substr(3)];
-				if(rows[i].role) {
+				if(typeof rows[i].role == 'undefined') {
 					rows[i].role = 10;
 				}
 			}
@@ -107,10 +122,18 @@ exports.validateFormGroup = function(questions_completed, formgroupname, expid, 
 		// We get next formgroup id and name
 		db.get().query('SELECT r.id_groupe_questions AS id, r.nom AS nextformgroupname FROM `groupe_questions` as g JOIN `groupe_questions` as r ON r.ordre = g.ordre + 1 WHERE g.nom = ?', formgroupname, function(err, result_nextone) {
 			if(err) return done(err);
-				
+
 			// We update next formgroup id to fillin and send next formgroup name
 			if(result_nextone.length > 0) {
-				db.get().query('UPDATE `experience` SET id_groupe_questions = ? WHERE id_experience = ?', [result_nextone[0].id, expid], function(err, result_update) {
+				db.get().query('UPDATE `experience` AS e \
+					JOIN groupe_questions AS g_old ON e.id_groupe_questions = g_old.id_groupe_questions\
+					JOIN groupe_questions AS g_new ON ? = g_new.id_groupe_questions\
+					SET e.id_groupe_questions = CASE\
+					WHEN g_new.ordre > g_old.ordre\
+					THEN ?\
+					ELSE e.id_groupe_questions\
+					END\
+					WHERE e.id_experience = ?', [result_nextone[0].id, result_nextone[0].id, expid], function(err) {
 					if(err) return done(err);
 					done(null, result_nextone[0].nextformgroupname);
 				});
@@ -132,6 +155,7 @@ exports.saveAnswers = function(expid, data, done) {
 			switch(result[0].type) {
 				case exports.QuestionType.SELECT:
 				case exports.QuestionType.CHOICE:
+				case exports.QuestionType.HORIZONTAL_CHOICE:
 					db.get().query('INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `numero` = ?', [data[question], expid, question, data[question]], function(err) {
 						if(err) console.log("Error while saving question " + question + " : " + err);
 					});
@@ -141,16 +165,97 @@ exports.saveAnswers = function(expid, data, done) {
 				case exports.QuestionType.BOOL:
 				case exports.QuestionType.TEXTAREA:
 				case exports.QuestionType.EXT:
+					if(! result[0].identifiant ) {
+						return console.log("Erreur : Identifiant vide pour question " + question)
+					}
 					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
 						if(err) console.log("Error while saving question " + question + " : " + err);
 					});
+					break
+				case exports.QuestionType.EXT_TEXTAREA:
+					if(! result[0].identifiant ) {
+						return console.log("Erreur : Identifiant vide pour question " + question)
+					}
+					// id example : "id_avantage_logement/logement/critiquer_logement/avantage_inconvenient/contenu=?,avantage=1,displayed=1"
+					
+					// Parsing of "identifiant"
+					var splitId = result[0].identifiant.split('/');
+					var linkingAttribute = splitId[0];
+					var relatedTable = splitId[1]
+					var linkingTable = 	splitId[2];
+					var contentTable = splitId[3];
+					var contentTab = splitId[4].split(',')
+					var content = {}
+					var contentAttribute = null;
+					for (var i=0; i < contentTab.length ; i++) {
+						var contentAttributeValue = contentTab[i].split('=');
+						if(contentAttributeValue[1] == '?') {
+							content[contentAttributeValue[0]] = data[question];
+							contentAttribute = contentAttributeValue[0];
+						} else {
+							content[contentAttributeValue[0]] = contentAttributeValue[1];
+						}
+					}
+					
+					// Test if there is already an entry for this experience
+					db.get().query('SELECT `' + linkingAttribute + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid), function(err, result) {
+						if(err) return console.log('Error while saving question ' + question + " : " + err);
+						if(result.length < 1) return console.log('Experience ' + exid + ' does not exist');
+						if(result[0].id == null) {
+							query = 'INSERT INTO `' + contentTable + '` (';
+							for (var lastKey in content);
+							for (var key in content) {
+								query += '`' + key + '`';
+								if(key != lastKey) {
+									query += ',';
+								}
+							}
+							query += ') VALUES ('
+							for (var key in content) {
+								query += db.escape(content[key]);
+								if(key != lastKey) {
+									query += ',';
+								}
+							}
+							query += ')'
+							// If not Insert the content entry
+							db.get().query(query, function(err, result) {
+								if(err) return console.log('Error while saving question ' + question + " : " + err);
+								var contentEntryId = result.insertId;
+								// Get related Entry to link with content 
+								var query = 'SELECT `id_' + relatedTable + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid);
+								db.get().query(query, function(err, result) {
+									if(err) return console.log('Error while saving question ' + question + " : " + err);
+									if(result.length < 1) return console.log('Error while saving question ' + question + " : no corresponding related entry");
+									var relatedEntryId = result[0].id;
+									//Insert linking entry in relationTable
+									var query = 'INSERT INTO `' + linkingTable + '` (`id_' + contentTable + '`, `id_' + relatedTable + '`) VALUES (' + db.escape(contentEntryId) + ',' + db.escape(relatedEntryId) + ')'
+									db.get().query(query, function(err) {
+										if(err) return console.log('Error while saving question ' + question + " : " + err);
+										// Update Direct link in experience entry
+										var query = 'UPDATE experience SET `' + linkingAttribute + '` = ' + db.escape(contentEntryId) + ' WHERE id_experience = ' + db.escape(expid);
+										db.get().query(query, function(err) {
+											if(err) return console.log('Error while saving question ' + question + " : " + err);
+										});
+									});
+								});
+							});
+						} else {
+							// If yes just update it 
+							db.get().query(	'UPDATE `' + contentTable + '` SET `' + contentAttribute + '` = ' + db.escape(data[question]) + 
+									' WHERE `id_' + contentTable + '` = ' + db.escape(result[0].id), function(err) {
+								if(err) return console.log('Error while saving question ' + question + " : " + err);
+							});
+						}
+					});
+					
 			}
 
 		});
 		})(question);
 	}
-	
-	// Saving while be done eventually, no need to wait for it
+
+	// Saving will be done eventually, no need to wait for it
 	done(null);
 }
 
@@ -159,11 +264,14 @@ exports.addAnswers = function(expid, formgroup, done) {
 		switch(question.type) {
 			case exports.QuestionType.SELECT:
 			case exports.QuestionType.CHOICE:
+			case exports.QuestionType.HORIZONTAL_CHOICE:
 				db.get().query('SELECT `numero` FROM `avoir_reponse` WHERE `id_experience` = ? AND `id_question` = ?', [expid, question.id], function(err, result) {
 					if(err) {
-						console.log("Error while reading answer to question " + question + " : " + err);
+						return done("Error while reading answer to question " + question + " : " + err);
 					} else if(result.length > 0) {
 						question.prec_reponse = result[0].numero;
+					} else {
+						callback('Erreur : Pas d\'echelle de réponses pour question '+ question.id);
 					}
 					callback()
 				});
@@ -173,6 +281,9 @@ exports.addAnswers = function(expid, formgroup, done) {
 			case exports.QuestionType.BOOL:
 			case exports.QuestionType.TEXTAREA:
 			case exports.QuestionType.EXT:
+				if(! question.identifiant ) {
+					return callback("Erreur : Pas d'Identifiant pour question " + question.id);
+				}
 				db.get().query('SELECT ' + question.identifiant + ' AS reponse FROM experience WHERE id_experience = ?', expid, function(err, result) {
 					if(err) {
 						console.log("Error while reading answer to question " + question + " : " + err);
@@ -181,6 +292,27 @@ exports.addAnswers = function(expid, formgroup, done) {
 					}
 					callback();
 				});
+				break;
+			case exports.QuestionType.EXT_TEXTAREA:
+				var splitId = question.identifiant.split('/');
+				var linkingAttribute = splitId[0];
+				var contentTable = splitId[3];
+				var contentTab = splitId[4].split(',')
+				var contentAttribute = ''
+				for (var i=0; i < contentTab.length ; i++) {
+					var contentAttributeValue = contentTab[i].split('=');	
+					if(contentAttributeValue[1] == '?') {
+						contentAttribute = contentAttributeValue[0];
+						break;
+					}
+				}
+				var query = 'SELECT `' + contentAttribute + '` AS content FROM experience AS e LEFT JOIN `' + contentTable + '` AS c ON e.`' + linkingAttribute + '` = c.`id_' + contentTable + '` WHERE id_experience = ' + db.escape(expid);
+				db.get().query(query, function(err, result) {
+					if(err) return callback(err);
+					question.prec_reponse = result[0].content;
+					callback();
+				});
+				
 		}
 	}, done);
 };

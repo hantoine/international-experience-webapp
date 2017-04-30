@@ -11,22 +11,49 @@ exports.QuestionType = {
 	BOOL: 6
 };
 
+var addExtTables = function(table, extTables) {
+	if(! extTables) {
+		return '';
+	}
+	query = '';
+	for (var i=0 ; i < extTables.length ; i++) {
+		query += ' JOIN `' + extTables[i].table + '` ON `' + extTables[i].table + '`.`id_' + extTables[i].table + '` = `' + table + '`.`id_' + extTables[i].table + '`';
+		query += addExtTables(extTables[i].table, extTables[i].extTables);
+	}
+	return query;
+}
+
 exports.get = function(table) {
 	var model = {}
-	model.getList = function(conditions, done) {
-		query = 'SELECT id_'+ table + ' AS id, nom FROM ' + table;
-		if(conditions) {
+	model.getList = function(attributes, conditions, extTables, done) {
+		query = 'SELECT `' + table + '`.`id_'+ table + '` AS id'
+		if(attributes) {
+			for (var i=0 ; i<attributes.length ; i++) {
+				if(attributes[i].includes('.')) {
+					query += ', `' + attributes[i].split('.')[0] + '`.`' + attributes[i].split('.')[1] + '`';
+				} else {
+					query += ', `' + table + '`.`' + attributes[i] + '`';
+				}
+			}
+		}
+		query += ' FROM ' + table;
+		query += addExtTables(table, extTables);
+		if(conditions && Object.keys(conditions).length != 0) {
 			query += ' WHERE ';
 			for (var lastCondition in conditions);
 			for (var condition in conditions) {
-				query += '`' + condition + '` = ' + db.get().escape(conditions[condition]);
+				var conditionString = '';
+				if(condition.includes('.')) {
+					conditionString = '`' + condition.split('.')[0] + '`.`' + condition.split('.')[1] + '`';
+				} else {
+					consitionString = '`' + table + '`.`' + condition + '`';
+				}
+				query += conditionString + ' = ' + db.get().escape(conditions[condition]);
 				if(condition != lastCondition) {
 					query += ' AND ';
 				}
 			}
 		}
-		console.log(conditions);
-		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
 			done(null, rows);
@@ -74,7 +101,7 @@ exports.get = function(table) {
 		});
 	};
 
-	model.getById = function(id, raw, done) {
+	model.getById = function(id, raw, legend, done) {
 		db.get().query('SELECT * FROM `' + table + '` WHERE `id_' + table + '` = ' + db.escape(id), function(err, result) {
 			if(err) return done(err);
 			if(result.length < 1) {
@@ -82,6 +109,29 @@ exports.get = function(table) {
 			}
 			var object = result[0];
 			var asyncRequests = [];
+			if (legend) {
+				for (var key in legend) {
+					if((typeof legend[key] == 'object') && (legend[key] != null)) {
+						switch(legend[key].type) {
+							case 'list':
+								asyncRequests.push((function(key) { return function(callback) {
+									var query = 'SELECT c.`id_' + legend[key].contentTable + '` AS id, c.`' + legend[key].descAttribute + '` AS nom FROM `' + legend[key].contentTable + '` AS c JOIN `' + legend[key].relationTable + '` AS j ON j.`id_' + legend[key].contentTable + '` = c.`id_' + legend[key].contentTable + '` WHERE j.`id_' + table + '` = ' + db.escape(id);
+									for (var attribute in legend[key].conditions) {
+										query += ' AND `' + attribute + '` = ' + db.escape(legend[key].conditions[attribute]); 
+									}
+									db.get().query(query, function(err, result) {
+										if(err) return callback(err);
+										object[key] = result;
+										callback();
+									});
+								}})(key));
+								break;
+							default:
+								console.log("Error while retreiving data for object " + table + " : legend item type unknown (" + legend[key].type + ")");
+						}
+					}
+				}
+			}
 			if(raw) {
 				object['id'] = object['id_' + table];
 				delete object['id_' + table];

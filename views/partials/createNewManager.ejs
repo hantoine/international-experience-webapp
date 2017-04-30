@@ -25,9 +25,24 @@
 	for (var i=0; i < extSelect.length ; i++) {
 		extSelect[i].addEventListener("change", function(evt) {
 			if(evt.target.value == "new") {
-					window.open('/new/' + evt.target.id.substr(3), '_blank');
+					var objectType = null;
+					if(evt.target.id.substr(0, 3) == 'id_') {
+						objectType = evt.target.id.substr(3);
+					} else {
+						var classnames = evt.target.className.split(' ');
+						for (var j=0; j < classnames.length ; j++) {
+							if(classnames[j].substr(0, 3) == 'id_') {
+								objectType = classnames[j].substr(3);
+								break;
+							}
+						}
+					}
+					if(! objectType) {
+						alert("Unable to identify objectType for question " + evt.target.id);
+					}
+					var createWindow = window.open('/new/' + objectType, '_blank');
 					var checkCreationFinished = function() {
-						var newObject = getCookie("lastCreated_"+evt.target.id.substr(3));
+						var newObject = getCookie("lastCreated_"+objectType);
 						if(newObject) {
 							newObject = {id: newObject.split(' ')[0], name: newObject.split(' ').slice(1).join(' ')};
 							var option = document.createElement("option");
@@ -35,6 +50,7 @@
 							option.value = newObject.id;
 							evt.target.add(option);
 							evt.target.value = newObject.id;
+							createWindow.close();
 						} else {
 							window.setTimeout(checkCreationFinished, 500)
 						}
