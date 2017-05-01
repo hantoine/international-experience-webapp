@@ -46,19 +46,19 @@ exports.getListWithLocation = function(continentid,countryid,cityid, universityi
 
 		if (universityid)
 		{
-			query += 'o.id_organisation = ' + db.escape(universityid)
+			query += 'o.nom = ' + db.escape(universityid)
 		}
 		else if(cityid)
 		{
-			query += 'v.id_ville = ' + db.escape(cityid)
+			query += 'v.nom = ' + db.escape(cityid)
 		}
 		else if (countryid)
 		{
-			query += 'p.id_pays = ' + db.escape(countryid)
+			query += 'p.nom = ' + db.escape(countryid)
 		}
 		else if (continentid)
 		{
-			query += 'c.id_continent = ' + db.escape(continentid)
+			query += 'c.nom = ' + db.escape(continentid)
 		}
 	}
 	console.log(query);

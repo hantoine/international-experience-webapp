@@ -52,30 +52,30 @@
 
 	selectContinent.addEventListener('change', function(evt) {
 		if(selectContinent.selectedIndex == 0) {
-			window.location.replace('/experience/');
+			window.location.replace('/list/experience/');
 		} else {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
 		}
 	});
 	selectCountry.addEventListener('change', function(evt) {
 		if(selectCountry.selectedIndex == 0) {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
 		} else {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		}
 	});
 	selectCity.addEventListener('change', function(evt) {
 		if(selectCity.selectedIndex == 0) {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		} else {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		}
 	});
 	selectUniversity.addEventListener('change', function(evt) {
 		if(selectUniversity.selectedIndex == 0) {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		} else {
-			window.location.replace('/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectUniversity[selectUniversity.selectedIndex].text);
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectUniversity[selectUniversity.selectedIndex].text);
 		}
 	});
 </script>
