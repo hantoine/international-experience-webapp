@@ -3,6 +3,7 @@ var router = express.Router();
 var genericModel = require('../models/generic')
 var rolesManager = require('../util/roles');
 var objectList = require('../config/edit');
+var objectNewAuth = require('../config/new');
 
 var models = {}
 for (var objectType in objectList) {
@@ -23,11 +24,17 @@ for (var objectType in objectList) {
 					req.session.referer.push(req.headers.referer);
 				}
 				req.session.refererUsed = false
+				for (var key in legend) {
+					if(legend[key].type == genericModel.QuestionType.EXT) {
+						legend[key].roleNew = (typeof objectNewAuth[key] != 'undefined') ? objectNewAuth[key] : 10; 
+					}
+				}
 				res.render('generic/edit.ejs', {
 					item_name: objectList[objectType].name,
 					item_id: objectType,
 					object: object,
-					legend: legend
+					legend: legend,
+					role: rolesManager.getRole(req.session)
 				});
 			});
 		});

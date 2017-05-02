@@ -39,5 +39,20 @@ module.exports = {
 			avantage: {text: "Is it an advantage ?", type: QuestionType.BOOL },
 			displayed: {text: "Should it be displayed ?", type: QuestionType.BOOL}
 		}
+	},
+	organisation: {
+		role: Roles.STUDENT,
+		name: "Organisation",
+		legend: {
+			nom: {text:"Name", type: QuestionType.TEXT},
+			nombre_etudiants: {text: "Student Number", type: QuestionType.INT},
+			site_web: {text: "Website", type: QuestionType.TEXT},
+			prix: {text: "Price", type: QuestionType.INT},
+			commentaire: {text:"Comment", type: QuestionType.TEXTAREA},
+			disponible: {text: "Available", type: QuestionType.BOOL},
+			langue: {text: "Language", type: QuestionType.EXT},
+			ville: {text: "City", type: QuestionType.EXT},
+			estEcole: {text: "Is a school ?", type: QuestionType.BOOL}
+		}
 	}
 }

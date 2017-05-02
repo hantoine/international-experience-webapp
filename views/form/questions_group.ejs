@@ -56,7 +56,8 @@
 	<% for(var reponse in formgroup[i].reponses) { %>
 		<option value="<%= reponse %>" <%= (formgroup[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= formgroup[i].reponses[reponse] %></option>
 	<% } %>
-		<% if(formgroup[i].role <= role) { %>
+		<% 
+		if(formgroup[i].role <= role) { %>
 		<option value="new" > Create a new one </option>
 		<% } %>
 		</select><br />

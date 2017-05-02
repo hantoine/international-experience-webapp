@@ -83,7 +83,7 @@ var getFormGroup = function(byName, identifier, done) {
 				}})(i));
 				console.log(rows[i].identifiant.substr(3));
 				console.log(newAuthorizations);
-				rows[i].role = newAuthorizations[rows[i].identifiant.substr(3)];
+				rows[i].role = newAuthorizations[rows[i].identifiant.substr(3)]
 				if(typeof rows[i].role == 'undefined') {
 					rows[i].role = 10;
 				}

@@ -18,7 +18,6 @@ app.use(morgan('combined')); // Logging
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use('/form', require('./controllers/form'));
-app.use('/experience', require('./controllers/experience'));
 app.use('/admin', require('./controllers/admin'));
 app.use('/list', require('./controllers/list'));
 app.use('/show', require('./controllers/show'));

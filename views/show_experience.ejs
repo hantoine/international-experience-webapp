@@ -1,6 +1,6 @@
-<% var title = 'Show_Experience' %>
+<% var title = 'Show_Experience - ' + exp.id %>
 <% include partials/header.ejs %>
-<h1> Basics information </h1>
+<h3> Basics information </h3>
 
 	<table>
 		<tr>
@@ -13,15 +13,15 @@
 		</tr>
 		<tr>
 			<th>Type d'experience</th>
-			<td> <%= exp.id_type_experience %> </td>
+			<td> <%= exp.type_experience %> </td>
 		</tr>
 		<tr>
 			<th> <%= (exp.estEcole) ? 'Ecole' : 'Organisation' %></th>
-			<td> <%= exp.Organisation %> </td>
+			<td> <%= exp.organisation %> </td>
 		</tr>
 		<tr>
 			<th>Langue parlé</th>
-			<td> <%= id_langue %> </td>
+			<td> <%= exp.langue %> </td>
 		</tr>
 		<tr>
 			<th>Emprunt ?</th>
@@ -33,7 +33,7 @@
 		</tr>
 	</table>
 
-	<h1> During the experience </h1>
+	<h3> During the experience </h3>
 
 	<table>
 		<tr>
@@ -58,7 +58,7 @@
 		</tr>
 	</table>
 
-	<h1> After the experience </h1>
+	<h3> After the experience </h3>
 	<table>
 		<tr>
 			<th>Competences acquises</th>

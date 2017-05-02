@@ -16,10 +16,16 @@ for (var objectType in objectList) {
 		models[objectType].completeLegend(legend, function(err) {
 			if(err) return next(err);
 			console.log(legend);
+			for (var key in legend) {
+				if(legend[key].type == genericModel.QuestionType.EXT) {
+					legend[key].roleNew = (typeof objectAuthorizations[key] != 'undefined') ? objectAuthorizations[key] : 10; 
+				}
+			}
 			res.render('generic/new.ejs', {
 				item_name: objectList[objectType].name,
 				item_id: objectType,
-				legend: legend
+				legend: legend,
+				role: rolesManager.getRole(req.session) 
 			});
 		});
 	}})(objectType));

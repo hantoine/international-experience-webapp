@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var genericModel = require('../models/generic')
+var experience = require('../models/experience');
 var rolesManager = require('../util/roles');
 var objectList = require('../config/show');
 var objectEditInfos = require('../config/edit');
@@ -51,4 +52,10 @@ for (var objectType in objectList) {
 	}})(objectType));
 }
 
+router.get('/experience/:id', function(req, res, next) {
+	experience.getById(req.params.id, function(err, exp) {
+		if(err) return next(err);
+		res.render('show_experience.ejs', {exp: exp});
+	});
+});
 module.exports = router;

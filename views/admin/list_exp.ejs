@@ -1,0 +1,15 @@
+<% var title = 'Admin - Ongoing experiences' %>
+<% include ../partials/header.ejs %>
+	<div id="main-container">
+	<table>
+		<% if(experiences.length == 0) { %>
+			<p>No ongoing experiences </p>
+		<% } else { %>
+		<tr><th>Student</th><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th>Date</th><th COLSPAN=2 ></th></tr>
+			<% for(var i = 0 ; i < experiences.length ; i++) { %>
+				<tr><td><%= experiences[i].etudiant %></td><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><%= experiences[i].date %></td><td><a href="/show/experience/<%= experiences[i].id %>">More details</a></td><td><a href="/admin/experience_done/<%= experiences[i].id %>" >Unlock full formular</a></td></tr>
+			<% } %>
+		<% } %>
+	</table>
+	</div>
+<% include ../partials/footer.ejs %>
