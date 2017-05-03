@@ -11,7 +11,6 @@ module.exports = {
 	pays: {role: Roles.PUBLIC, name: "Country"},
 	avantage_inconvenient: { role: Roles.PUBLIC, name: "Advantage/Disadvantage"}
 	organisation: {role: Roles.PUBLIC, name: "Organisation"},
-	experience: {role: Roles.PUBLIC, name: "Experience"},
 	continent: {role: Roles.PUBLIC, name: "Continent"},
 	groupe_questions: {role: Roles.PUBLIC, name: "Questions"},
 	echelle_reponse: {role: Roles.PUBLIC, name: "Answers"}

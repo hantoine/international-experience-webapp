@@ -23,7 +23,10 @@ module.exports = {
 		legend: {
 			id: null,
 			nom: "Name",
-			continent: "Continent"
+			continent: "Continent",
+			list_langue: {type: "list", text: "Languages", contentTable: "langue", conditions: {}, relationTable: "parler", descAttribute: "nom"},
+			list_avantages: {type: "list", text: "Advantages", contentTable: "avantage_inconvenient", conditions: {avantage: 1, displayed: 1}, relationTable: "critiquer_pays", descAttribute: "contenu"},
+			list_inconvenients: {type: "list", text: "Disadvantages", contentTable: "avantage_inconvenient", conditions: {avantage: 0, displayed: 1}, relationTable: "critiquer_pays", descAttribute: "contenu"}
 		},
 		unlinkedVar: ['continent']
 	},
@@ -34,7 +37,9 @@ module.exports = {
 			id: null,
 			nom: "Name",
 			nb_habitants: "Number of Inhabitants",
-			nb_etudiants: "Number of Students"
+			nb_etudiants: "Number of Students",
+			list_avantages: {type: "list", text: "Advantages", contentTable: "avantage_inconvenient", conditions: {avantage: 1, displayed: 1}, relationTable: "critiquer_ville", descAttribute: "contenu"},
+			list_inconvenients: {type: "list", text: "Disadvantages", contentTable: "avantage_inconvenient", conditions: {avantage: 0, displayed: 1}, relationTable: "critiquer_ville", descAttribute: "contenu"}
 		},
 		unlinkedVar: []
 	},
