@@ -59,3 +59,7 @@ exports.escape = function(string) {
 exports.e = function(string) {
 	return '`' + string.replace(/`/g, '``') + '`';
 }
+
+exports.close = function() {
+	state.pool.end();
+}

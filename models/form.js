@@ -148,16 +148,18 @@ exports.validateFormGroup = function(questions_completed, formgroupname, expid, 
 };
 
 exports.saveAnswers = function(expid, data, done) {
+	var asyncRequests = [];
 	for (var question in data) {
-		(function (question) {
+		asyncRequests.push((function (question) { return function(callback){
 		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
-			if(err) return console.log("Error while saving question " + question + " : " + err);
+			if(err) return callback("Error while saving question " + question + " : " + err);
 			switch(result[0].type) {
 				case exports.QuestionType.SELECT:
 				case exports.QuestionType.CHOICE:
 				case exports.QuestionType.HORIZONTAL_CHOICE:
 					db.get().query('INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `numero` = ?', [data[question], expid, question, data[question]], function(err) {
-						if(err) console.log("Error while saving question " + question + " : " + err);
+						if(err) callback("Error while saving question " + question + " : " + err);
+						callback();
 					});
 					break;
 				case exports.QuestionType.INT:
@@ -166,15 +168,16 @@ exports.saveAnswers = function(expid, data, done) {
 				case exports.QuestionType.TEXTAREA:
 				case exports.QuestionType.EXT:
 					if(! result[0].identifiant ) {
-						return console.log("Erreur : Identifiant vide pour question " + question)
+						return callback("Erreur : Identifiant vide pour question " + question)
 					}
 					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
-						if(err) console.log("Error while saving question " + question + " : " + err);
+						if(err) callback("Error while saving question " + question + " : " + err);
+						callback();
 					});
 					break
 				case exports.QuestionType.EXT_TEXTAREA:
 					if(! result[0].identifiant ) {
-						return console.log("Erreur : Identifiant vide pour question " + question)
+						return callback("Erreur : Identifiant vide pour question " + question)
 					}
 					// id example : "id_avantage_logement/logement/critiquer_logement/avantage_inconvenient/contenu=?,avantage=1,displayed=1"
 					
@@ -199,8 +202,8 @@ exports.saveAnswers = function(expid, data, done) {
 					
 					// Test if there is already an entry for this experience
 					db.get().query('SELECT `' + linkingAttribute + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid), function(err, result) {
-						if(err) return console.log('Error while saving question ' + question + " : " + err);
-						if(result.length < 1) return console.log('Experience ' + exid + ' does not exist');
+						if(err) return callback('Error while saving question ' + question + " : " + err);
+						if(result.length < 1) return callback('Experience ' + exid + ' does not exist');
 						if(result[0].id == null) {
 							query = 'INSERT INTO `' + contentTable + '` (';
 							for (var lastKey in content);
@@ -220,22 +223,23 @@ exports.saveAnswers = function(expid, data, done) {
 							query += ')'
 							// If not Insert the content entry
 							db.get().query(query, function(err, result) {
-								if(err) return console.log('Error while saving question ' + question + " : " + err);
+								if(err) return callback('Error while saving question ' + question + " : " + err);
 								var contentEntryId = result.insertId;
 								// Get related Entry to link with content 
 								var query = 'SELECT `id_' + relatedTable + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid);
 								db.get().query(query, function(err, result) {
-									if(err) return console.log('Error while saving question ' + question + " : " + err);
-									if(result.length < 1) return console.log('Error while saving question ' + question + " : no corresponding related entry");
+									if(err) return callback('Error while saving question ' + question + " : " + err);
+									if(result.length < 1) return callback('Error while saving question ' + question + " : no corresponding related entry");
 									var relatedEntryId = result[0].id;
 									//Insert linking entry in relationTable
 									var query = 'INSERT INTO `' + linkingTable + '` (`id_' + contentTable + '`, `id_' + relatedTable + '`) VALUES (' + db.escape(contentEntryId) + ',' + db.escape(relatedEntryId) + ')'
 									db.get().query(query, function(err) {
-										if(err) return console.log('Error while saving question ' + question + " : " + err);
+										if(err) return callback('Error while saving question ' + question + " : " + err);
 										// Update Direct link in experience entry
 										var query = 'UPDATE experience SET `' + linkingAttribute + '` = ' + db.escape(contentEntryId) + ' WHERE id_experience = ' + db.escape(expid);
 										db.get().query(query, function(err) {
-											if(err) return console.log('Error while saving question ' + question + " : " + err);
+											if(err) return callback('Error while saving question ' + question + " : " + err);
+											callback();
 										});
 									});
 								});
@@ -244,7 +248,8 @@ exports.saveAnswers = function(expid, data, done) {
 							// If yes just update it 
 							db.get().query(	'UPDATE `' + contentTable + '` SET `' + contentAttribute + '` = ' + db.escape(data[question]) + 
 									' WHERE `id_' + contentTable + '` = ' + db.escape(result[0].id), function(err) {
-								if(err) return console.log('Error while saving question ' + question + " : " + err);
+								if(err) return callback('Error while saving question ' + question + " : " + err);
+								callback();
 							});
 						}
 					});
@@ -252,11 +257,11 @@ exports.saveAnswers = function(expid, data, done) {
 			}
 
 		});
-		})(question);
+		}
+		})(question));
 	}
 
-	// Saving will be done eventually, no need to wait for it
-	done(null);
+	async.parallel(asyncRequests, done);
 }
 
 exports.addAnswers = function(expid, formgroup, done) {

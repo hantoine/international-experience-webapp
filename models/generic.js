@@ -46,7 +46,7 @@ exports.get = function(table) {
 				if(condition.includes('.')) {
 					conditionString = '`' + condition.split('.')[0] + '`.`' + condition.split('.')[1] + '`';
 				} else {
-					consitionString = '`' + table + '`.`' + condition + '`';
+					conditionString = '`' + table + '`.`' + condition + '`';
 				}
 				query += conditionString + ' = ' + db.get().escape(conditions[condition]);
 				if(condition != lastCondition) {
