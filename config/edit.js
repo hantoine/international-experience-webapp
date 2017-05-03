@@ -128,6 +128,26 @@ module.exports = {
 			agresso_ui: {text: "The unique identifier of your mission in AGERSSO", QuestionType.TEXT},	
 		}
 	},
-	l
+
+	groupe_questions: {
+		role: Roles.ADMIN,
+		name: "Questions",
+		legend: {
+			nom: {text: "Name", type: QuestionType.TEXTAREA},
+			texte: {text: "Text", type: QuestionType.TEXTAREA},
+			optionnelle: {text: "Optionnal ?", type: QuestionType.BOOL},
+			identifiant: {text: "ID", type: QuestionType.TEXT},
+			type: {text: "Type", type: QuestionType.INT}
+		}
+	},
+
+	echelle_reponse: {
+		role: Roles.ADMIN,
+		name: "Answers",
+		legend: {
+			nom: {text: "Name", type: QuestionType.TEXT},
+			texte: {text: "Text", type: QuestionType.TEXTAREA}
+		}
+	},
 }
 

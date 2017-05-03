@@ -3,8 +3,17 @@ var Roles = require('../util/roles').Roles;
 module.exports = {
 	logement: {role: Roles.PUBLIC, name: "Accomodation"},
 	ville: {role: Roles.PUBLIC, name: "City"},
-	organisation: {role: Roles.PUBLIC, name: "Organisation"},
+	transport: {role: Roles.PUBLIC, name: "Transport"},
+	certification: {role: Roles.PUBLIC, name: "Certification"},
+	domaine_etude: {role: Roles.PUBLIC, name: "Field of study"},
+	etudiant: {role: Roles.PUBLIC, name: "Student"},
+	langue: {role: Roles.PUBLIC, name: "Languages"},
 	pays: {role: Roles.PUBLIC, name: "Country"},
-	continent: {role: Roles.PUBLIC, name: "Continent"}
+	avantage_inconvenient: { role: Roles.PUBLIC, name: "Advantage/Disadvantage"}
+	organisation: {role: Roles.PUBLIC, name: "Organisation"},
+	experience: {role: Roles.PUBLIC, name: "Experience"},
+	continent: {role: Roles.PUBLIC, name: "Continent"},
+	groupe_questions: {role: Roles.PUBLIC, name: "Questions"},
+	echelle_reponse: {role: Roles.PUBLIC, name: "Answers"}
 }
 
