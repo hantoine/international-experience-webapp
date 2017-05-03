@@ -134,6 +134,7 @@ module.exports = {
 		name: "Questions",
 		legend: {
 			nom: {text: "Name", type: QuestionType.TEXTAREA},
+			ordre: {text; "Order", type: QuestionType.INT},
 			texte: {text: "Text", type: QuestionType.TEXTAREA},
 			optionnelle: {text: "Optionnal ?", type: QuestionType.BOOL},
 			identifiant: {text: "ID", type: QuestionType.TEXT},
