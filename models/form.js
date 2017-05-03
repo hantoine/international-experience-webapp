@@ -171,7 +171,7 @@ exports.saveAnswers = function(expid, data, done) {
 						return callback("Erreur : Identifiant vide pour question " + question)
 					}
 					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
-						if(err) callback("Error while saving question " + question + " : " + err);
+						if(err) return callback("Error while saving question " + question + " : " + err);
 						callback();
 					});
 					break

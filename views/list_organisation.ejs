@@ -1,0 +1,65 @@
+<% var title = 'Destinations' %>
+<% include partials/header.ejs %>
+	<div id="main-container">
+	<div id="Selection" >
+	<select id="Continent" required >
+	<option value>Continent</option>
+
+	<% for(var i = 0; i < continents.length; i++) { %>
+		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
+	<% } %>
+	</select> 
+
+
+	<select id="Country" required >
+	<option value>Country</option>
+
+	<% for(var i = 0; i < countries.length; i++) { %>
+		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
+	<% } %>
+	</select>
+
+
+	<select id="City" required >
+	<option value>City</option>
+
+	<% for(var i = 0; i < cities.length; i++) { %>
+		<option value="<%=cities[i].id %>" <%= (cities[i].nom == city) ? 'selected' : '' %> ><%= cities[i].nom %></option>
+	<% } %>
+	</select>
+	</div>
+	<table>
+		<tr><th>Organisation name</th><th>City</th><th>Country</th><th>Type</th><th></th></tr>
+			<% for(var i = 0 ; i < organizations.length ; i++) { %>
+				<tr><td><%= organizations[i].name %></td><td><%= organizations[i].ville %></td><td><%= organizations[i].pays %></td><td><%= (organizations[i].estEcole != 0) ? 'School' : 'Company' %></td><td><a href="/show/organisation/<%= organizations[i].id %>">More details</a></td></tr>
+			<% } %>
+	</table>
+	</div>
+<script>
+	var selectContinent = document.getElementById('Continent');
+	var selectCountry = document.getElementById('Country');
+	var selectCity = document.getElementById('City');
+
+	selectContinent.addEventListener('change', function(evt) {
+		if(selectContinent.selectedIndex == 0) {
+			window.location.replace('/list/experience/');
+		} else {
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
+		}
+	});
+	selectCountry.addEventListener('change', function(evt) {
+		if(selectCountry.selectedIndex == 0) {
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
+		} else {
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+		}
+	});
+	selectCity.addEventListener('change', function(evt) {
+		if(selectCity.selectedIndex == 0) {
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+		} else {
+			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+		}
+	});
+</script>
+<% include partials/footer.ejs %>

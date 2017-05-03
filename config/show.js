@@ -36,6 +36,7 @@ module.exports = {
 		legend: {
 			id: null,
 			nom: "Name",
+			pays: "Country",
 			nb_habitants: "Number of Inhabitants",
 			nb_etudiants: "Number of Students",
 			list_avantages: {type: "list", text: "Advantages", contentTable: "avantage_inconvenient", conditions: {avantage: 1, displayed: 1}, relationTable: "critiquer_ville", descAttribute: "contenu"},
