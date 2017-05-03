@@ -21,15 +21,58 @@ module.exports = {
 			nom: {text: "Name", type: QuestionType.TEXT },
 			nb_habitants: {text: "Inhabitants Number", type: QuestionType.INT },
 			nb_etudiants: {text: "Students Number", type: QuestionType.INT },
-			pays: {text: "Country", type: QuestionType.EXT },
+			pays: {text: "Country", type: QuestionType.EXT }
 		}
 	},
+	transport: {
+		role: Roles.STUDENT,
+		name: "Transport",
+		legend: {
+			nom: {text:"Name", type: QuestionType.TEXT}
+		}
+	},
+	certification: {
+		role: Roles.STUDENT,
+		name: "Certification",
+		legend: {
+			nom: {text: "Name", type: QuestionType.TEXT},
+			siteweb: {text: "Website", type: QuestionType.TEXT},
+			description: {text: "Description", type: QuestionType.TEXTAREA}
+		}
+	},
+
+	domaine_etude: {
+		role: Roles.STUDENT,
+		name: "Field of study",
+		legend: {
+			nom: {text: "Name", type: QuestionType.TEXT}
+		}
+	},
+
+	etudiant: {
+		role: Roles.STUDENT,
+		name: "Student",
+		legend: {
+			prenom: {text: "Surname", type: QuestionType.TEXT},
+			nom: {text: "First Name", type: QuestionType.TEXT}
+		}
+	},
+
+	langue: {
+		role: Roles.STUDENT,
+		name: "Languages",
+		legend: {
+			nom: {text: "Name", type: QuestionType.TEXT}
+		}
+	},
+
+
 	pays: {
 		role: Roles.STUDENT,
 		name: "Country",
 		legend: {
 			nom: {text: "Name", type: QuestionType.TEXT },
-			continent: {text: "Continent", type: QuestionType.EXT }		
+			continent: {text: "Continent", type: QuestionType.TEXT }		
 		}
 	},
 	avantage_inconvenient: {
@@ -49,11 +92,42 @@ module.exports = {
 			nombre_etudiants: {text: "Student Number", type: QuestionType.INT},
 			site_web: {text: "Website", type: QuestionType.TEXT},
 			prix: {text: "Price", type: QuestionType.INT},
-			commentaire: {text:"Comment", type: QuestionType.TEXTAREA},
+			commentaire: {text:"Comment", type: QuestionTyple.TEXTAREA},
 			disponible: {text: "Available", type: QuestionType.BOOL},
 			langue: {text: "Language", type: QuestionType.EXT},
 			ville: {text: "City", type: QuestionType.EXT},
 			estEcole: {text: "Is a school ?", type: QuestionType.BOOL}
 		}
-	}
+	},
+	experience: {
+		role: Roles.STUDENT,
+		name: "Experience",
+		legend: {
+			age: {text: "Age ?", type: QuestionType.INT},
+			duree: {text:"Duration", type:QuestionType.INT},
+			competences_acquises: {text:"Skills Acquired", QuestionType.TEXTAREA},
+			choses_faites: {text:"Things Done", QuestionType.TEXTAREA},
+			cout: {text:"Price", QuestionType.INT},
+			cout_location: {text: "Location's Price", QuestionType.INT},
+			cout_alimentation: {text: "Food's Price", QuestionType.INT},
+			cout_formation: {text: "Formation's Price", QuestionType.INT},
+			cout_recherche_agence: {text: "Location's Price", QuestionType.INT},
+			pret: {text: "Loan ?", QuestionType.BOOL},
+			somme_empruntee: {text: "How much ?", QuestionType.INT},
+			recommande: {text: "Recommand ?", QuestionType.BOOL},
+			ressenti_langue: {text: "How did you feel language use ?", QuestionType.TEXTAREA},
+			suprise: {text: "Something that suprised you", QuestionType.TEXTAREA},
+			made_angry: {text: "Something that made you angry", QuestionType.TEXTAREA},
+			made_laugh: {text: "Something that made you laugh", QuestionType.TEXTAREA}
+			what_missed: {text: "What did you miss the most ?", QuestionType.TEXTAREA},
+			things_appreciated_want_integrate_now: {text: "Are there things from the country where you lived that you want to integrate now ?", QuestionType.TEXTAREA},
+			interact_same_way: {text: "Did people in the country you lived interact the same way ?", QuestionType.TEXTAREA},
+			differences_time_organization: {text: "What differences did you notice in the way that time is organized in the country where you lived, as compared to France?", QuestionType.TEXTAREA},
+			advice: {text: "Advice to give to your fellow students ?", QuestionType.TEXTAREA},
+			most_difficult: {"What was the most difficult to accustume with ?", QuestionType.TEXTAREA},
+			agresso_ui: {text: "The unique identifier of your mission in AGERSSO", QuestionType.TEXT},	
+		}
+	},
+	l
 }
+

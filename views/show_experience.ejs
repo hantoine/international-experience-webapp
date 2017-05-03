@@ -4,15 +4,19 @@
 
 	<table>
 		<tr>
-			<th>Id étudiant</th>
+			<th>Student ID</th>
 			<td> <%= exp.id_etudiant %> </td>
 		</tr>
 		<tr>
-			<th>Age</th>
+			<th>Your year of study at the time of your mission</th>
 			<td> <%= exp.age %> </td>
 		</tr>
 		<tr>
-			<th>Type d'experience</th>
+			<th>Your campus</th>
+			<td> <%= (exp.campus == 0) ? "Ivry" : "Laval" %> </td>
+		</tr>
+		<tr>
+			<th>Nature of the experience </th>
 			<td> <%= exp.type_experience %> </td>
 		</tr>
 		<tr>
@@ -20,7 +24,7 @@
 			<td> <%= exp.organisation %> </td>
 		</tr>
 		<tr>
-			<th>Langue parlé</th>
+			<th>Spoken language</th>
 			<td> <%= exp.langue %> </td>
 		</tr>
 		<tr>
@@ -28,7 +32,7 @@
 			<td> <%= (exp.pret == 0) ? 'No 	loaning' %> </td>
 		</tr>
 		<tr>
-			<th>Si oui, Combien ?</th>
+			<th>if you did, how much ?</th>
 			<td> <%= exp.somme_empruntee %> </td>
 		</tr>
 	</table>
