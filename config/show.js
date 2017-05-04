@@ -111,15 +111,18 @@ module.exports = {
 		legend: {
 			id: null,
 			nom: "Name",
-			nombre_etudiant: "Student Number",
+			ville: "City",
+			langue: "Language",
+			nombre_etudiants: "Student Number",
 			site_web: "Website",
 			prix: "Price",
 			commentaire: "Comment",
 			disponible: "Available",
+			estEcole: "Is a school ?"
 		}
 	},
 
-	experience: {
+	eexperience: {
 		roles: Roles.PUBLIC,
 		name: "Experience",
 		legend: {
@@ -162,7 +165,7 @@ module.exports = {
 			identifiant: "ID",
 			type: "Type"
 		},
-		unlinkedVar['question']
+		unlinkedVar: ['question']
 	},
 
 	echelle_reponse: {
@@ -173,6 +176,6 @@ module.exports = {
 			nom: "Name",
 			texte: "Text"
 		},
-		unlinkedVar['reponse_possible']
+		unlinkedVar: ['reponse_possible']
 	},
 }

@@ -72,7 +72,7 @@ module.exports = {
 		name: "Country",
 		legend: {
 			nom: {text: "Name", type: QuestionType.TEXT },
-			continent: {text: "Continent", type: QuestionType.TEXT }		
+			continent: {text: "Continent", type: QuestionType.EXT }		
 		}
 	},
 	avantage_inconvenient: {
@@ -134,7 +134,7 @@ module.exports = {
 		name: "Questions",
 		legend: {
 			nom: {text: "Name", type: QuestionType.TEXTAREA},
-			ordre: {text; "Order", type: QuestionType.INT},
+			ordre: {text: "Order", type: QuestionType.INT},
 			texte: {text: "Text", type: QuestionType.TEXTAREA},
 			optionnelle: {text: "Optionnal ?", type: QuestionType.BOOL},
 			identifiant: {text: "ID", type: QuestionType.TEXT},

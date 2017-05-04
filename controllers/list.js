@@ -28,6 +28,7 @@ for (var objectType in objectList) {
 	}})(objectType));
 }
 
+models['organisation'] = genericModel.get('organisation');
 router.get('/experience/:continent?/:country?/:city?/:university?', function(req, res, next) {
 	experience.getListWithLocation(req.params.continent,req.params.country,req.params.city, req.params.university, function(err, experiences) {
 		models['continent'].getList(['nom'], null, null, function(err, continents) {

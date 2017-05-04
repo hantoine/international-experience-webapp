@@ -33,7 +33,7 @@
 		<% 	} else { %>
 		<th><%= legend[key] %></th>
 		<td>
-		<% 		if(object[key]) {
+		<% 		if((typeof object[key] != 'undefined') && (object[key] != null)) {
 					if(typeof object[key] == 'object') { %>
 				<a href="/show/<%= key %>/<%= object[key].id %>" ><%= object[key].nom %></a>
 					<% } else { %>

@@ -42,23 +42,23 @@
 
 	selectContinent.addEventListener('change', function(evt) {
 		if(selectContinent.selectedIndex == 0) {
-			window.location.replace('/list/experience/');
+			window.location.replace('/list/organisation/');
 		} else {
-			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text);
 		}
 	});
 	selectCountry.addEventListener('change', function(evt) {
 		if(selectCountry.selectedIndex == 0) {
-			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text);
 		} else {
-			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		}
 	});
 	selectCity.addEventListener('change', function(evt) {
 		if(selectCity.selectedIndex == 0) {
-			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		} else {
-			window.location.replace('/list/experience/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		}
 	});
 </script>

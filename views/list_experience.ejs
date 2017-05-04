@@ -38,9 +38,9 @@
 	</select>
 	</div>
 	<table>
-		<tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th>Date</th><th></th></tr>
+		<tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr>
 			<% for(var i = 0 ; i < experiences.length ; i++) { %>
-				<tr><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><%= experiences[i].date %></td><td><a href="/show/experience/<%= experiences[i].id %>">More details</a></td></tr>
+				<tr><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><a href="/show/experience/<%= experiences[i].id %>">More details</a></td></tr>
 			<% } %>
 	</table>
 	</div>

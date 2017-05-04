@@ -81,8 +81,6 @@ var getFormGroup = function(byName, identifier, done) {
 						callback();
 					});
 				}})(i));
-				console.log(rows[i].identifiant.substr(3));
-				console.log(newAuthorizations);
 				rows[i].role = newAuthorizations[rows[i].identifiant.substr(3)]
 				if(typeof rows[i].role == 'undefined') {
 					rows[i].role = 10;
@@ -153,6 +151,9 @@ exports.saveAnswers = function(expid, data, done) {
 		asyncRequests.push((function (question) { return function(callback){
 		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
 			if(err) return callback("Error while saving question " + question + " : " + err);
+			if(result[0].identifiant == 'id_ville' || result[0].identifiant == 'id_pays') {
+				return callback();
+			}
 			switch(result[0].type) {
 				case exports.QuestionType.SELECT:
 				case exports.QuestionType.CHOICE:

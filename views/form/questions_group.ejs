@@ -58,7 +58,7 @@
 	<% } %>
 		<% 
 		if(formgroup[i].role <= role) { %>
-		<option value="new" > Create a new one </option>
+		<option value="new" >Create a new one</option>
 		<% } %>
 		</select><br />
 	<%
@@ -122,6 +122,10 @@
 			option.value = data.options[i].id;
 			select.add(option);
 		}
+		var option = document.createElement("option");
+		option.text = "Create a new one";
+		option.value = "new";
+		select.add(option);
 	});
 	var selectCountry = document.getElementById('22');
 	var selectCity = document.getElementById('23');
