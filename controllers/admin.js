@@ -13,8 +13,8 @@ router.get('/login', function(req, res, next) {
 router.post('/login', function(req, res, next) {
 	if(req.body.password == "troisdeuxun") {
 		req.session.adminLogged = true;
-		res.redirect('/admin');
 	}
+	res.redirect('/admin');
 });
 router.get('/logout', function(req, res, next) {
 	req.session.adminLogged = false;

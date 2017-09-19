@@ -151,6 +151,9 @@ exports.saveAnswers = function(expid, data, done) {
 		asyncRequests.push((function (question) { return function(callback){
 		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
 			if(err) return callback("Error while saving question " + question + " : " + err);
+			if(result.length < 1) {
+				return callback("Question " + question + " not found");
+			}
 			if(result[0].identifiant == 'id_ville' || result[0].identifiant == 'id_pays') {
 				return callback();
 			}
@@ -276,10 +279,10 @@ exports.addAnswers = function(expid, formgroup, done) {
 						return done("Error while reading answer to question " + question + " : " + err);
 					} else if(result.length > 0) {
 						question.prec_reponse = result[0].numero;
+						callback()
 					} else {
 						callback('Erreur : Pas d\'echelle de réponses pour question '+ question.id);
 					}
-					callback()
 				});
 				break;
 			case exports.QuestionType.INT:

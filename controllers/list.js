@@ -31,6 +31,7 @@ for (var objectType in objectList) {
 models['organisation'] = genericModel.get('organisation');
 router.get('/experience/:continent?/:country?/:city?/:university?', function(req, res, next) {
 	experience.getListWithLocation(req.params.continent,req.params.country,req.params.city, req.params.university, function(err, experiences) {
+		if(err) return next(err);
 		models['continent'].getList(['nom'], null, null, function(err, continents) {
 			if(err) return next(err);
 			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, function(err, countries) {
@@ -60,6 +61,7 @@ router.get('/experience/:continent?/:country?/:city?/:university?', function(req
 
 router.get('/organisation/:continent?/:country?/:city?/:university?', function(req, res, next) {
 	organisation.getListWithLocation(req.params.continent,req.params.country,req.params.city, function(err, organizations) {
+		if(err) return next(err);
 		models['continent'].getList(['nom'], null, null, function(err, continents) {
 			if(err) return next(err);
 			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, function(err, countries) {

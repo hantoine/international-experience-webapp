@@ -7,6 +7,7 @@ var roleManager = require('../util/roles.js');
 router.post('/login', function(req, res, next) {
 	// Login pas sécurisé du tout, mais à voir plus tard si on peut mieux faire
 	req.session.studentid = req.body.studentid;
+	
 	res.redirect('/form');
 });
 

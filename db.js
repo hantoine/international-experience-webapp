@@ -1,8 +1,8 @@
 var mysql = require('mysql')
   , async = require('async')
 
-var PRODUCTION_DB = 'projetbdd'
-  , TEST_DB = 'projetbdd'
+var PRODUCTION_DB = 'intl_data'
+  ,TEST_DB = 'intl_data'
 
 exports.MODE_TEST = 'test'
 exports.MODE_PRODUCTION = 'prod'
@@ -15,8 +15,8 @@ var state = {
 exports.connect = function(mode, done) {
   state.pool = mysql.createPool({
     host: 'localhost',
-    user: 'projetbdd',
-    password: '0eUf4arXlJbiXkSr',
+    user: 'intl_data',
+    password: 'Uh7WW5SsoWMyK6r8',
     database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
   })
 
@@ -61,5 +61,9 @@ exports.e = function(string) {
 }
 
 exports.close = function() {
-	state.pool.end();
+	state.pool.end(function(err) {
+		if(err) {
+			console.log(err);
+		}
+	});
 }
