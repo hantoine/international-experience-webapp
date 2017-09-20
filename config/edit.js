@@ -7,8 +7,6 @@ module.exports = {
 		legend: {
 			nom: { text: "Name", type: QuestionType.TEXT },
 			prix: { text: "Price", type: QuestionType.INT },
-			localisation_lat: {text: "Latitude", type: QuestionType.INT},
-			localisation_long: {text: "Longitude", type: QuestionType.INT},
 			ville: {text: "City", type: QuestionType.EXT},
 			type_logement: {text: "Type of accommodation", type: QuestionType.EXT},
 			adresse: {text: "Address", type: QuestionType.TEXT}

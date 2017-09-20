@@ -68,7 +68,6 @@ exports.getListWithLocation = function(continentid,countryid,cityid, universityi
 			query += 'c.nom = ' + db.escape(continentid)
 		}
 	}
-	console.log(query);
 	db.get().query(query, function(err,rows) {
 		if(err) return done(err);
 		done(null, rows);

@@ -15,7 +15,6 @@ for (var objectType in objectList) {
 		var legend = objectList[objectType].legend;
 		models[objectType].completeLegend(legend, function(err) {
 			if(err) return next(err);
-			console.log(legend);
 			for (var key in legend) {
 				if(legend[key].type == genericModel.QuestionType.EXT) {
 					legend[key].roleNew = (typeof objectAuthorizations[key] != 'undefined') ? objectAuthorizations[key] : 10; 
