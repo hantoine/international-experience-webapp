@@ -1,34 +1,30 @@
 <!DOCTYPE html>
-
-
 <html>
-
-	<head>
-
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title> <%= title %>  </title>
-		<link rel="stylesheet" href="/style.css" />
-
-	</head>
-
-	<body>
-		<header>
-			<h1>
-				<img class="logo" src="/Logo.jpg" />
-			</h1>
-			<div id="Banniere">
-			<h1> <%= title %> </h1>
-				<nav>
-					<ul>
-						<li><a href="/">Accueil</a></li>
-						<li><a href="/Analyse.html">Analyse des résultats</a></li>
-						<li><a href="/form">Formulaire</a></li>
-						<li><a href="/list/organisation">Destination</a></li>
-						<li><a href="/list/experience">Résultats</a></li>
-						<li><a href="/admin">Administration</a></li>
-					</ul>
-				</nav>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title> <%= title %>  </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+	<div class="container container-all mt-5 p-5"> <!-- Container -->
+		<div class="row navigation-fixed-height"> <!-- HEADER -->
+			<div class="col-xl-6 col-lg-6 col-md-4 col-sm-12 col-12"> <!-- Page title -->
+				<div class="ml-4 bl-blue"><a href="/" class="no-decoration"><h1>International<br>Student<br>Experience</h1></a></div>
+			</div> <!-- \Page title -->
+			<div class="col-xl-2 col-lg-2 col-md-2 col-sm-4 offset-sm-2 offset-md-3 offset-lg-2 nav">
+				<h5><li><a href="/" id="home">Accueil</a></li>
+					<li><a href="/form" id="form">Formulaire</a></li>
+					<li><a href="/list/organisation" id="dest">Destination</a></li>
+				</h5>
 			</div>
-		</header>
-		<div id="parent">
-
+			<div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 nav">
+				<h5>
+					<li><a href="/list/experience" id="result">Résultats</a></li>
+					<li><a href="/admin" id="admin">Administration</a></li>
+				</h5>
+			</div>
+		</div> <!-- \HEADER -->
+		<hr>
+		<h3 class="title-page"><%= title %></h3>
+		<div class="container p-4"> <!-- Content -->

@@ -1,4 +1,4 @@
-<% var title = 'Destinations' %>
+<% var title = 'Destinations'; var current = 'dest' %>
 <% include partials/header.ejs %>
 	<div id="main-container">
 	<div id="Selection" >
@@ -8,7 +8,7 @@
 	<% for(var i = 0; i < continents.length; i++) { %>
 		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
-	</select> 
+	</select>
 
 
 	<select id="Country" required >

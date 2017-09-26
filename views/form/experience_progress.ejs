@@ -1,4 +1,4 @@
-<% var title = 'Form' %>
+<% var title = 'Form'; var current = 'form' %>
 <% include ../partials/header.ejs %>
 <div id="main-container">
 		<% if(needDoneToContinue) { %>
@@ -11,7 +11,7 @@
 	<% for(var i=0; i< formgroup.length; i++) { %>
 		<li>
 		<% if(formgroup[i].done || formgroup[i].todo) { %>
-			<a href="/form/<%= idexp%>/<%= encodeURIComponent(formgroup[i].nom) %>"><%= formgroup[i].nom %> 
+			<a href="/form/<%= idexp%>/<%= encodeURIComponent(formgroup[i].nom) %>"><%= formgroup[i].nom %>
 			<% if(formgroup[i].todo) { %>
 				(next to fill in)
 			<% } %>

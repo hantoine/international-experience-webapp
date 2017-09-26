@@ -1,7 +1,7 @@
-<% var title = 'Create- ' + item_name %>
+<% var title = 'Create- ' + item_name; var current = 'home' %>
 <% include ../partials/header.ejs %>
 <% /*
-	Variables : 
+	Variables :
 		- legend : informations sur les formulaires issue de la configuration et de la bdd
 			- legend[column_name].text config
 			- legend[column_name].optionel bdd
@@ -29,9 +29,9 @@
 		<option value="<%= value %>" ><%= legend[key].answers[value] %></option>
 	<% } %>
 		</select><br />
-	<%		
+	<%
 			break;
-			case 1: //CHOICE 
+			case 1: //CHOICE
 	%>
 		<%= legend[key].text %> <br />
 	<% for(var value in legend[key].answers) { %>
@@ -49,7 +49,7 @@
 	%>
 		<label for="<%= key %>"><%= legend[key].text %></label><br />
 		<input type="text" name="<%= key %>" id="<%= key %>" <%= legend[key].optionel ? '' : 'required' %> />
-	<% 
+	<%
 				break;
 			case 5: //TEXTAREA
 	%>
@@ -69,9 +69,9 @@
 		<option value="new" > Create a new one </option>
 		<% } %>
 		</select><br />
-	<%		
+	<%
 				break;
-			case 6: //BOOL 
+			case 6: //BOOL
 	%>
 		<%= legend[key].text %> <br />
 		<input type="radio" name="<%= key %>" value="1" id="<%= key %>.1" <%= legend[key].optionel ? '' : 'required' %> />

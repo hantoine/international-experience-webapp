@@ -1,4 +1,4 @@
-<% var title = 'List - ' + item_name %>
+<% var title = 'List - ' + item_name; var current = 'home' %>
 <% include ../partials/header.ejs %>
 
 <div id="main-container-noborder" >
@@ -14,8 +14,8 @@
 		<tr>
 		<% for (var key in objects[i]) { %>
 			<td> <%= objects[i][key] %> </td>
-		<% 
-		   } 
+		<%
+		   }
 		   if(allowShow) {
 		%>
 			<td><a href="/show/<%= item_id %>/<%= objects[i].id %>">More Details</a></td>
@@ -29,4 +29,4 @@
 	</form>
 	<% } %>
 </div>
-<% include ../partials/footer.ejs %> 
+<% include ../partials/footer.ejs %>

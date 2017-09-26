@@ -1,4 +1,4 @@
-<% var title = 'Edit - ' + item_name %>
+<% var title = 'Edit - ' + item_name; var current = 'home' %>
 <% include ../partials/header.ejs %>
 <div id="main-container-noborder" >
 <form method="post" action="/edit/<%= item_id %>/<%= object.id %>" id="main-form">
