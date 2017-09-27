@@ -26,6 +26,9 @@ var addExtTables = function(table, extTables) {
 exports.get = function(table) {
 	var model = {}
 	model.getList = function(attributes, conditions, extTables, done) {
+		if(conditions) {
+			Object.keys(conditions).forEach((key) => (conditions[key] == null) && delete conditions[key]);
+		}
 		query = 'SELECT `' + table + '`.`id_'+ table + '` AS id'
 		if(attributes) {
 			for (var i=0 ; i<attributes.length ; i++) {
@@ -54,6 +57,7 @@ exports.get = function(table) {
 				}
 			}
 		}
+		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
 			done(null, rows);
