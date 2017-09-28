@@ -6,7 +6,7 @@ module.exports = function(socket) {
 		if (authorizedTables.includes(req.table)) {
 			//return;
 		}
-		genericModel.get(req.table).getList(['nom'], req.conditions, null, function(err, results) {
+		genericModel.get(req.table).getList(['nom'], req.conditions, null, null, function(err, results) {
 			if(err) return console.log(err);
 			socket.emit('receiveData', {
 				identifiant: 'id_'+req.table,

@@ -2,7 +2,7 @@
 <% include partials/header.ejs %>
 	<div id="main-container">
 	<div id="Selection" >
-	<select id="Continent" required >
+	<select class="selectpicker" id="Continent" required >
 	<option value>Continent</option>
 
 	<% for(var i = 0; i < continents.length; i++) { %>
@@ -11,7 +11,7 @@
 	</select>
 
 
-	<select id="Country" required >
+	<select class="selectpicker" id="Country" data-live-search="true" required >
 	<option value>Country</option>
 
 	<% for(var i = 0; i < countries.length; i++) { %>
@@ -20,7 +20,7 @@
 	</select>
 
 
-	<select id="City" required >
+	<select class="selectpicker" id="City" data-live-search="true" required >
 	<option value>City</option>
 
 	<% for(var i = 0; i < cities.length; i++) { %>
@@ -28,7 +28,7 @@
 	<% } %>
 	</select>
 
-	<select id="University" required >
+	<select class="selectpicker" id="University" data-live-search="true" required >
 	<option value>University</option>
 
 	<% for(var i = 0; i < universities.length; i++) { %>
@@ -36,12 +36,16 @@
 	<% } %>
 	</select>
 	</div>
-	<table>
-		<tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr>
+	<div class="table-responsive">
+	<table class="table table-hover table-sm" >
+		<thead><tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr></thead>
+	<tbody class="container">
 			<% for(var i = 0 ; i < experiences.length ; i++) { %>
-				<tr><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><a href="/show/experience/<%= experiences[i].id %>">More details</a></td></tr>
+				<tr><td><%= experiences[i].pays %></td><td><%= experiences[i].ville %></td><td><%= experiences[i].organisation %></td><td><%= experiences[i].duree %> months</td><td><a href="/show/experience/<%= experiences[i].id %>" class="btn btn-primary">More details</a></td></tr>
 			<% } %>
+	</tbody>
 	</table>
+	</div>
 	</div>
 <script>
 	var selectContinent = document.getElementById('Continent');

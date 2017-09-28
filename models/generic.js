@@ -25,7 +25,7 @@ var addExtTables = function(table, extTables) {
 
 exports.get = function(table) {
 	var model = {}
-	model.getList = function(attributes, conditions, extTables, done) {
+	model.getList = function(attributes, conditions, extTables, groupby, done) {
 		if(conditions) {
 			Object.keys(conditions).forEach((key) => (conditions[key] == null) && delete conditions[key]);
 		}
@@ -34,6 +34,8 @@ exports.get = function(table) {
 			for (var i=0 ; i<attributes.length ; i++) {
 				if(attributes[i].includes('.')) {
 					query += ', `' + attributes[i].split('.')[0] + '`.`' + attributes[i].split('.')[1] + '`';
+				} else if (attributes[i].includes('(')){
+					query += ', ' + attributes[i];
 				} else {
 					query += ', `' + table + '`.`' + attributes[i] + '`';
 				}
@@ -48,6 +50,8 @@ exports.get = function(table) {
 				var conditionString = '';
 				if(condition.includes('.')) {
 					conditionString = '`' + condition.split('.')[0] + '`.`' + condition.split('.')[1] + '`';
+				} else if (condition.includes('(')){
+					conditionString = condition;
 				} else {
 					conditionString = '`' + table + '`.`' + condition + '`';
 				}
@@ -57,6 +61,10 @@ exports.get = function(table) {
 				}
 			}
 		}
+		if(groupby) {
+			query += ' GROUP BY `' + groupby.split('.')[0] + '`.`' + groupby.split('.')[1] + '`';
+		}
+		
 		console.log(query);
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);

@@ -19,7 +19,7 @@ for (var objectType in objectList) {
 		if(objectType=='organisation') {
 			attributes.push('estEcole');
 		}
-		models[objectType].getList(attributes, req.query, null, function(err, objects) {
+		models[objectType].getList(attributes, req.query, null, null, function(err, objects) {
 			if(err) return next(err);
 			var allowNew = (rolesManager.getRole(req.session) >= objectNewInfo[objectType])
 			var allowShow = (objectShowInfo[objectType]) ? (rolesManager.getRole(req.session) >= objectShowInfo[objectType].role) : false;
@@ -29,16 +29,21 @@ for (var objectType in objectList) {
 }
 
 models['organisation'] = genericModel.get('organisation');
+models['experience'] = genericModel.get('experience');
 router.get('/experience/:continent?/:country?/:city?/:university?', function(req, res, next) {
 	experience.getListWithLocation(req.params.continent,req.params.country,req.params.city, req.params.university, function(err, experiences) {
+		var continent = (req.params.continent != "Continent") ? req.params.continent : null;
+		var country = (req.params.country != "Country") ? req.params.country : null;
+		var city = (req.params.city != "City") ? req.params.city : null;
+		var university = (university != "University") ? req.params.university : null;
 		if(err) return next(err);
-		models['continent'].getList(['nom'], null, null, function(err, continents) {
+		models['experience'].getList(['continent.nom'], {}, [{table: "organisation", extTables: [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}]}], "continent.id_continent", function(err, continents) {
 			if(err) return next(err);
-			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, function(err, countries) {
+			models['experience'].getList(['pays.nom'], {'continent.nom': continent}, [{table: "organisation", extTables: [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}]}], "pays.id_pays", function(err, countries) {
 				if(err) return next(err);
-				models['ville'].getList(['nom'], (req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null), [{table: 'pays', extTables: [{table: 'continent'}]}], function(err, cities) {
+				models['experience'].getList(['ville.nom'], {'pays.nom': country, 'continent.nom': continent}, [{table: "organisation", extTables: [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}]}], "ville.id_ville", function(err, cities) {
 					if(err) return next(err);
-					models['organisation'].getList(['nom'], (req.params.city) ? {'ville.nom': req.params.city} : ((req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null)), [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}], function(err, universities) {
+					models['experience'].getList(['organisation.nom'], {'ville.nom': city, 'pays.nom': country, 'continent.nom': continent}, [{table: "organisation", extTables: [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}]}], "organisation.id_organisation", function(err, universities) {
 						if(err) return next(err);
 						res.render('list_experience.ejs', {
 							continents: continents,
@@ -62,11 +67,11 @@ router.get('/experience/:continent?/:country?/:city?/:university?', function(req
 router.get('/organisation/:continent?/:country?/:city?/:university?', function(req, res, next) {
 	organisation.getListWithLocation(req.params.continent,req.params.country,req.params.city, function(err, organizations) {
 		if(err) return next(err);
-		models['continent'].getList(['nom'], null, null, function(err, continents) {
+		models['continent'].getList(['nom'], null, null, null, function(err, continents) {
 			if(err) return next(err);
-			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, function(err, countries) {
+			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, null, function(err, countries) {
 				if(err) return next(err);
-				models['ville'].getList(['nom'], (req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null), [{table: 'pays', extTables: [{table: 'continent'}]}], function(err, cities) {
+				models['ville'].getList(['nom'], (req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null), [{table: 'pays', extTables: [{table: 'continent'}]}], null, function(err, cities) {
 					if(err) return next(err);
 						res.render('list_organisation.ejs', {
 							continents: continents,

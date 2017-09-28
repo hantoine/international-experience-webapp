@@ -2,7 +2,7 @@
 <% include partials/header.ejs %>
 <h3> Basics information </h3>
 
-	<table>
+	<table class="table table-responsive table-bordered" >
 		<tr>
 			<th>Student ID</th>
 			<td> <%= exp.id_etudiant %> </td>
@@ -39,7 +39,7 @@
 
 	<h3> During the experience </h3>
 
-	<table>
+	<table class="table table-responsive" >
 		<tr>
 			<th>Price</th>
 			<td> <%= exp.cout %> </td>
@@ -63,7 +63,7 @@
 	</table>
 
 	<h3> After the experience </h3>
-	<table>
+	<table class="table table-responsive" >
 		<tr>
 			<th>New skills and knowledge</th>
 			<td> <%= exp.competences_acquises %> </td>
