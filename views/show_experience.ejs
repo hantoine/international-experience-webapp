@@ -1,8 +1,10 @@
-<% var title = 'Show_Experience - ' + exp.id; var current = 'home' %>
+<% var title = 'Show_Experience - ' + exp.id; var current = 'dest' %>
 <% include partials/header.ejs %>
 <h3> Basics information </h3>
 
-	<table class="table table-responsive table-bordered" >
+
+<div class="row">
+	<table class="table table-bordered tableCentered" >
 		<tr>
 			<th>Student ID</th>
 			<td> <%= exp.id_etudiant %> </td>
@@ -36,10 +38,12 @@
 			<td> <%= exp.somme_empruntee %> </td>
 		</tr>
 	</table>
+</div>
+
 
 	<h3> During the experience </h3>
 
-	<table class="table table-responsive" >
+	<table class="table table-bordered" >
 		<tr>
 			<th>Price</th>
 			<td> <%= exp.cout %> </td>
@@ -63,7 +67,7 @@
 	</table>
 
 	<h3> After the experience </h3>
-	<table class="table table-responsive" >
+	<table class="table table-responsive table-striped" >
 		<tr>
 			<th>New skills and knowledge</th>
 			<td> <%= exp.competences_acquises %> </td>

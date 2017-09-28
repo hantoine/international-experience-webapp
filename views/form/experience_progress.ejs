@@ -1,15 +1,22 @@
 <% var title = 'Form'; var current = 'form' %>
 <% include ../partials/header.ejs %>
-<div id="main-container">
+<div class="container p-5">
 		<% if(needDoneToContinue) { %>
 		<div style="width: 500px; font-size: 0.6em; text-align: left" >
 			You completed the before-departure part of the formular. You will come back to fill in the rest of the formular after your experience, to tell us the amazing things you did there.
 			The international office wish you a great internation experience. Have fun !
 		</div>
 		<% } %>
-		<ul class="no-list-style" >
+		<div class="row centered-list">
+		<ul class="list-group " >
 	<% for(var i=0; i< formgroup.length; i++) { %>
-		<li>
+		<% if(formgroup[i].done) { %>
+			<li class="list-group-item list-group-item-success">
+		<% }else if(formgroup[i].todo){ %>
+			<li class="list-group-item list-group-item-info">
+		<% }else{ %>
+			<li class="list-group-item">
+		<% } %>
 		<% if(formgroup[i].done || formgroup[i].todo) { %>
 			<a href="/form/<%= idexp%>/<%= encodeURIComponent(formgroup[i].nom) %>"><%= formgroup[i].nom %>
 			<% if(formgroup[i].todo) { %>
@@ -20,7 +27,9 @@
 			<%= formgroup[i].nom %>
 		<% } %>
 		</li>
+		<div class="separator"></div>
 	<% } %>
 	</ul>
+	</div>
 	</div>
 <% include ../partials/footer.ejs %>

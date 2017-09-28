@@ -1,10 +1,10 @@
 <% var title = 'Form'; var current = 'form' %>
 <% include ../partials/header.ejs %>
-<div id="container p-5">
+<div class="container p-5">
 	<h4> Your abroad experiences :</h4>
 	<div class="separator"></div>
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-lg-9 col-md-12">
 
 	<ul class="list-group">
 		<% for(var i=0; i< explist.length; i++) { %>
@@ -13,7 +13,7 @@
 			<% } %>
 		</ul>
 	</div>
-	<div class="col-md-3">
+	<div class="col-lg-3 col-md-12">
 		<form action="/form/new">
 			<input type="submit" class="btn btn-primary btn-lg" value="Add new experience" />
 		</form>

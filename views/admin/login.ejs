@@ -1,9 +1,12 @@
 <% var title = 'Administration - Login'; var current = 'admin' %>
 <% include ../partials/header.ejs %>
-	<div id="Choice">
-	<form method="post" action="/admin/login" >
-		<input type="password" name="password" />
-		<input type="submit" value="Log in" />
+<div class="container">
+	<form class="form-signin" method="post" action="/admin/login">
+		<label for="inputEmail" class="sr-only">Username</label>
+		<input type="Username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+		<label for="inputPassword" class="sr-only">Password</label>
+		<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 	</form>
-	</div>
+</div> <!-- /container -->
 <% include ../partials/footer.ejs %>

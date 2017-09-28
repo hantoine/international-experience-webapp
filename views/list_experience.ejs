@@ -1,7 +1,8 @@
 <% var title = 'Experience'; var current = 'result' %>
 <% include partials/header.ejs %>
 	<div id="main-container">
-	<div id="Selection" >
+	<div id="Selection" class="row">
+	<div class="col-md-3">
 	<select class="selectpicker" id="Continent" required >
 	<option value>Continent</option>
 
@@ -9,8 +10,9 @@
 		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
 	</select>
+	</div>
 
-
+	<div class="col-md-3">
 	<select class="selectpicker" id="Country" data-live-search="true" required >
 	<option value>Country</option>
 
@@ -18,8 +20,9 @@
 		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
 	<% } %>
 	</select>
+	</div>
 
-
+	<div class="col-md-3">
 	<select class="selectpicker" id="City" data-live-search="true" required >
 	<option value>City</option>
 
@@ -27,7 +30,9 @@
 		<option value="<%=cities[i].id %>" <%= (cities[i].nom == city) ? 'selected' : '' %> ><%= cities[i].nom %></option>
 	<% } %>
 	</select>
+	</div>
 
+	<div class="col-md-3">
 	<select class="selectpicker" id="University" data-live-search="true" required >
 	<option value>University</option>
 
@@ -36,6 +41,9 @@
 	<% } %>
 	</select>
 	</div>
+
+	</div>
+	<br>
 	<div class="table-responsive">
 	<table class="table table-hover table-sm" >
 		<thead><tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr></thead>
