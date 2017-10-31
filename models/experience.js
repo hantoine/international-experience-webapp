@@ -2,7 +2,7 @@ var db = require('../db.js');
 var etudiant = require('./generic').get('etudiant');
 
 exports.getById = function(expid, done) {
-	db.get().query('SELECT e.id_experience AS id, et.prenom AS prenom, et.nom AS nom, e.id_etudiant AS id_etudiant, age, t.nom AS type_experience, o.nom AS organisation, l.nom AS langue, e.pret, e.somme_empruntee, e.cout, lo.prix AS cout_location, e.cout_alimentation, e.cout_formation, e.cout_recherche_agence, e.competences_acquises, e.choses_faites, e.ressenti_langue, e.surprise, e.made_angry, e.made_laugh, e.what_missed, e.things_appreciated_want_integrate_now, e.interact_same_way, e.differences_time_organization, e.advice, e.most_difficult, e.agresso_ui , lo.id_logement AS id_logement, COALESCE(lo.nom, \'Accommodation\') AS name_logement FROM experience AS e LEFT JOIN type_experience AS t on e.id_type_experience = t.id_type_experience LEFT JOIN organisation AS o ON o.id_organisation = e.id_organisation LEFT JOIN langue AS l ON l.id_langue = e.id_langue LEFT JOIN logement AS lo ON lo.id_logement = e.id_logement LEFT JOIN etudiant AS et ON e.id_etudiant = et.id_etudiant WHERE e.id_experience = ?', expid, function(err, row) {
+	db.get().query("SELECT * FROM experience_view WHERE id = ?", expid, function(err, row) {
 		if(err) return done(err);
 		if(row.length < 1) return done("Error : No Experience by that ID");
 		done(null, row[0]);
