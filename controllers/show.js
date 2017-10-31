@@ -55,7 +55,14 @@ for (var objectType in objectList) {
 router.get('/experience/:id', function(req, res, next) {
 	experience.getById(req.params.id, function(err, exp) {
 		if(err) return next(err);
-		res.render('show_experience.ejs', {exp: exp});
+		if (rolesManager.getRole(req.session) >= rolesManager.Roles.ADMIN) {
+			res.render('show_experience.ejs', {exp: exp});
+		} else {
+			exp.nom = null;
+			exp.prenom = null;	
+			res.render('show_experience.ejs', {exp: exp});
+		}
+
 	});
 });
 module.exports = router;

@@ -1,5 +1,6 @@
 <% var title = 'Show_Experience - ' + exp.id; var current = 'dest' %>
 <% include partials/header.ejs %>
+<% console.log(exp); %>
 <h3> Basics information </h3>
 
 
@@ -9,6 +10,12 @@
 			<th>Student ID</th>
 			<td> <%= exp.id_etudiant %> </td>
 		</tr>
+		<% if(exp.nom && exp.prenom) { %>
+		<tr>
+			<th>Student name </th>
+			<td> <%= exp.prenom + " " + exp.nom %> </td>
+		</tr>
+		<% } %>
 		<tr>
 			<th>Age at the time of your mission</th>
 			<td> <%= exp.age %> </td>

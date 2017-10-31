@@ -10,7 +10,8 @@ exports.QuestionType = {
 	TEXTAREA: 5,
 	BOOL: 6,
 	HORIZONTAL_CHOICE: 7,
-	EXT_TEXTAREA: 8
+	EXT_TEXTAREA: 8,
+	EXT_TEXT: 9
 };
 
 exports.getFormGroupsStates = function(expid, done) {
@@ -93,9 +94,9 @@ var getFormGroup = function(byName, identifier, done) {
 		});
 	};
 	if(byName) {
-		db.get().query('SELECT q.id_question AS id, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM groupe_questions AS g JOIN `question` AS q ON q.id_groupe_questions = g.id_groupe_questions LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE g.nom = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
+		db.get().query('SELECT q.id_question AS id, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM groupe_questions AS g JOIN `question` AS q ON q.id_groupe_questions = g.id_groupe_questions LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE g.nom = ? AND q.enabled = "1" GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
 	} else {
-		db.get().query('SELECT q.id_question AS if, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM `question` AS q LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE q.id_groupe_questions = ? GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
+		db.get().query('SELECT q.id_question AS if, q.texte, q.optionelle, q.type, q.identifiant, GROUP_CONCAT(r.texte ORDER BY r.numero ASC SEPARATOR \';\') AS reponses FROM `question` AS q LEFT JOIN `reponse_possible` AS r ON q.id_echelle_reponse = r.id_echelle_reponse WHERE q.id_groupe_questions = ? AND q.enabled = "1" GROUP BY q.id_question ORDER BY q.ordre', identifier, dealWithQuestions);
 	}
 };
 
@@ -175,16 +176,17 @@ exports.saveAnswers = function(expid, data, done) {
 						return callback("Erreur : Identifiant vide pour question " + question)
 					}
 					db.get().query('UPDATE experience SET ' + result[0].identifiant + ' = ? WHERE id_experience = ?', [data[question], expid], function(err) {
-						if(err) return callback("Error while saving question " + question + " : " + err);
+						if(err) return callback("Error while saving question " + question + " : " + err + "(" + result[0].identifiant + ", " + data[question] + ", " + expid + ")");
 						callback();
 					});
 					break
 				case exports.QuestionType.EXT_TEXTAREA:
+				case exports.QuestionType.EXT_TEXT:
 					if(! result[0].identifiant ) {
 						return callback("Erreur : Identifiant vide pour question " + question)
 					}
 					// id example : "id_avantage_logement/logement/critiquer_logement/avantage_inconvenient/contenu=?,avantage=1,displayed=1"
-					
+					// other id example: "id_etudiant///etudiant/prenom=?"					
 					// Parsing of "identifiant"
 					var splitId = result[0].identifiant.split('/');
 					var linkingAttribute = splitId[0];
@@ -229,24 +231,26 @@ exports.saveAnswers = function(expid, data, done) {
 							db.get().query(query, function(err, result) {
 								if(err) return callback('Error while saving question ' + question + " : " + err);
 								var contentEntryId = result.insertId;
-								// Get related Entry to link with content 
-								var query = 'SELECT `id_' + relatedTable + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid);
-								db.get().query(query, function(err, result) {
-									if(err) return callback('Error while saving question ' + question + " : " + err);
-									if(result.length < 1) return callback('Error while saving question ' + question + " : no corresponding related entry");
-									var relatedEntryId = result[0].id;
-									//Insert linking entry in relationTable
-									var query = 'INSERT INTO `' + linkingTable + '` (`id_' + contentTable + '`, `id_' + relatedTable + '`) VALUES (' + db.escape(contentEntryId) + ',' + db.escape(relatedEntryId) + ')'
-									db.get().query(query, function(err) {
+								// Get related Entry if any to link the content entry withe the related one
+								if(relatedTable) {
+									var query = 'SELECT `id_' + relatedTable + '` AS id FROM experience WHERE id_experience = ' + db.escape(expid);
+									db.get().query(query, function(err, result) {
 										if(err) return callback('Error while saving question ' + question + " : " + err);
-										// Update Direct link in experience entry
-										var query = 'UPDATE experience SET `' + linkingAttribute + '` = ' + db.escape(contentEntryId) + ' WHERE id_experience = ' + db.escape(expid);
+										if(result.length < 1) return callback('Error while saving question ' + question + " : no corresponding related entry");
+										var relatedEntryId = result[0].id;
+										//Insert linking entry in relationTable
+										var query = 'INSERT INTO `' + linkingTable + '` (`id_' + contentTable + '`, `id_' + relatedTable + '`) VALUES (' + db.escape(contentEntryId) + ',' + db.escape(relatedEntryId) + ')'
 										db.get().query(query, function(err) {
 											if(err) return callback('Error while saving question ' + question + " : " + err);
-											callback();
+											// Update Direct link in experience entry
+											var query = 'UPDATE experience SET `' + linkingAttribute + '` = ' + db.escape(contentEntryId) + ' WHERE id_experience = ' + db.escape(expid);
+											db.get().query(query, function(err) {
+												if(err) return callback('Error while saving question ' + question + " : " + err);
+												callback();
+											});
 										});
 									});
-								});
+								}
 							});
 						} else {
 							// If yes just update it 
@@ -303,6 +307,7 @@ exports.addAnswers = function(expid, formgroup, done) {
 				});
 				break;
 			case exports.QuestionType.EXT_TEXTAREA:
+			case exports.QuestionType.EXT_TEXT:
 				var splitId = question.identifiant.split('/');
 				var linkingAttribute = splitId[0];
 				var contentTable = splitId[3];

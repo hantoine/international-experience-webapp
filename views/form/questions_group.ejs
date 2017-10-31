@@ -1,4 +1,4 @@
-<% var title = 'Form - ' + formgroupname; var current = 'home' %>
+<% var title = 'Form - ' + formgroupname; var current = 'form' %>
 <% include ../partials/header.ejs %>
 <div id="main-container-noborder">
 <form method="post" action="/form/<%= expid %>/<%= encodeURIComponent(formgroupname) %>">
@@ -46,6 +46,13 @@
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
 		<textarea name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" cols="80" rows="4" <%= formgroup[i].optionelle ? '' : 'required' %> ><%= formgroup[i].prec_reponse %></textarea>
+	<%
+				break;
+			case 9: //EXT_TEXT
+
+	%>
+		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
+		<input type="text" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" value="<%= formgroup[i].prec_reponse %>" <%= formgroup[i].optionelle ? '' : 'required' %> />
 	<%
 				break;
 			case 4: //EXT
