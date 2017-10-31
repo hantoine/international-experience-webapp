@@ -1,16 +1,9 @@
 {
   "name": "projetbdd",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "",
   "main": "app.js",
-  "scripts": {
-    "test": "nodejs app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "gogs@4.legendia.fr:hantoine/projetBDD.git"
-  },
-  "author": "",
+  "author": "Antoine Hébert <ahebert@et.esiea.fr>",
   "license": "ISC",
   "dependencies": {
     "async": "^2.3.0",
@@ -21,10 +14,8 @@
     "ejs": "^2.5.6",
     "ent": "^2.2.0",
     "express": "^4.15.2",
-    "fast-csv": "^2.4.0",
     "morgan": "^1.8.1",
     "mysql": "^2.13.0",
     "socket.io": "^1.7.3"
-  },
-  "devDependencies": {}
+  }
 }
