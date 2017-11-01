@@ -9,8 +9,9 @@ var db = require('./db');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var question = require('./models/question');
 
-// Midlewares
+// Setting up webserver midlleware and router
 app.use(express.static(__dirname + '/public')); // Fichiers statique (css, images, etc.)
 app.use(session({secret: 'xDqgDkEIiRX9CVdHS3UhyZYtDD4ovK+W2VNIbPBWMJ0vwsSznNc/sA=='}))
 app.use(morgan('combined')); // Logging
@@ -32,18 +33,28 @@ app.use(function(req, res, next){
 	res.status(404).send('Page introuvable !');
 });
 
+// Setting up socket.io communication
 io.sockets.on('connection', function(socket) {
 	socket.on('getData', require('./controllers/onGetData.io')(socket));
 });
 
-// Connect to MySQL on start
+// Connect to database
 db.connect(config.databaseMode, function(err) {
   if (err) {
     console.log('Unable to connect to MySQL.');
     process.exit(1);
   } else {
-    server.listen(config.listeningPort, function() {
-      console.log('Listening on port ' + config.listeningPort + '...');
-    })
+    // update experience view using questions
+    question.updateExperienceView(function(err) {
+	    if(err) {
+	    	console.log(err);
+	    	db.close();
+	    	return;
+	    }
+	    //start webserver
+	    server.listen(config.listeningPort, function() {
+	      console.log('Listening on port ' + config.listeningPort + '...');
+	    })
+    });
   }
 })
