@@ -162,7 +162,11 @@ exports.saveAnswers = function(expid, data, done) {
 				case exports.QuestionType.SELECT:
 				case exports.QuestionType.CHOICE:
 				case exports.QuestionType.HORIZONTAL_CHOICE:
-					db.get().query('INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `numero` = ?', [data[question], expid, question, data[question]], function(err) {
+					console.log(expid +" "+ question + " "+data[question]);
+					db.get().query("INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`, `id_reponse_possible`) \
+SELECT ? AS `numero`, ? AS `id_experience`, ? AS `id_question`, rp.id_reponse_possible AS `id_reponse_possible` from question q JOIN reponse_possible rp ON \
+ (q.id_echelle_reponse = rp.id_echelle_reponse) WHERE q.id_question= ? AND rp.numero = ? \
+ON DUPLICATE KEY UPDATE `numero` = VALUES(`numero`), `id_reponse_possible`= VALUES(`id_reponse_possible`)", [data[question], expid, question, question, data[question]], function(err) {
 						if(err) callback("Error while saving question " + question + " : " + err);
 						callback();
 					});

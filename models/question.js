@@ -3,7 +3,7 @@ var async = require('async');
 
 // generate the SQL command creating the experience view containing all informations given in questions's answers
 var builCreateExperienceViewOnlyNumQuery = function(callback) {
-	var query = "CREATE OR REPLACE VIEW experience_onlynum_view AS SELECT `e`.`id_experience` AS `id`, ";
+	var query = "CREATE OR REPLACE VIEW experience_onlyrid_view AS SELECT `e`.`id_experience` AS `id`, ";
 	var vars = [];
 	var joins = [];
 	var joinAliases = [];
@@ -98,7 +98,7 @@ var builCreateExperienceViewOnlyNumQuery = function(callback) {
 				}
 			}
 		} else {
-			vars.push("sum(case when `ar`.`id_question` = '" + question.id + "' then `ar`.`numero` else NULL end) AS `" + (question.name || question.id) + " num`")
+			vars.push("sum(case when `ar`.`id_question` = '" + question.id + "' then `ar`.`id_reponse_possible` else NULL end) AS `" + (question.name || question.id) + " rid`")
 		}
 		callback()
 	};
@@ -127,17 +127,21 @@ var createExperienceViewOnlyNum = function(callback){
 
 
 var createExperienceView = function(callback) {
-	var query = "CREATE OR REPLACE VIEW experience_view AS SELECT *, ";
+	var query = "CREATE OR REPLACE VIEW experience_view AS SELECT `e`.*, ";
 	var vars = [];
-	db.get().query("SELECT `COLUMN_NAME` AS `col` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='intl_data' AND `TABLE_NAME`='experience_onlynum_view' AND `COLUMN_NAME` LIKE '%num'", function(err, result){
+	var joins = [];
+	db.get().query("SELECT `COLUMN_NAME` AS `col` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='intl_data' AND `TABLE_NAME`='experience_onlyrid_view' AND `COLUMN_NAME` LIKE '%rid'", function(err, result){
 		if(err) return callback(err);
 		
 		for(var i = 0 ; i < result.length; i++) {
-			var var_name = result[i].col.slice(0, -4);
-			vars.push("max(case when (rpv.question_name = '"+var_name+"' AND rpv.numero = e.`"+result[i].col+"`) then rpv.texte else NULL end) AS`"+var_name+" txt`");
+			var varName = result[i].col.slice(0, -4);
+			vars.push("`rp "+varName+"`.texte AS `"+varName+"`")
+			vars.push("`rp "+varName+"`.numero AS `"+varName+" num`")
+			joins.push("LEFT JOIN reponse_possible `rp "+varName+"` ON (`rp "+varName+"`.id_reponse_possible = e.`"+varName+" rid`)");
 		}
 		query += vars.join(", ");
-		query += "FROM experience_onlynum_view e JOIN reponse_possible_view rpv GROUP BY e.id"
+		query += "FROM experience_onlyrid_view e ";
+		query += joins.join(" ");
 		db.get().query(query, callback);
 	});
 }
