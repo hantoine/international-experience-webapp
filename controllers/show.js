@@ -58,8 +58,9 @@ router.get('/experience/:id', function(req, res, next) {
 		if (rolesManager.getRole(req.session) >= rolesManager.Roles.ADMIN) {
 			res.render('show_experience.ejs', {exp: exp});
 		} else {
-			exp.nom = null;
-			exp.prenom = null;	
+			exp.lastname = null;
+			exp.firstname = null;	
+			exp['student name'] = null;	
 			res.render('show_experience.ejs', {exp: exp});
 		}
 

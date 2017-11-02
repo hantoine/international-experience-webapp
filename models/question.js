@@ -2,18 +2,46 @@ var db = require('../db');
 var async = require('async');
 
 // generate the SQL command creating the experience view containing all informations given in questions's answers
-var builCreateViewQuery = function(callback) {
-	var query = "CREATE OR REPLACE VIEW experience_view_exp AS SELECT `e`.`id_experience` AS `id_experience`, ";
+var builCreateExperienceViewOnlyNumQuery = function(callback) {
+	var query = "CREATE OR REPLACE VIEW experience_onlynum_view AS SELECT `e`.`id_experience` AS `id`, ";
 	var vars = [];
 	var joins = [];
 	var joinAliases = [];
+	
 	var updateVarsJoinWithQuestion = function(question, callback) {
 		// not multiple choice question
 		if (question.identifiant) {
-			// ext question
 			if(['id_pays', 'id_ville'].includes(question.identifiant))
 				return callback();
-			if(question.identifiant.includes('/')) {
+			if(question.identifiant.slice(0,2) == "2:") { 	// ext identifier format 2
+				//example: 2:id_organisation->organisation/id_ville->ville/id_pays->pays/nom
+				var nodes = question.identifiant.slice(2).split('/');
+				
+				// Adding the joins when not already present in the query
+				for(var i = 0; i < nodes.length-1;i++) {
+					nodes[i] = nodes[i].split('->');
+					var j = 1;
+					do {
+						if (j > 1) {
+							nodes[i][2] = nodes[i][1] + j;
+						}
+						var current_join = "LEFT JOIN `" + nodes[i][1] + "` "+ ((nodes[i][2]) ? ("AS `"+nodes[i][2] + "` ") : "") + "on(`"+ ((i == 0) ? "e" : (nodes[i-1][2] || nodes[i-1][1])) +"`.`"+nodes[i][0]+"` = `"+(nodes[i][2] || nodes[i][1])+"`.`id_"+nodes[i][1]+"`)"
+						if(joins.includes(current_join)) {
+							break;
+						}
+						j += 1;
+					} while(joinAliases.includes(nodes[i][2] || nodes[i][1]));
+					if(joins.includes(current_join)) {
+						continue;
+					}
+					joins.push(current_join);
+					joinAliases.push(nodes[i][2] || nodes[i][1]);
+				}
+				
+				//Adding the variable
+				vars.push('`' + (nodes[nodes.length-2][2] || nodes[nodes.length-2][1]) + '`.`' + nodes[nodes.length-1] + "` AS `" + (question.name || nodes[nodes.length-2][1]+"_"+nodes[nodes.length-1]) + "`");
+				
+			} else if(question.identifiant.includes('/')) { // ext identifier legacy format
 				// id example : "id_avantage_logement/logement/critiquer_logement/avantage_inconvenient/contenu=?,avantage=1,displayed=1"
 				// other id example: "id_etudiant///etudiant/prenom=?"					
 				var splitId = question.identifiant.split('/');
@@ -28,25 +56,49 @@ var builCreateViewQuery = function(callback) {
 						break;
 					}
 				}
-				var contentTableAlias = contentTable
-				if(!joinAliases.includes(contentTableAlias)) {
-					joins.push('LEFT JOIN `' + contentTable + '` on(`e`.`' + linkingAttribute + '` = `' + contentTable+'`.`id_'+contentTable+'`)');
-				} else {
-					var i = 1;
-					do {
-						i += 1;
+				var contentTableAlias;
+				var j = 1;
+				do {
+					if (j > 1) {
 						contentTableAlias = contentTable + i;
-					} while(joinAliases.includes(contentTableAlias));
-					joins.push('LEFT JOIN `' + contentTable + '` AS `' + contentTableAlias + '` on(`e`.`' + linkingAttribute + '` = `' + contentTableAlias +'`.`id_'+contentTable+'`)');
+					}
+					var current_join = "LEFT JOIN `" + contentTable + "` "+ ((contentTableAlias) ? ("AS `"+contentTableAlias + "` ") : "") + "on(`e`.`"+linkingAttribute+"` = `"+(contentTableAlias || contentTable)+"`.`id_"+contentTable+"`)"
+					if(joins.includes(current_join)) {
+						break;
+					}
+					j += 1;
+				} while(joinAliases.includes(contentTableAlias || contentTable));
+				if(!joins.includes(current_join)) {
+					joinAliases.push(contentTableAlias || contentTable);
+					joins.push(current_join);		
 				}
-				joinAliases.push(contentTableAlias);
-				vars.push('`' + contentTable + '`.`' + contentAttribute + '` AS `' + (question.name || linkingAttribute+'_'+contentAttribute) + "`");
+				vars.push('`' + contentTable + '`.`' + contentAttribute + '` AS `' + (question.name || linkingAttribute+'_'+contentAttribute) + "`");				
 			} else {
 				vars.push('`e`.`'+question.identifiant+'` AS `' + (question.name || question.identifiant) + "`");
+				// If question is an EXT reference add name variable
+				if(question.identifiant.slice(0,3) == 'id_') {
+					var contentTable = question.identifiant.slice(3);
+					var contentTableAlias;
+					var j = 1;
+					do {
+						if (j > 1) {
+							contentTableAlias = contentTable + i;
+						}
+						var current_join = "LEFT JOIN `" + contentTable + "` "+ ((contentTableAlias) ? ("AS `"+contentTableAlias + "` ") : "") + "on(`e`.`"+question.identifiant+"` = `"+(contentTableAlias || contentTable)+"`.`"+question.identifiant+"`)"
+						if(joins.includes(current_join)) {
+							break;
+						}
+						j += 1;
+					} while(joinAliases.includes(contentTableAlias || contentTable));
+					if(!joins.includes(current_join)) {
+						joinAliases.push(contentTableAlias || contentTable);
+						joins.push(current_join);		
+					}
+					vars.push('`' + contentTable + '`.`nom` AS `' + (question.name || question.identifiant) + " name`");				
+				}
 			}
 		} else {
-			//sum(case when `ar`.`id_question` = '1' then `ar`.`numero` else NULL end) AS `study_year`
-			vars.push("sum(case when `ar`.`id_question` = '" + question.id + "' then `ar`.`numero` else NULL end) AS `" + (question.name || question.id) + "`")
+			vars.push("sum(case when `ar`.`id_question` = '" + question.id + "' then `ar`.`numero` else NULL end) AS `" + (question.name || question.id) + " num`")
 		}
 		callback()
 	};
@@ -66,12 +118,34 @@ var builCreateViewQuery = function(callback) {
 	});
 };
 
+var createExperienceViewOnlyNum = function(callback){
+	builCreateExperienceViewOnlyNumQuery(function(err, query) {
+		if(err) return callback(err);
+		db.get().query(query, callback);
+	});
+}
+
+
+var createExperienceView = function(callback) {
+	var query = "CREATE OR REPLACE VIEW experience_view AS SELECT *, ";
+	var vars = [];
+	db.get().query("SELECT `COLUMN_NAME` AS `col` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='intl_data' AND `TABLE_NAME`='experience_onlynum_view' AND `COLUMN_NAME` LIKE '%num'", function(err, result){
+		if(err) return callback(err);
+		
+		for(var i = 0 ; i < result.length; i++) {
+			var var_name = result[i].col.slice(0, -4);
+			vars.push("max(case when (rpv.question_name = '"+var_name+"' AND rpv.numero = e.`"+result[i].col+"`) then rpv.texte else NULL end) AS`"+var_name+" txt`");
+		}
+		query += vars.join(", ");
+		query += "FROM experience_onlynum_view e JOIN reponse_possible_view rpv GROUP BY e.id"
+		db.get().query(query, callback);
+	});
+}
 
 exports.updateExperienceView = function(callback) {
-	builCreateViewQuery(function(err, query) {
+	createExperienceViewOnlyNum(function(err)
+	{
 		if(err) return callback(err);
-		db.get().query(query, function(err) {
-			callback(err);
-		})
-	});
+		createExperienceView(callback)
+	})
 };

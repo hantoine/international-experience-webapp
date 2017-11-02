@@ -185,6 +185,10 @@ exports.saveAnswers = function(expid, data, done) {
 					if(! result[0].identifiant ) {
 						return callback("Erreur : Identifiant vide pour question " + question)
 					}
+					if(result[0].identifiant.slice(0,2) == "2:") {
+						console.log("Identifiant format V2 not implemented here.");
+						return callback();
+					}
 					// id example : "id_avantage_logement/logement/critiquer_logement/avantage_inconvenient/contenu=?,avantage=1,displayed=1"
 					// other id example: "id_etudiant///etudiant/prenom=?"					
 					// Parsing of "identifiant"
@@ -308,6 +312,10 @@ exports.addAnswers = function(expid, formgroup, done) {
 				break;
 			case exports.QuestionType.EXT_TEXTAREA:
 			case exports.QuestionType.EXT_TEXT:
+				if(result[0].identifiant.slice(0,2) == "2:") {
+					console.log("Identifiant format V2 not implemented here.");
+					return callback();
+				}
 				var splitId = question.identifiant.split('/');
 				var linkingAttribute = splitId[0];
 				var contentTable = splitId[3];

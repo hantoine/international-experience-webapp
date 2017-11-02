@@ -1,48 +1,56 @@
 <% var title = 'Show_Experience - ' + exp.id; var current = 'dest' %>
 <% include partials/header.ejs %>
-<% console.log(exp); %>
-<h3> Basics information </h3>
+<h3> Basic information </h3>
 
 
 <div class="row">
 	<table class="table table-bordered tableCentered" >
 		<tr>
 			<th>Student ID</th>
-			<td> <%= exp.id_etudiant %> </td>
+			<td> <%= exp['student'] %> </td>
 		</tr>
-		<% if(exp.nom && exp.prenom) { %>
+		<% if(exp['lastname'] && exp['firstname']) { %>
 		<tr>
 			<th>Student name </th>
-			<td> <%= exp.prenom + " " + exp.nom %> </td>
+			<td> <%= exp['firstname']+ " " + exp['lastname'] %> </td>
 		</tr>
 		<% } %>
 		<tr>
 			<th>Age at the time of your mission</th>
-			<td> <%= exp.age %> </td>
+			<td> <%= exp['age'] %> </td>
 		</tr>
 		<tr>
 			<th>Your campus</th>
-			<td> <%= (exp.campus == 0) ? "Ivry" : "Laval" %> </td>
+			<td> <%= (exp['campus'] == 0) ? "Ivry" : "Laval" %> </td>
 		</tr>
 		<tr>
 			<th>Nature of the experience </th>
-			<td> <%= exp.type_experience %> </td>
+			<td> <%= exp['nature of the mission name'] %> </td>
 		</tr>
 		<tr>
-			<th> <%= (exp.estEcole) ? 'Ecole' : 'Organisation' %></th>
-			<td> <%= exp.organisation %> </td>
+			<th> <%= (exp['organization is school']) ? 'Ecole' : 'Entreprise' %></th>
+			<td> <%= exp['organization name'] %> </td>
+		</tr>
+		<tr>
+			<th>Country</th>
+			<td><a href="/show/pays/<%= exp['country id'] %>"><%= exp['country name'] %></a></td>
+		</tr>
+		<tr>
+			<th>Accommodation</th>
+			<td><a href="/show/logement/<%= exp['accomodation'] %>"><%= exp['accomodation name'] || "Accomodation" %></a></td>
 		</tr>
 		<tr>
 			<th>Spoken language</th>
-			<td> <%= exp.langue %> </td>
+			<td> <%= exp['language used name'] %> </td>
 		</tr>
 		<tr>
-			<th>Emprunt ?</th>
-			<td> <%= (exp.pret == 0) ? 'No 	loaning' %> </td>
+			<th>Did you take a loan ?</th>
+			<td> <%= (exp['borrowed money'] == 0) ? 'No' : 'yes' %> </td>
 		</tr>
+		<% if(exp['borrowed money'] != 0) { %>
 		<tr>
 			<th>If you did, how much did you borrow ?</th>
-			<td> <%= exp.somme_empruntee %> </td>
+			<td> <%= exp['borrowed money'] %> </td>
 		</tr>
 	</table>
 </div>
@@ -53,23 +61,23 @@
 	<table class="table table-bordered" >
 		<tr>
 			<th>Price</th>
-			<td> <%= exp.cout %> </td>
+			<td> <%= exp['cost'] %> </td>
 		</tr>
 		<tr>
 			<th>Location's price</th>
-			<td> <%= exp.cout_location %> </td>
+			<td> <%= exp['accomodation cost'] %> </td>
 		</tr>
 		<tr>
 			<th>Food's price</th>
-			<td> <%= exp.cout_alimentation %> </td>
+			<td> <%= exp['food cost'] %> </td>
 		</tr>
 		<tr>
 			<th>Education's price</th>
-			<td> <%= exp.cout_formation %> </td>
+			<td> <%= exp['education cost'] %> </td>
 		</tr>
 		<tr>
 			<th>Agencies's price</th>
-			<td> <%= exp.cout_recherche_agence %> </td>
+			<td> <%= exp['agency cost'] %> </td>
 		</tr>
 	</table>
 
@@ -77,48 +85,50 @@
 	<table class="table table-responsive table-striped" >
 		<tr>
 			<th>New skills and knowledge</th>
-			<td> <%= exp.competences_acquises %> </td>
+			<td> <%= exp['new skills gained'] %> </td>
 		</tr>
 		<tr>
 			<th>What did you do during your mission ?</th>
-			<td> <%= exp.choses_faites %> </td>
+			<td> <%= exp['what did the student do ?'] %> </td>
 		</tr>
 
+		<% if(exp['recommend num'] != -1) { %>
 		<tr>
 			<th>Would you recommend it ?</th>
-			<td> <%= exp.recommande %> </td>
+			<td> <%= exp['recommend txt'] %> </td>
 		</tr>
+		<% } %>
 		<tr>
 			<th>Feelings about language</th>
-			<td> <%= exp.ressenti_langue %> </td>
+			<td> <%= exp['language feeling'] %> </td>
 		</tr>
 		<tr>
 			<th>Something that surprised you</th>
-			<td> <%= exp.surprise %> </td>
+			<td> <%= exp['what surprised the student'] %> </td>
 		</tr>
 		<tr>
 			<th>Something that made you angry</th>
-			<td> <%= exp.made_angry %> </td>
+			<td> <%= exp['what made the student angry'] %> </td>
 		</tr>
 		<tr>
 			<th>Something that made you laugh</th>
-			<td> <%= exp.made_laugh %> </td>
+			<td> <%= exp['what made the student laugh'] %> </td>
 		</tr>
 		<tr>
 			<th>What did you miss the most ?</th>
-			<td> <%= exp.what_missed %> </td>
+			<td> <%= exp['what the student missed'] %> </td>
 		</tr>
 		<tr>
 			<th>Things appreciated you want to integrate now ?</th>
-			<td> <%= exp.things_appreciated_want_integrate_now %> </td>
+			<td> <%= exp['things from the country that the student really appreciated'] %> </td>
 		</tr>
 		<tr>
 			<th>Interact same ways </th>
-			<td> <%= exp.interact_same_way %> </td>
+			<td> <%= exp['differences in the way people interact'] %> </td>
 		</tr>
 		<tr>
 			<th>Differences time organization</th>
-			<td> <%= exp.differences_time_organization %> </td>
+			<td> <%= exp['differences in the way that time is organized'] %> </td>
 		</tr>
 		<tr>
 			<th>Advice</th>
@@ -126,12 +136,14 @@
 		</tr>
 		<tr>
 			<th>Most Difficult</th>
-			<td> <%= exp.most_difficult %> </td>
+			<td> <%= exp['most difficult to get accustomed to'] %> </td>
 		</tr>
+		<% if(exp['AGRESSO uid']) { %>
 		<tr>
 			<th>agresso iu</th>
-			<td> <%= exp.agresso_ui %> </td>
+			<td> <%= exp['AGRESSO uid'] %> </td>
 		</tr>
+		<% } %>
 	</table>
 
 <% include partials/footer.ejs %>
