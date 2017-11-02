@@ -39,7 +39,7 @@ io.sockets.on('connection', function(socket) {
 });
 
 // Connect to database
-db.connect(config.databaseMode, function(err) {
+db.connect(function(err) {
   if (err) {
     console.log('Unable to connect to MySQL.');
     process.exit(1);

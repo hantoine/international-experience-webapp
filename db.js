@@ -1,26 +1,13 @@
 var mysql = require('mysql')
   , async = require('async')
-
-var PRODUCTION_DB = 'intl_data'
-  ,TEST_DB = 'intl_data'
-
-exports.MODE_TEST = 'test'
-exports.MODE_PRODUCTION = 'prod'
+var config = require('./config');
 
 var state = {
   pool: null,
-  mode: null,
 }
 
-exports.connect = function(mode, done) {
-  state.pool = mysql.createPool({
-    host: 'localhost',
-    user: 'intl_data',
-    password: 'Uh7WW5SsoWMyK6r8',
-    database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
-  })
-
-  state.mode = mode
+exports.connect = function(done) {
+  state.pool = mysql.createPool(config.databaseParams)
   done()
 }
 

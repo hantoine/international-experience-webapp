@@ -3,5 +3,10 @@ MODE_PRODUCTION = 'prod'
 
 module.exports = {
 	listeningPort: 8080,
-	databaseMode: MODE_PRODUCTION
+	databaseParams: {
+      host: 'localhost',
+      user: 'intl_data',
+      password: 'Uh7WW5SsoWMyK6r8',
+      database: 'intl_data' 
+    }
 }
