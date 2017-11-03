@@ -81,12 +81,16 @@ router.get('/organisation/:continent?/:country?/:city?/:university?', function(r
 							cities: cities,
 							city: req.params.city,
 							organizations: organizations
-						});
 					});
 				});
 			});
 		});
 	});
+});
 	
+
+router.get('/experience_beta/', function(req, res, next) {
+	res.render('list_generic.ejs');
+});
 
 module.exports = router;

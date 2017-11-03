@@ -1,0 +1,26 @@
+<% var title = 'Experience'; var current = 'result' %>
+<!-- input: cols !-->
+<% include partials/header.ejs %>
+	<div id="main-container">
+		<div id="Request" class="row">
+			<div class="col-md-3" id="select">
+				<select class="selectpicker" required data-live-search="true">
+	<% for(var i = 0; i < cols.length; i++) { %>
+					<option value="<%=cols[i] %>" ><%= cols[i] %></option>
+	<% } %>
+				</select>
+			</div>
+		</div>
+		<br>
+		<div class="table-responsive">
+			<table class="table table-hover table-sm" >
+				<thead><tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr></thead>
+				<tbody class="container">
+				</tbody>
+			</table>
+		</div>
+	</div>
+<script>
+</script>
+
+<% include partials/footer.ejs %>
