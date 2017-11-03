@@ -1,26 +1,30 @@
 <% var title = 'Destinations'; var current = 'dest' %>
 <% include partials/header.ejs %>
 	<div id="main-container">
-	<div id="Selection" >
-	<select id="Continent" required >
+	<div id="Selection" class = "row">
+	<div class="col-md-3">
+	<select class="selectpicker" id="Continent" required >
 	<option value>Continent</option>
+	
 
 	<% for(var i = 0; i < continents.length; i++) { %>
 		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
 	<% } %>
 	</select>
+	</div>
 
-
-	<select id="Country" required >
+	<div class="col-md-3">	
+	<select class="selectpicker" id="Country" data-live-search="true" required >
 	<option value>Country</option>
 
 	<% for(var i = 0; i < countries.length; i++) { %>
 		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
 	<% } %>
 	</select>
+	</div>
 
-
-	<select id="City" required >
+	<div class="col-md-3">
+	<select class="selectpicker" id="City" data-live-search="true" required >
 	<option value>City</option>
 
 	<% for(var i = 0; i < cities.length; i++) { %>
@@ -28,12 +32,19 @@
 	<% } %>
 	</select>
 	</div>
-	<table>
-		<tr><th>Organisation name</th><th>City</th><th>Country</th><th>Type</th><th></th></tr>
+
+	</div>
+	<br>
+	<div class="table-responsive">
+	<table class="table table-hover table-sm" >
+		<thead><tr><th>Organisation name</th><th>City</th><th>Country</th><th>Type</th><th></th></tr></thead>
+	<tbody class="container">
 			<% for(var i = 0 ; i < organizations.length ; i++) { %>
-				<tr><td><%= organizations[i].name %></td><td><%= organizations[i].ville %></td><td><%= organizations[i].pays %></td><td><%= (organizations[i].estEcole != 0) ? 'School' : 'Company' %></td><td><a href="/show/organisation/<%= organizations[i].id %>">More details</a></td></tr>
+				<tr><td><%= organizations[i].name %></td><td><%= organizations[i].ville %></td><td><%= organizations[i].pays %></td><td><%= (organizations[i].estEcole != 0) ? 'School' : 'Company' %></td><td><a href="/show/organisation/<%= organizations[i].id %>"class="btn btn-primary" >More details</a></td></tr>
 			<% } %>
+	</tbody>
 	</table>
+	</div>
 	</div>
 <script>
 	var selectContinent = document.getElementById('Continent');
