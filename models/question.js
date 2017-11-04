@@ -3,7 +3,7 @@ var async = require('async');
 
 // generate the SQL command creating the experience view containing all informations given in questions's answers
 var builCreateExperienceViewOnlyNumQuery = function(callback) {
-	var query = "CREATE OR REPLACE VIEW experience_onlyrid_view AS SELECT `e`.`id_experience` AS `id`, ";
+	var query = "CREATE OR REPLACE VIEW experience_onlyrid_view AS SELECT `e`.`id_experience` AS `id_experience_view`, ";
 	var vars = [];
 	var joins = [];
 	var joinAliases = [];
@@ -74,7 +74,7 @@ var builCreateExperienceViewOnlyNumQuery = function(callback) {
 				}
 				vars.push('`' + contentTable + '`.`' + contentAttribute + '` AS `' + (question.name || linkingAttribute+'_'+contentAttribute) + "`");				
 			} else {
-				vars.push('`e`.`'+question.identifiant+'` AS `' + (question.name || question.identifiant) + "`");
+
 				// If question is an EXT reference add name variable
 				if(question.identifiant.slice(0,3) == 'id_') {
 					var contentTable = question.identifiant.slice(3);
@@ -94,7 +94,10 @@ var builCreateExperienceViewOnlyNumQuery = function(callback) {
 						joinAliases.push(contentTableAlias || contentTable);
 						joins.push(current_join);		
 					}
-					vars.push('`' + contentTable + '`.`nom` AS `' + (question.name || question.identifiant) + " name`");				
+					vars.push('`' + contentTable + '`.`nom` AS `' + (question.name || question.identifiant) + "`");
+					vars.push('`e`.`'+question.identifiant+'` AS `' + (question.name || question.identifiant) + " id`");			
+				} else {
+					vars.push('`e`.`'+question.identifiant+'` AS `' + (question.name || question.identifiant) + "`");
 				}
 			}
 		} else {

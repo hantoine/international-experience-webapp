@@ -115,7 +115,7 @@
 		while (select.options.length > 1) {
 			select.remove(1);
 		}
-	}
+	};
 	socket.on('receiveData', function(data) {
 		var select = document.getElementsByClassName(data.identifiant);
 		if(select.length < 0) {

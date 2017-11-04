@@ -36,6 +36,7 @@ app.use(function(req, res, next){
 // Setting up socket.io communication
 io.sockets.on('connection', function(socket) {
 	socket.on('getData', require('./controllers/onGetData.io')(socket));
+	socket.on('getTableData', require('./controllers/onGetTableData.io')(socket));
 });
 
 // Connect to database

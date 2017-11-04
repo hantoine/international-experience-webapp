@@ -1,5 +1,6 @@
 var db = require('../db.js');
 var async = require('async');
+var config = require('../config.js')
 
 exports.QuestionType = {
 	SELECT : 0,
@@ -25,7 +26,7 @@ var addExtTables = function(table, extTables) {
 
 exports.get = function(table) {
 	var model = {}
-	model.getList = function(attributes, conditions, extTables, groupby, done) {
+	model.getList = function(attributes, conditions, extTables, groupby, orderby, limit, done) {
 		if(conditions) {
 			Object.keys(conditions).forEach((key) => (conditions[key] == null) && delete conditions[key]);
 		}
@@ -62,7 +63,29 @@ exports.get = function(table) {
 			}
 		}
 		if(groupby) {
-			query += ' GROUP BY `' + groupby.split('.')[0] + '`.`' + groupby.split('.')[1] + '`';
+			if(groupby.includes('.'))
+				query += ' GROUP BY `' + groupby.split('.')[0] + '`.`' + groupby.split('.')[1] + '`';
+			else
+				query += ' GROUP BY `' + groupby + '`';
+		}
+		if(orderby && orderby.length) {
+			query += ' ORDER BY ';
+			formattedOrderBy = [];
+			for (var i = 0 ; i < orderby.length; i++) {
+				if(orderby[i].includes('.'))
+					formattedOrderBy.push('`' + orderby[i].split('.')[0] + '`.`' + orderby[i].split('.')[1] + '`');
+				else
+					formattedOrderBy.push('`' + orderby[i] + '`');
+			}
+			query += formattedOrderBy.join(', ');
+		}
+		
+		if(limit) {
+			query += ' LIMIT ';
+			if(typeof(limit) == 'number')
+				query += limit;
+			else
+				query += limit.offset + ', ' + (limit.offset + limit.size);
 		}
 		
 		console.log(query);
@@ -71,7 +94,17 @@ exports.get = function(table) {
 			done(null, rows);
 		});
 	};
-
+	model.getColumns = function(done) {
+		db.get().query("SELECT `COLUMN_NAME` AS `col` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='"+ config.databaseParams.database +"' AND `TABLE_NAME`='"+table+"'", function(err, result){
+			if(err) return done(err);
+			var cols = [];
+			for (var i = 0; i < result.length ; i++) {
+				cols.push(result[i].col);
+			}
+			done(null, cols);
+		});
+	}
+	
 	model.createNew = function(initValues, done) {
 		attributes = ''
 		values = ''

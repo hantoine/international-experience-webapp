@@ -1,11 +1,13 @@
 <% var title = 'Experience'; var current = 'result' %>
-<!-- input: cols !-->
 <% include partials/header.ejs %>
 	<div id="main-container">
 		<div id="Request" class="row">
-			<div class="col-md-3" id="select">
-				<select class="selectpicker" required data-live-search="true">
-	<% for(var i = 0; i < cols.length; i++) { %>
+			<div class="col-md-3">
+				<select class="selectpicker" required data-live-search="true" id="cols-select">
+	<% for(var i = 0; i < cols.length; i++) { 
+		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
+	%>
+	
 					<option value="<%=cols[i] %>" ><%= cols[i] %></option>
 	<% } %>
 				</select>
@@ -14,13 +16,90 @@
 		<br>
 		<div class="table-responsive">
 			<table class="table table-hover table-sm" >
-				<thead><tr><th>Country</th><th>City</th><th>Organisation</th><th>Duration</th><th></th></tr></thead>
-				<tbody class="container">
+				<thead id="table-header">
+				</thead>
+				<tbody class="container" id="table-body" >
 				</tbody>
 			</table>
 		</div>
 	</div>
+<% include partials/socket.io.ejs %>
 <script>
+	var tableheader = document.getElementById('table-header');
+	var tablebody = document.getElementById('table-body');
+	var colsSelect = document.getElementById('cols-select');
+	var dataRequest = {
+		table: '<%= table %>',
+		cols: [
+		<% for(var i=0 ; i < defaultCols.length; i++) { if(i) { %>, 
+		<% } %>	"<%= defaultCols[i] %>"<% } %>
+		],
+		groupby: null,
+		sorted: [],
+		conditions: [],
+		limit: {
+			size: 100,
+			offset: 0
+		}
+	};
+	
+	var insertRow = function(row) {	
+		var line = document.createElement("tr");
+		for (var key in row) {
+			if(key.slice(-2) == 'id') continue;
+			var cell = document.createElement("td");
+			var text = document.createTextNode(row[key]);
+
+			
+			if(Object.keys(row).includes(key+' id')) {
+				var link = document.createElement("a");
+				link.href = '/show/'+key+'/'+row[key+' id'];
+				link.appendChild(text);
+				cell.appendChild(link)
+			} else {
+				cell.appendChild(text);
+			}
+			line.appendChild(cell);
+		}
+		var moreDetailsCell = document.createElement("td");
+		var moreDetailsLink = document.createElement("a");
+		moreDetailsLink.href = "/show/"+dataRequest.table+"/"+row.id;
+		moreDetailsLink.className = "btn btn-primary";
+		var moreDetailsText = document.createTextNode("More details");
+		moreDetailsLink.appendChild(moreDetailsText);
+		moreDetailsCell.appendChild(moreDetailsLink);
+		line.appendChild(moreDetailsCell);
+		tablebody.appendChild(line);
+	};
+	var insertHeaderRow = function(attributes) {
+		var headerLine = document.createElement("tr");
+		for(var i = 0 ; i < attributes.length; i++) {
+			if(attributes[i].slice(-2) == 'id') continue;
+			var cell = document.createElement("th")
+			var text = document.createTextNode(attributes[i]);
+			cell.appendChild(text);
+			headerLine.appendChild(cell);	
+		}
+		tableheader.appendChild(headerLine);
+	};
+	socket.on('receiveTableData', function(data) {
+		//TODO delete all rows in tablebody and tableheader
+		console.log(data);
+		insertHeaderRow(data.attributes);
+		for(var i = 0 ; i < data.table.length; i++) {
+			insertRow(data.table[i]);
+		}
+	});
+	colsSelect.addEventListener('changed.bs.select', function(evt, clickedIndex, newValue) {
+		dataRequest.cols = newValue.split(', ');
+		for(var i = 0; i < dataRequest.cols.length; i++) {
+			if(cols.includes(dataRequest.cols[i] + ' id')) {
+				dataRequest.cols.push(dataRequest.cols[i] + ' id');
+			}
+		}
+		socket.emit('getTableData', dataRequest);
+	});
+	socket.emit('getTableData', dataRequest);
 </script>
 
 <% include partials/footer.ejs %>

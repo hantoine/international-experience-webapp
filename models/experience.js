@@ -2,7 +2,7 @@ var db = require('../db.js');
 var etudiant = require('./generic').get('etudiant');
 
 exports.getById = function(expid, done) {
-	db.get().query("SELECT * FROM experience_view WHERE id = ?", expid, function(err, row) {
+	db.get().query("SELECT * FROM experience_view WHERE id_experience_view = ?", expid, function(err, row) {
 		if(err) return done(err);
 		if(row.length < 1) return done("Error : No Experience by that ID");
 		done(null, row[0]);

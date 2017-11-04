@@ -107,7 +107,7 @@ module.exports = {
 
 	organisation: {
 		roles: Roles.PUBLIC,
-		name: "Organisation",
+		name: "Organization",
 		legend: {
 			id: null,
 			nom: "Name",
