@@ -10,7 +10,7 @@ var objectDeleteInfos = require('../config/delete');
 var models = {}
 for (var objectType in objectList) {
 	models[objectType] = genericModel.get(objectType);
-	router.get('/'+objectType+'/:id', (function(objectType) { return function(req, res, next) {
+	router.get('/'+objectList[objectType].name+'/:id', (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectList[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}
