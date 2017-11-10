@@ -5,7 +5,7 @@
 	<div class="col-md-3">
 	<select class="selectpicker" id="Continent" required >
 	<option value>Continent</option>
-	
+
 
 	<% for(var i = 0; i < continents.length; i++) { %>
 		<option value="<%=continents[i].id %>" <%= (continents[i].nom == continent) ? 'selected' : '' %> ><%= continents[i].nom %></option>
@@ -13,12 +13,12 @@
 	</select>
 	</div>
 
-	<div class="col-md-3">	
+	<div class="col-md-3">
 	<select class="selectpicker" id="Country" data-live-search="true" required >
 	<option value>Country</option>
 
 	<% for(var i = 0; i < countries.length; i++) { %>
-		<option value="<%=countries[i].id %>" <%= (countries[i].nom == country) ? 'selected' : '' %> ><%= countries[i].nom %></option>
+		<option value="<%=countries[i]['country id'] %>" <%= (countries[i]['country'] == country) ? 'selected' : '' %> ><%= countries[i]['country'] %></option>
 	<% } %>
 	</select>
 	</div>
@@ -32,7 +32,14 @@
 	<% } %>
 	</select>
 	</div>
-
+	<div class="col-md-3">
+	<select class="selectpicker" id="Type" required >
+	<option value>Type</option>
+		<option value >Type</option>
+		<option value="1" <%= (typ == 'School' ? 'selected' : '') %> >School</option>
+		<option value="0" <%= (typ == 'Company' ? 'selected' : '') %> >Company</option>
+	</select>
+	</div>
 	</div>
 	<br>
 	<div class="table-responsive">
@@ -50,6 +57,8 @@
 	var selectContinent = document.getElementById('Continent');
 	var selectCountry = document.getElementById('Country');
 	var selectCity = document.getElementById('City');
+	var selectType = document.getElementById('Type');
+
 
 	selectContinent.addEventListener('change', function(evt) {
 		if(selectContinent.selectedIndex == 0) {
@@ -72,5 +81,13 @@
 			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		}
 	});
+	selectType.addEventListener('change', function(evt) {
+		if(selectType.selectedIndex == 0) {
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+		} else {
+			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectType[selectType.selectedIndex].text);
+		}
+	});
+
 </script>
 <% include partials/footer.ejs %>

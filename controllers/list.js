@@ -35,7 +35,7 @@ router.get('/experience/:continent?/:country?/:city?/:university?', function(req
 		var continent = (req.params.continent != "Continent") ? req.params.continent : null;
 		var country = (req.params.country != "Country") ? req.params.country : null;
 		var city = (req.params.city != "City") ? req.params.city : null;
-		var university = (university != "University") ? req.params.university : null;
+		var university = (req.params.university != "University") ? req.params.university : null;
 		if(err) return next(err);
 		models['experience'].getList(['continent.nom'], {}, [{table: "organisation", extTables: [{table: 'ville', extTables: [{table: 'pays', extTables: [{table: 'continent'}]}]}]}], "continent.id_continent", null, null, function(err, continents) {
 			if(err) return next(err);
@@ -61,15 +61,15 @@ router.get('/experience/:continent?/:country?/:city?/:university?', function(req
 			});
 		});
 	});
-	
+
 });
 
-router.get('/organisation/:continent?/:country?/:city?/:university?', function(req, res, next) {
-	organisation.getListWithLocation(req.params.continent,req.params.country,req.params.city, function(err, organizations) {
+router.get('/organisation/:continent?/:country?/:city?/:typ?', function(req, res, next) {
+	organisation.getListWithLocation(req.params.continent,req.params.country,req.params.city, req.params.typ, function(err, organizations) {
 		if(err) return next(err);
 		models['continent'].getList(['nom'], null, null, null, null, null, function(err, continents) {
 			if(err) return next(err);
-			models['pays'].getList(['nom'], (req.params.continent) ? {'continent.nom': req.params.continent} : null, (req.params.continent) ? [{table: 'continent'}] : null, null, null, null, function(err, countries) {
+			genericModel.get('experience_view').getList(['country', 'country id'], (req.params.continent) ? {'continent': req.params.continent} : null, null, "country", null, null, function(err, countries) {
 				if(err) return next(err);
 				models['ville'].getList(['nom'], (req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null), [{table: 'pays', extTables: [{table: 'continent'}]}], null, null, null, function(err, cities) {
 					if(err) return next(err);
@@ -80,14 +80,15 @@ router.get('/organisation/:continent?/:country?/:city?/:university?', function(r
 							country: req.params.country,
 							cities: cities,
 							city: req.params.city,
-							organizations: organizations
+							organizations: organizations,
+							typ: req.params.typ
 					});
 				});
 			});
 		});
 	});
 });
-	
+
 
 router.get('/experience_beta/', function(req, res, next) {
 	if(typeof req.session.referer == 'undefined') {
@@ -99,6 +100,10 @@ router.get('/experience_beta/', function(req, res, next) {
 	req.session.refererUsed = false;
 	genericModel.get('experience_view').getColumns(function(err, cols) {
 		//TODO remove id_experience_view
+		cols.find(function(element, index) {
+			if(element == "id_experience_view")
+				cols[index] = "id_experience";
+		});
 		res.render('list_generic.ejs', {table: 'experience', cols: cols, defaultCols: ["country", "country id", "city", "city id", "organization", "organization id","duration"]});
 	});
 });

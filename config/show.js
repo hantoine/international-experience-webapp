@@ -124,7 +124,7 @@ module.exports = {
 
 	eexperience: {
 		roles: Roles.PUBLIC,
-		name: "Experience",
+		name: "EExperience",
 		legend: {
 			id: null,
 			age: "Age",

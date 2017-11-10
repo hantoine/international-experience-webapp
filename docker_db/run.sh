@@ -4,6 +4,11 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+systemctl status docker >> /dev/null
+if [[ $? -ne 0 ]] ; then
+	systemctl start docker
+fi
+
 if [[ $(docker ps -a --filter name=international_dataset_mariadb --format \{\{.Names\}\}) == "international_dataset_mariadb" ]]; then
 	echo "Database docker container already exists, do you want to DELETE it ? (y/n)"
 	read rep

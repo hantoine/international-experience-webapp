@@ -1,20 +1,65 @@
-<% var title = 'Experience'; var current = 'result' %>
+	<% var title = 'Experience'; var current = 'result' %>
 <% include partials/header.ejs %>
 	<div id="main-container">
 		<div id="Request" class="row">
-			<div class="col-md-3">
-				<select class="selectpicker" required data-live-search="true" id="cols-select">
-	<% for(var i = 0; i < cols.length; i++) { 
+			<fieldset class="col-md-4, form-group">
+			<legend>Selected columns</legend>
+				<select class="selectpicker" required data-live-search="true" id="cols-select" multiple data-actions-box="true" autocomplete="off" >
+	<% for(var i = 0; i < cols.length; i++) {
 		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
 	%>
-	
+
+					<option value="<%=cols[i] %>" <%= (defaultCols.includes(cols[i]) ? 'selected' : '') %> ><%= cols[i] %></option>
+	<% } %>
+				</select>
+				<table id="cols-list">
+					<% for(var i=0 ; i < defaultCols.length; i++) {
+						if(defaultCols[i].slice(-2) == 'id' || defaultCols[i].slice(-3) == "rid" || defaultCols[i] == "id_"+table) { continue; }
+					%>
+						<tr><td> <%= defaultCols[i] %></td><td><a href="#"> <i class="fa fa-times" aria-hidden="true" ></i></td></tr>
+					<% } %>
+				</table>
+			</fieldset>
+			<fieldset class="col-md-4, form-group">
+			<legend>Filter conditions</legend>
+				<select class="selectpicker" required data-live-search="true" id="conds-select" multiple data-actions-box="true" autocomplete="off">
+	<% for(var i = 0; i < cols.length; i++) {
+		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
+	%>
+
+					<option value="<%=cols[i] %>" <%= (i==0) ? 'selected' : '' %> ><%= cols[i] %></option>
+	<% } %>
+				</select>
+				<table id="conditions-list">
+				</table>
+				<table>
+
+				</table>
+			</fieldset>
+			<fieldset class="col-md-4, form-group">
+			<legend>Group by</legend>
+				<select class="selectpicker" required data-live-search="true" id="cols-groupby" autocomplete="off">
+					<option value="none" >None</option>
+	<% for(var i = 0; i < cols.length; i++) {
+		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
+	%>
+
 					<option value="<%=cols[i] %>" ><%= cols[i] %></option>
 	<% } %>
 				</select>
-			</div>
+			</fieldset>
+			<fieldset class="col-md-4, form-group">
+				<legend style="opacity: 0;"> dummy  </legend>
+				<button id="apply" class="btn btn-primary">
+					Search
+				</button>
+			</fieldset>
+
 		</div>
 		<br>
 		<div class="table-responsive">
+			<div id="pages">
+			</div>
 			<table class="table table-hover table-sm" >
 				<thead id="table-header">
 				</thead>
@@ -28,29 +73,68 @@
 	var tableheader = document.getElementById('table-header');
 	var tablebody = document.getElementById('table-body');
 	var colsSelect = document.getElementById('cols-select');
+	var colsGroupBy = document.getElementById('cols-groupby');
+	var colsSort = document.getElementById('cols-sort');
+
+	var applyButton = document.getElementById('apply');
+	var pages = document.getElementById('pages');
 	var dataRequest = {
 		table: '<%= table %>',
 		cols: [
-		<% for(var i=0 ; i < defaultCols.length; i++) { if(i) { %>, 
+		<% for(var i=0 ; i < defaultCols.length; i++) { if(i) { %>,
 		<% } %>	"<%= defaultCols[i] %>"<% } %>
 		],
 		groupby: null,
-		sorted: [],
+		sorted: null,
 		conditions: [],
 		limit: {
-			size: 100,
+			size: 50,
 			offset: 0
 		}
 	};
-	
-	var insertRow = function(row) {	
+	var newDataRequest = {
+		table: '<%= table %>',
+		cols: [
+		<% for(var i=0 ; i < defaultCols.length; i++) { if(i) { %>,
+		<% } %>	"<%= defaultCols[i] %>"<% } %>
+		],
+		groupby: null,
+		sorted: null,
+		conditions: [],
+		limit: {
+			size: 50,
+			offset: 0
+		}
+	};
+
+	var bringSelectedOptionsToTop = function(select) {
+		var onlySelectedUntilNow = true;
+		var lastSelectedChild = null;
+		for(var i = 0 ; i < select.options.length ; i++) {
+			if(select.options[i].selected) {
+				var option = select.options.item(i);
+				if(!onlySelectedUntilNow) {
+					if(lastSelectedChild) {
+						lastSelectedChild.insertAdjacentElement('afterend', option);
+					} else {
+						select.insertAdjacentElement('afterbegin', option);
+					}
+				}
+				lastSelectedChild = option;
+			} else {
+				onlySelectedUntilNow = false;
+			}
+		}
+		$('#'+select.id).selectpicker('refresh');
+	}
+	var insertRow = function(row) {
 		var line = document.createElement("tr");
 		for (var key in row) {
 			if(key.slice(-2) == 'id') continue;
 			var cell = document.createElement("td");
 			var text = document.createTextNode(row[key]);
 
-			
+
 			if(Object.keys(row).includes(key+' id')) {
 				var link = document.createElement("a");
 				link.href = '/show/'+key+'/'+row[key+' id'];
@@ -71,34 +155,283 @@
 		line.appendChild(moreDetailsCell);
 		tablebody.appendChild(line);
 	};
+
+	var removeChildren = function(element) {
+		while(element.firstChild) {
+			element.removeChild(element.firstChild);
+		}
+
+	};
+	var getHeaderLinkListener = function(col) {
+		return function() {
+			dataRequest.sorted = col;
+			dataRequest.limit.offset = 0;
+			socket.emit('getTableData', dataRequest);
+		}
+	};
 	var insertHeaderRow = function(attributes) {
+		tableheader.removeChild(tableheader.firstChild);
 		var headerLine = document.createElement("tr");
 		for(var i = 0 ; i < attributes.length; i++) {
 			if(attributes[i].slice(-2) == 'id') continue;
-			var cell = document.createElement("th")
+			var cell = document.createElement("th");
+			var link = document.createElement("a");
 			var text = document.createTextNode(attributes[i]);
-			cell.appendChild(text);
-			headerLine.appendChild(cell);	
+			link.href='#';
+			link.addEventListener('click', getHeaderLinkListener(attributes[i]));
+			link.appendChild(text);
+			cell.appendChild(link);
+			headerLine.appendChild(cell);
 		}
 		tableheader.appendChild(headerLine);
 	};
+
+	var getPageLinkListener = function(size, offset) {
+		return function() {
+			dataRequest.limit.size = size;
+			dataRequest.limit.offset = offset;
+			socket.emit('getTableData', dataRequest);
+		};
+	};
+
+	var updatePages = function(total, limit) {
+		removeChildren(pages);
+		var nbPages = Math.ceil(total / limit.size);
+		var pageTable = document.createElement("table");
+		pageTable.style = "margin: 0px auto;";
+		var pageRow = document.createElement("tr")
+
+		var sep = document.createTextNode(" ");
+
+		var prevCell = document.createElement("td")
+		var prevLink = document.createElement("a");
+		var prevText = document.createTextNode("Previous");
+		if(limit.offset != 0) {
+			prevLink.href='#';
+			prevLink.addEventListener('click', getPageLinkListener(limit.size, (limit.offset>limit.size) ? (limit.offset-limit.size) : 0));
+		}
+		prevLink.style='margin-right: 2em';
+		prevLink.appendChild(prevText);
+		prevCell.appendChild(prevLink);
+		pageRow.appendChild(prevCell);
+
+
+		for (var i = 0 ; i < nbPages; i++ ) {
+			var cell = document.createElement("td")
+			var txt = document.createTextNode(i+1);
+			var link = document.createElement("a");
+
+			link.appendChild(txt);
+			if(i*limit.size != limit.offset) {
+				link.addEventListener('click', getPageLinkListener(limit.size, i*limit.size));
+				link.href='#';
+			}
+			link.style='margin: 0.5em;'
+			cell.appendChild(link);
+			pageRow.appendChild(cell);
+		}
+
+		var nextCell = document.createElement("td")
+		var nextLink = document.createElement("a");
+		var nextText = document.createTextNode("Next");
+		if(limit.offset + limit.size < total) {
+			nextLink.href='#';
+			nextLink.addEventListener('click', getPageLinkListener(limit.size, limit.offset+limit.size));
+		}
+		nextLink.style = 'margin-left: 2em;';
+		nextLink.appendChild(nextText);
+		nextCell.appendChild(nextLink)
+		pageRow.appendChild(nextLink);
+		pageTable.appendChild(pageRow);
+		pages.appendChild(pageTable);
+	};
 	socket.on('receiveTableData', function(data) {
-		//TODO delete all rows in tablebody and tableheader
-		console.log(data);
 		insertHeaderRow(data.attributes);
+		removeChildren(tablebody);
 		for(var i = 0 ; i < data.table.length; i++) {
 			insertRow(data.table[i]);
 		}
+		updatePages(data.nbRow, dataRequest.limit);
+		$('#main-container').selectpicker();
 	});
-	colsSelect.addEventListener('changed.bs.select', function(evt, clickedIndex, newValue) {
-		dataRequest.cols = newValue.split(', ');
-		for(var i = 0; i < dataRequest.cols.length; i++) {
-			if(cols.includes(dataRequest.cols[i] + ' id')) {
-				dataRequest.cols.push(dataRequest.cols[i] + ' id');
-			}
-		}
+	applyButton.addEventListener('click', function(evt) {
+		dataRequest.cols = newDataRequest.cols.slice(0);
+		dataRequest.groupby = newDataRequest.groupby;
+		dataRequest.conditions = newDataRequest.conditions;//TODO
+		dataRequest.limit.offset = 0;
 		socket.emit('getTableData', dataRequest);
 	});
+
+	var colsList = document.getElementById('cols-list');
+	var removeCol = function(column) {
+		var index = -1;
+		newDataRequest.cols.find(function(element, i) {
+			if(element == column)
+				index = i;
+		});
+		newDataRequest.cols.splice(index, 1);
+
+		var cols = []
+		for(var i = 0; i < newDataRequest.cols.length; i++) {
+			if(newDataRequest.cols[i].slice(-2) == 'id' || newDataRequest.cols[i].slice(-3) == "rid" || newDataRequest.cols[i] == "id_<%= table %>") { continue; }
+			cols.push(newDataRequest.cols[i]);
+		}
+		$('#cols-select').selectpicker('val', cols);
+		removeChildren(colsList);
+		$.each($("#cols-select option:selected"), function(){
+			addCol($(this).val());
+		});
+	};
+	var getRemoveColListener = function(column) {
+		return function() {
+			removeCol(column);
+		};
+	};
+	var addCol = function(column) {
+		if(column.slice(-2) == 'id' || column.slice(-3) == "rid" || column == "id_<%= table %>")
+			return;
+		var tr = document.createElement("tr");
+		var tdColName = document.createElement("td");
+		var txtColName = document.createTextNode(column);
+		tdColName.appendChild(txtColName);
+		tr.appendChild(tdColName);
+		var tdLink = document.createElement("td");
+		var aLink = document.createElement("a");
+		aLink.href = '#';
+		aLink.addEventListener("click", getRemoveColListener(column));
+		var iLink = document.createElement("i");
+		iLink.className = "fa fa-times";
+		aLink.appendChild(iLink);
+		tdLink.appendChild(aLink);
+		tr.appendChild(tdLink);
+		colsList.append(tr);
+	}
+	colsSelect.addEventListener('change', function(e) {
+		removeChildren(colsList);
+		newDataRequest.cols = [];
+		$.each($("#cols-select option:selected"), function(){
+			addCol($(this).val());
+			newDataRequest.cols.push($(this).val());
+		});
+		bringSelectedOptionsToTop(colsSelect);
+	});
+
+
+
+
+
+
+
+
+
+	//part conditions
+	var conditionList = document.getElementById('conditions-list');
+	var conditionSelect = document.getElementById('conds-select');
+	var removeCondition = function(column) {
+		var index = -1;
+		delete newDataRequest.conditions[column];
+
+		console.log(column);
+		$('#conds-select').selectpicker('val', Object.keys(newDataRequest.conditions));
+		var child = document.getElementById('condition-'+column);
+		console.log(child);
+		console.log(child.parentNode)
+		conditionList.removeChild(child);
+	};
+	var getRemoveConditionListener = function(column) {
+		return function() {
+			removeCondition(column);
+		};
+	};
+	var addCondition = function(column, condition) {
+		if(column.slice(-2) == 'id' || column.slice(-3) == "rid" || column == "id_<%= table %>")
+			return;
+		var tr = document.createElement("tr");
+		tr.id = 'condition-'+column
+		var tdColName = document.createElement("td");
+		var txtColName = document.createTextNode(column);
+		tdColName.appendChild(txtColName);
+		tr.appendChild(tdColName);
+
+		//tdselect
+		var operators = ['=', '>', '<', '<=', '>=', 'contains', 'in', 'contains words', 'between', 'match regexp'];
+		var tdoperator = document.createElement('td');
+		var selectoperator = document.createElement('select');
+		selectoperator.id = 'condition-operator-'+column;
+		selectoperator.addEventListener('change', getConditionOperatorInputListener(column));
+		for (var i = 0; i < operators.length ; i++) {
+			var option = document.createElement("option");
+			option.value = operators[i];
+			option.text = operators[i]
+			if(condition.operator == operators[i]) {
+				option.selected = true;
+			}
+			selectoperator.appendChild(option);
+		}
+		tdoperator.appendChild(selectoperator);
+		tr.appendChild(tdoperator);
+
+		//tdinput
+		var tdvalue = document.createElement("td");
+		var inputvalue = document.createElement("input");
+		inputvalue.type = "text";
+		inputvalue.name = column;
+		inputvalue.value = condition.value;
+		inputvalue.id = 'condition-value-'+column;
+		inputvalue.addEventListener('change', getConditionValueInputListener(column));
+		tdvalue.appendChild(inputvalue);
+		tr.appendChild(tdvalue);
+
+		var tdLink = document.createElement("td");
+		var aLink = document.createElement("a");
+		aLink.href = '#';
+		aLink.addEventListener("click", getRemoveConditionListener(column));
+		var iLink = document.createElement("i");
+		iLink.className = "fa fa-times";
+		aLink.appendChild(iLink);
+		tdLink.appendChild(aLink);
+		tr.appendChild(tdLink);
+		conditionList.append(tr);
+	}
+	conditionSelect.addEventListener('change', function(e) {
+		removeChildren(conditionList);
+		var prevConditions = newDataRequest.conditions;
+		newDataRequest.conditions = {};
+		$.each($("#conds-select option:selected"), function(){
+			addCondition($(this).val(), (typeof(prevConditions[$(this).val()]) != 'undefined') ?  prevConditions[$(this).val()] : {operator: '=', value: ''});
+			newDataRequest.conditions[$(this).val()] = prevConditions[$(this).val()] || {operator: '=', value: ''};
+		});
+		bringSelectedOptionsToTop(conditionSelect);
+	});
+
+	var getConditionValueInputListener = function(column) {
+		return function() {
+			newDataRequest.conditions[column].value = document.getElementById('condition-value-'+column).value;
+		};
+	};
+
+	var getConditionOperatorInputListener = function(column) {
+		return function() {
+				newDataRequest.conditions[column].operator = document.getElementById('condition-operator-'+column).value;
+		}
+	};
+
+
+
+
+
+
+	colsGroupBy.addEventListener('change', function(e){
+		bringSelectedOptionsToTop(colsGroupBy);
+		newDataRequest.groupby = $("#cols-groupby option:selected")[0].value
+		if(newDataRequest.groupby == "none")
+			newDataRequest.groupby = null;
+	});
+
+	document.querySelectorAll("#cols-list a").forEach(function(element) {
+		element.addEventListener("click", getRemoveColListener(element.parentNode.parentNode.firstChild.textContent));
+	});
+
 	socket.emit('getTableData', dataRequest);
 </script>
 

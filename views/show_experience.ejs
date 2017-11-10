@@ -7,7 +7,7 @@
 	<table class="table table-bordered tableCentered" >
 		<tr>
 			<th>Student ID</th>
-			<td> <%= exp['student'] %> </td>
+			<td> <%= exp['student id'] %> </td>
 		</tr>
 		<% if(exp['lastname'] && exp['firstname']) { %>
 		<tr>
@@ -25,23 +25,23 @@
 		</tr>
 		<tr>
 			<th>Nature of the experience </th>
-			<td> <%= exp['nature of the mission name'] %> </td>
+			<td> <%= exp['nature of the mission'] %> </td>
 		</tr>
 		<tr>
 			<th> <%= (exp['organization is school']) ? 'Ecole' : 'Entreprise' %></th>
-			<td> <%= exp['organization name'] %> </td>
+			<td> <%= exp['organization'] %> </td>
 		</tr>
 		<tr>
 			<th>Country</th>
-			<td><a href="/show/pays/<%= exp['country id'] %>"><%= exp['country name'] %></a></td>
+			<td><a href="/show/pays/<%= exp['country id'] %>"><%= exp['country'] %></a></td>
 		</tr>
 		<tr>
 			<th>Accommodation</th>
-			<td><a href="/show/logement/<%= exp['accomodation'] %>"><%= exp['accomodation name'] || "Accomodation" %></a></td>
+			<td><a href="/show/logement/<%= exp['accomodation'] %>"><%= exp['accomodation'] || "Accomodation" %></a></td>
 		</tr>
 		<tr>
 			<th>Spoken language</th>
-			<td> <%= exp['language used name'] %> </td>
+			<td> <%= exp['language used'] %> </td>
 		</tr>
 		<tr>
 			<th>Did you take a loan ?</th>

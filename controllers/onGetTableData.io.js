@@ -7,12 +7,13 @@ module.exports = function(socket) {
 		if (!authorizedTables.includes(req.table)) {
 			return;
 		}
-		genericModel.get(req.table).getList(req.cols, req.conditions, null, req.groupby, req.sorted, req.limit, function(err, results) {
+		genericModel.get(req.table).getList(req.cols, req.conditions, null, req.groupby, req.sorted ? [req.sorted] : null, req.limit, function(err, results, nbRow) {
 			if(err) return console.log(err);
 			socket.emit('receiveTableData', {
 				attributes: req.cols,
-				table: results
-			})
+				table: results,
+				nbRow: nbRow
+			});
 		});
 	}
 }

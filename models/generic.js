@@ -56,7 +56,53 @@ exports.get = function(table) {
 				} else {
 					conditionString = '`' + table + '`.`' + condition + '`';
 				}
-				query += conditionString + ' = ' + db.get().escape(conditions[condition]);
+
+				if(typeof(conditions[condition]) == 'object') {
+					var conditionValue = conditions[condition];
+					query += conditionString + ' ';
+					var operators = ['=', '>', '<', '<=', '>=', 'contains', 'in', 'between', 'match regexp'];
+					var operatorString = {
+						'=':'=',
+						'>':'>',
+						'<':'<',
+						'<=': '<=',
+						'>=':'>=',
+						'contains': 'LIKE',
+						'in':'IN',
+						'between':'BETWEEN',
+						'match regexp': 'REGEXP',
+						'contains words': ''
+					};
+					query += operatorString[conditionValue.operator] + ' ';
+					if(conditionValue.operator == 'contains') {
+						query += db.get().escape('%'+conditionValue.value+'%');
+					} else if(conditionValue.operator == 'in') {
+						var values = conditionValue.value.split(' ');
+						var valuesQuery = [];
+						for (var i = 0 ; i < values.length ; i++) {
+							valuesQuery.push(db.get().escape(values[i]))
+						}
+						query += ' (' + valuesQuery.join(', ') + ')';
+					} else if (conditionValue.operator == 'between') {
+						query += db.get().escape(conditionValue.value.split(' ')[0]) + ' AND ' + db.get().escape(conditionValue.value.split(' ')[1]);
+					} else if (conditionValue.operator == 'contains words') {
+						var values = conditionValue.value.split(' ');
+						var valuesQuery = [];
+						query += 'LIKE ' + (db.get().escape('%'+values[0]+'%') || '\'\'');
+						if(values.length > 1) {
+							query += ' OR '
+							for (var i = 1 ; i < values.length; i++) {
+								valuesQuery.push(conditionString + ' LIKE ' + db.get().escape('%'+values[i]+'%'));
+							}
+							query += valuesQuery.join(' OR ');
+						}
+					}	else {
+						query += db.get().escape(conditionValue.value);
+					}
+				} else {
+					query += conditionString + ' = ' + db.get().escape(conditions[condition]);
+				}
+
 				if(condition != lastCondition) {
 					query += ' AND ';
 				}
@@ -79,19 +125,23 @@ exports.get = function(table) {
 			}
 			query += formattedOrderBy.join(', ');
 		}
-		
+
+		query += " ";
 		if(limit) {
 			query += ' LIMIT ';
 			if(typeof(limit) == 'number')
 				query += limit;
 			else
-				query += limit.offset + ', ' + (limit.offset + limit.size);
+				query += limit.size + ' OFFSET ' + limit.offset;
 		}
-		
-		console.log(query);
+
 		db.get().query(query, function(err,rows) {
 			if(err) return done(err);
-			done(null, rows);
+			var unlimitedQuery = query.slice(0, query.lastIndexOf("LIMIT"));
+			db.get().query("SELECT COUNT(*) AS nb FROM ("+unlimitedQuery+") as countTable", function(err, res){
+				if(err) return done(err);
+				done(null, rows, res[0].nb);
+			})
 		});
 	};
 	model.getColumns = function(done) {
@@ -104,7 +154,7 @@ exports.get = function(table) {
 			done(null, cols);
 		});
 	}
-	
+
 	model.createNew = function(initValues, done) {
 		attributes = ''
 		values = ''
@@ -120,13 +170,13 @@ exports.get = function(table) {
 		var query = 'INSERT INTO ' + table + ' (' + attributes + ') VALUES (' + values + ')'
 		db.get().query(query, function(err, result) {
 			if(err) return done(err);
-			done(null, result.insertId); 
+			done(null, result.insertId);
 		});
 	};
 	model.update = function(id, values, done) {
 		query = 'UPDATE `'+ table + '` SET ';
-		
-		
+
+
 		for(var lastValue in  values);
 		for(var value in  values) {
 			query += '`' + value + '` = ' + db.escape(values[value]);
@@ -137,7 +187,7 @@ exports.get = function(table) {
 		query += ' WHERE `id_' + table +'` = ' + db.escape(id);
 		db.get().query(query, function(err) {
 			if(err) return done(err);
-			done(null); 
+			done(null);
 		});
 	};
 	model.delete = function(id, done) {
@@ -162,7 +212,7 @@ exports.get = function(table) {
 								asyncRequests.push((function(key) { return function(callback) {
 									var query = 'SELECT c.`id_' + legend[key].contentTable + '` AS id, c.`' + legend[key].descAttribute + '` AS nom FROM `' + legend[key].contentTable + '` AS c JOIN `' + legend[key].relationTable + '` AS j ON j.`id_' + legend[key].contentTable + '` = c.`id_' + legend[key].contentTable + '` WHERE j.`id_' + table + '` = ' + db.escape(id);
 									for (var attribute in legend[key].conditions) {
-										query += ' AND `' + attribute + '` = ' + db.escape(legend[key].conditions[attribute]); 
+										query += ' AND `' + attribute + '` = ' + db.escape(legend[key].conditions[attribute]);
 									}
 									db.get().query(query, function(err, result) {
 										if(err) return callback(err);
@@ -201,8 +251,8 @@ exports.get = function(table) {
 							db.get().query(query, function(err, res) {
 								if(err) return callback(err);
 								if(res.length < 1) {
-									return callback("No entry corresponding to id " + object[key] + " in " + subTable); 
-								}  
+									return callback("No entry corresponding to id " + object[key] + " in " + subTable);
+								}
 								object[subTable] = {id: res[0].id, nom: res[0].nom};
 								delete object[key];
 								callback();
@@ -236,11 +286,11 @@ exports.get = function(table) {
 					var key = result[i].column_name;
 				}
 				if(! legend[key]) {
-					return done("Erreur : L'attribut " + key + " n'est pas configuré pour " + table); 
+					return done("Erreur : L'attribut " + key + " n'est pas configuré pour " + table);
 				}
 				legend[key].optionel = (result[i].is_nullable == 'YES')
-				legend[key].data_type = result[i].data_type;		
-				legend[key].max_length = result[i].character_maximum_length;		
+				legend[key].data_type = result[i].data_type;
+				legend[key].max_length = result[i].character_maximum_length;
 			}
 			var asyncRequests = []
 			for (var key in legend) {
@@ -255,7 +305,7 @@ exports.get = function(table) {
 							}
 							legend[key].answers = reponses;
 							callback();
-						});	
+						});
 					}})(key));
 				}
 			}
@@ -265,7 +315,7 @@ exports.get = function(table) {
 			});
 		});
 	};
-	
+
 	return model;
 };
 
