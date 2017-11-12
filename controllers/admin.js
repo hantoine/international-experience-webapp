@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var experience = require('../models/experience');
+var config = require('../config')
 
 router.get('/login', function(req, res, next) {
 	if(req.session.logged) {
@@ -11,7 +12,7 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-	if(req.body.password == "troisdeuxun") {
+	if(req.body.username == config.adminUsername && req.body.password == config.adminPassword) {
 		req.session.adminLogged = true;
 	}
 	res.redirect('/admin');

@@ -11,9 +11,11 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var question = require('./models/question');
 
+var sessionMiddleware = session({secret: 'xDqgDkEIiRX9CVdHS3UhyZYtDD4ovK+W2VNIbPBWMJ0vwsSznNc/sA=='});
+
 // Setting up webserver midlleware and router
 app.use(express.static(__dirname + '/public')); // Fichiers statique (css, images, etc.)
-app.use(session({secret: 'xDqgDkEIiRX9CVdHS3UhyZYtDD4ovK+W2VNIbPBWMJ0vwsSznNc/sA=='}))
+app.use(sessionMiddleware);
 app.use(morgan('combined')); // Logging
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -34,6 +36,10 @@ app.use(function(req, res, next){
 });
 
 // Setting up socket.io communication
+io.sockets.use(function(socket, next) {
+	sessionMiddleware(socket.request, socket.request.res, next);
+});
+
 io.sockets.on('connection', function(socket) {
 	socket.on('getData', require('./controllers/onGetData.io')(socket));
 	socket.on('getTableData', require('./controllers/onGetTableData.io')(socket));

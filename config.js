@@ -7,6 +7,8 @@ module.exports = {
       host: 'localhost',
       user: 'intl_data',
       password: 'Uh7WW5SsoWMyK6r8',
-      database: 'intl_data' 
-    }
+      database: 'intl_data'
+    },
+	adminUsername: "admin",
+	adminPassword: "troisdeuxun"
 }

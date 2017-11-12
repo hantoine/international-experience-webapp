@@ -36,7 +36,11 @@ exports.get = function(table) {
 				if(attributes[i].includes('.')) {
 					query += ', `' + attributes[i].split('.')[0] + '`.`' + attributes[i].split('.')[1] + '`';
 				} else if (attributes[i].includes('(')){
-					query += ', ' + attributes[i];
+					if( !['AVG', 'MAX', 'MIN', 'COUNT', 'STDDEV', 'GROUP_CONCAT'].includes(attributes[i].split('(')[0])) {
+						console.log("Warning: bad formatted column ignored : \""+attributes[i]+"\"");
+						continue;
+					}
+					query += ', ' + attributes[i].split('(')[0] + '(' + db.e(attributes[i].split('(')[1].split(')')[0]) + ')';
 				} else {
 					query += ', `' + table + '`.`' + attributes[i] + '`';
 				}
@@ -52,7 +56,12 @@ exports.get = function(table) {
 				if(condition.includes('.')) {
 					conditionString = '`' + condition.split('.')[0] + '`.`' + condition.split('.')[1] + '`';
 				} else if (condition.includes('(')){
-					conditionString = condition;
+					if( !['AVG', 'MAX', 'MIN', 'COUNT', 'STDDEV', 'GROUP_CONCAT'].includes(condition.split('(')[0])) {
+						query += ' 1 = 1 ';
+						console.log("Warning: bad formatted condition ignored : \""+condition+"\"");
+						continue;
+					}
+					conditionString = condition.split('(')[0] + '(' + db.e(condition.split('(')[1].split(')')[0]) + ')';
 				} else {
 					conditionString = '`' + table + '`.`' + condition + '`';
 				}
@@ -97,6 +106,7 @@ exports.get = function(table) {
 							query += valuesQuery.join(' OR ');
 						}
 					}	else {
+						console.log(conditionValue.value);
 						query += db.get().escape(conditionValue.value);
 					}
 				} else {
@@ -120,6 +130,12 @@ exports.get = function(table) {
 			for (var i = 0 ; i < orderby.length; i++) {
 				if(orderby[i].includes('.'))
 					formattedOrderBy.push('`' + orderby[i].split('.')[0] + '`.`' + orderby[i].split('.')[1] + '`');
+				else if (orderby[i].includes('(')){
+						if( !['AVG', 'MAX', 'MIN', 'COUNT', 'STDDEV', 'GROUP_CONCAT'].includes(orderby[i].split('(')[0])) {
+							return done("Error: bad formatted order by : \""+orderby[i]+"\"");
+						}
+						formattedOrderBy.push(orderby[i].split('(')[0] + '(' + db.e(orderby[i].split('(')[1].split(')')[0]) + ')')
+					}
 				else
 					formattedOrderBy.push('`' + orderby[i] + '`');
 			}

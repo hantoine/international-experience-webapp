@@ -2,9 +2,9 @@
 <% include partials/header.ejs %>
 	<div id="main-container">
 		<div id="Request" class="row">
-			<fieldset class="col-md-4, form-group">
+			<fieldset class="col-md-4, form-group" >
 			<legend>Selected columns</legend>
-				<select class="selectpicker" required data-live-search="true" id="cols-select" multiple data-actions-box="true" autocomplete="off" >
+				<select class="selectpicker dropup" required data-live-search="true" id="cols-select" multiple data-actions-box="true" autocomplete="off" data-dropup-auto="false">
 	<% for(var i = 0; i < cols.length; i++) {
 		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
 	%>
@@ -12,17 +12,10 @@
 					<option value="<%=cols[i] %>" <%= (defaultCols.includes(cols[i]) ? 'selected' : '') %> ><%= cols[i] %></option>
 	<% } %>
 				</select>
-				<table id="cols-list">
-					<% for(var i=0 ; i < defaultCols.length; i++) {
-						if(defaultCols[i].slice(-2) == 'id' || defaultCols[i].slice(-3) == "rid" || defaultCols[i] == "id_"+table) { continue; }
-					%>
-						<tr><td> <%= defaultCols[i] %></td><td><a href="#"> <i class="fa fa-times" aria-hidden="true" ></i></td></tr>
-					<% } %>
-				</table>
 			</fieldset>
 			<fieldset class="col-md-4, form-group">
-			<legend>Filter conditions</legend>
-				<select class="selectpicker" required data-live-search="true" id="conds-select" multiple data-actions-box="true" autocomplete="off">
+			<legend>Conditions</legend>
+				<select class="selectpicker dropup" required data-live-search="true" id="conds-select" multiple data-actions-box="true" autocomplete="off" data-dropup-auto="false">
 	<% for(var i = 0; i < cols.length; i++) {
 		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
 	%>
@@ -30,15 +23,10 @@
 					<option value="<%=cols[i] %>" <%= (i==0) ? 'selected' : '' %> ><%= cols[i] %></option>
 	<% } %>
 				</select>
-				<table id="conditions-list">
-				</table>
-				<table>
-
-				</table>
 			</fieldset>
 			<fieldset class="col-md-4, form-group">
 			<legend>Group by</legend>
-				<select class="selectpicker" required data-live-search="true" id="cols-groupby" autocomplete="off">
+				<select class="selectpicker dropup" required data-live-search="true" id="cols-groupby" autocomplete="off" data-dropup-auto="false">
 					<option value="none" >None</option>
 	<% for(var i = 0; i < cols.length; i++) {
 		if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
@@ -54,7 +42,39 @@
 					Search
 				</button>
 			</fieldset>
-
+			<fieldset class="col-md-12" id="addSpecialColumnButtonFieldset">
+				<button class="btn" id="addSpecialColumnButton" >Add a special column</button>
+			</fieldset>
+			<fieldset class="col-md-12" style="display: none" id="addGroupedAttribute-fieldset">
+				<legend>Add a special column</legend>
+			<table>
+				<tr>
+					<select id="addGroupedAttribute-function" class="selectpicker dropup" data-dropup-auto="false">
+						<option value="" disabled selected>Select the function</option>
+						<option value="AVG" >Average</option>
+						<option value="MAX" >Maximum</option>
+						<option value="MIN" >Minimum</option>
+						<option value="COUNT" >Count</option>
+						<option value="GROUP_CONCAT" >Concatenate</option>
+						<option value="STDDEV" >Standard deviation</option>
+					</select>
+					<select class="selectpicker dropup" required data-live-search="true" autocomplete="off" data-dropup-auto="false" id="addGroupedAttribute-attribute">
+						<option value="" disabled selected>Select the variable</option>
+						<% for(var i = 0; i < cols.length; i++) {
+							if(cols[i].slice(-2) == 'id' || cols[i].slice(-3) == "rid" || cols[i] == "id_"+table) { continue; }
+						%>
+										<option value="<%=cols[i] %>" ><%= cols[i] %></option>
+						<% } %>
+					</select>
+					<button id="addGroupedAttribute-button" class="btn" >Add</button>
+				<tr/>
+			</table>
+			</fieldset>
+			<fieldset style="display: none" id="conditions-fieldset">
+				<legend>Conditions</legend>
+			<table id="conditions-list">
+			</table>
+			</fieldset>
 		</div>
 		<br>
 		<div class="table-responsive">
@@ -70,6 +90,7 @@
 	</div>
 <% include partials/socket.io.ejs %>
 <script>
+$( function() {
 	var tableheader = document.getElementById('table-header');
 	var tablebody = document.getElementById('table-body');
 	var colsSelect = document.getElementById('cols-select');
@@ -110,6 +131,10 @@
 	var bringSelectedOptionsToTop = function(select) {
 		var onlySelectedUntilNow = true;
 		var lastSelectedChild = null;
+
+		if(select.options[0].value == "none") {
+			lastSelectedChild = select.options.item(0);
+		}
 		for(var i = 0 ; i < select.options.length ; i++) {
 			if(select.options[i].selected) {
 				var option = select.options.item(i);
@@ -177,7 +202,7 @@
 			var cell = document.createElement("th");
 			var link = document.createElement("a");
 			var text = document.createTextNode(attributes[i]);
-			link.href='#';
+			link.href='javascript:void(0)';
 			link.addEventListener('click', getHeaderLinkListener(attributes[i]));
 			link.appendChild(text);
 			cell.appendChild(link);
@@ -207,7 +232,7 @@
 		var prevLink = document.createElement("a");
 		var prevText = document.createTextNode("Previous");
 		if(limit.offset != 0) {
-			prevLink.href='#';
+			prevLink.href='javascript:void(0)';
 			prevLink.addEventListener('click', getPageLinkListener(limit.size, (limit.offset>limit.size) ? (limit.offset-limit.size) : 0));
 		}
 		prevLink.style='margin-right: 2em';
@@ -224,7 +249,7 @@
 			link.appendChild(txt);
 			if(i*limit.size != limit.offset) {
 				link.addEventListener('click', getPageLinkListener(limit.size, i*limit.size));
-				link.href='#';
+				link.href='javascript:void(0)';
 			}
 			link.style='margin: 0.5em;'
 			cell.appendChild(link);
@@ -235,7 +260,7 @@
 		var nextLink = document.createElement("a");
 		var nextText = document.createTextNode("Next");
 		if(limit.offset + limit.size < total) {
-			nextLink.href='#';
+			nextLink.href='javascript:void(0)';
 			nextLink.addEventListener('click', getPageLinkListener(limit.size, limit.offset+limit.size));
 		}
 		nextLink.style = 'margin-left: 2em;';
@@ -259,69 +284,21 @@
 		dataRequest.groupby = newDataRequest.groupby;
 		dataRequest.conditions = newDataRequest.conditions;//TODO
 		dataRequest.limit.offset = 0;
+		if(!dataRequest.cols.includes(dataRequest.sorted)) {
+			dataRequest.sorted = null;
+		}
 		socket.emit('getTableData', dataRequest);
 	});
 
-	var colsList = document.getElementById('cols-list');
-	var removeCol = function(column) {
-		var index = -1;
-		newDataRequest.cols.find(function(element, i) {
-			if(element == column)
-				index = i;
-		});
-		newDataRequest.cols.splice(index, 1);
-
-		var cols = []
-		for(var i = 0; i < newDataRequest.cols.length; i++) {
-			if(newDataRequest.cols[i].slice(-2) == 'id' || newDataRequest.cols[i].slice(-3) == "rid" || newDataRequest.cols[i] == "id_<%= table %>") { continue; }
-			cols.push(newDataRequest.cols[i]);
-		}
-		$('#cols-select').selectpicker('val', cols);
-		removeChildren(colsList);
-		$.each($("#cols-select option:selected"), function(){
-			addCol($(this).val());
-		});
-	};
-	var getRemoveColListener = function(column) {
-		return function() {
-			removeCol(column);
-		};
-	};
-	var addCol = function(column) {
-		if(column.slice(-2) == 'id' || column.slice(-3) == "rid" || column == "id_<%= table %>")
-			return;
-		var tr = document.createElement("tr");
-		var tdColName = document.createElement("td");
-		var txtColName = document.createTextNode(column);
-		tdColName.appendChild(txtColName);
-		tr.appendChild(tdColName);
-		var tdLink = document.createElement("td");
-		var aLink = document.createElement("a");
-		aLink.href = '#';
-		aLink.addEventListener("click", getRemoveColListener(column));
-		var iLink = document.createElement("i");
-		iLink.className = "fa fa-times";
-		aLink.appendChild(iLink);
-		tdLink.appendChild(aLink);
-		tr.appendChild(tdLink);
-		colsList.append(tr);
-	}
 	colsSelect.addEventListener('change', function(e) {
-		removeChildren(colsList);
 		newDataRequest.cols = [];
 		$.each($("#cols-select option:selected"), function(){
-			addCol($(this).val());
 			newDataRequest.cols.push($(this).val());
 		});
+	});
+	$('#cols-select').on('hidden.bs.select', function() {
 		bringSelectedOptionsToTop(colsSelect);
 	});
-
-
-
-
-
-
-
 
 
 	//part conditions
@@ -359,6 +336,7 @@
 		var selectoperator = document.createElement('select');
 		selectoperator.id = 'condition-operator-'+column;
 		selectoperator.addEventListener('change', getConditionOperatorInputListener(column));
+		selectoperator.className = "form-control";
 		for (var i = 0; i < operators.length ; i++) {
 			var option = document.createElement("option");
 			option.value = operators[i];
@@ -378,13 +356,14 @@
 		inputvalue.name = column;
 		inputvalue.value = condition.value;
 		inputvalue.id = 'condition-value-'+column;
+		inputvalue.className = "form-control";
 		inputvalue.addEventListener('change', getConditionValueInputListener(column));
 		tdvalue.appendChild(inputvalue);
 		tr.appendChild(tdvalue);
 
 		var tdLink = document.createElement("td");
 		var aLink = document.createElement("a");
-		aLink.href = '#';
+		aLink.href = 'javascript:void(0)';
 		aLink.addEventListener("click", getRemoveConditionListener(column));
 		var iLink = document.createElement("i");
 		iLink.className = "fa fa-times";
@@ -392,6 +371,8 @@
 		tdLink.appendChild(aLink);
 		tr.appendChild(tdLink);
 		conditionList.append(tr);
+
+		document.getElementById('conditions-fieldset').style.display = "block";
 	}
 	conditionSelect.addEventListener('change', function(e) {
 		removeChildren(conditionList);
@@ -401,6 +382,8 @@
 			addCondition($(this).val(), (typeof(prevConditions[$(this).val()]) != 'undefined') ?  prevConditions[$(this).val()] : {operator: '=', value: ''});
 			newDataRequest.conditions[$(this).val()] = prevConditions[$(this).val()] || {operator: '=', value: ''};
 		});
+	});
+	$('#conds-select').on('hidden.bs.select', function() {
 		bringSelectedOptionsToTop(conditionSelect);
 	});
 
@@ -416,23 +399,79 @@
 		}
 	};
 
-
-
-
-
-
 	colsGroupBy.addEventListener('change', function(e){
-		bringSelectedOptionsToTop(colsGroupBy);
 		newDataRequest.groupby = $("#cols-groupby option:selected")[0].value
 		if(newDataRequest.groupby == "none")
 			newDataRequest.groupby = null;
 	});
 
-	document.querySelectorAll("#cols-list a").forEach(function(element) {
-		element.addEventListener("click", getRemoveColListener(element.parentNode.parentNode.firstChild.textContent));
+	var addGroupedAttribute = function() {
+		var selectOperator = document.getElementById('addGroupedAttribute-function');
+		if(selectOperator.selectedIndex == 0 || document.getElementById('addGroupedAttribute-attribute').selectedIndex == 0) {
+			document.getElementById('addSpecialColumnButtonFieldset').style.display = "block";
+			document.getElementById('addGroupedAttribute-fieldset').style.display = "none";
+			return;
+		}
+		// retrieving necessary values
+		var operatorValue = selectOperator.value;
+		var operatorName = selectOperator.options[selectOperator.selectedIndex].text;
+		var attribute = document.getElementById('addGroupedAttribute-attribute').value;
+
+
+		var newOptionValue = operatorValue +'('+attribute+')';
+		var newOptionName = operatorName + ' of: ' + attribute
+
+		for (var i = 0 ; i < colsSelect.options.length ; i++) {
+			if(colsSelect.options[i].value == newOptionValue) {
+				if(!colsSelect.options[i].selected) {
+					colsSelect.options[i].selected = true;
+					$('#'+colsSelect.id).selectpicker('refresh');
+				}
+				return;
+			}
+		}
+
+		//creating new option for column selecter
+		var newPossibleColumn = document.createElement('option');
+		newPossibleColumn.value = newOptionValue
+		newPossibleColumn.selected = true;
+		var newPossibleColumnText = document.createTextNode(newOptionName);
+		newPossibleColumn.appendChild(newPossibleColumnText);
+		colsSelect.options.item(0).insertAdjacentElement('beforebegin', newPossibleColumn);
+
+		//creating new option for conditions selecter
+		var newPossibleCondition = document.createElement('option');
+		newPossibleCondition.value = newOptionValue
+		var newPossibleConditionText = document.createTextNode(newOptionName);
+		newPossibleCondition.appendChild(newPossibleConditionText);
+		conditionSelect.appendChild(newPossibleCondition);
+
+		$('#'+colsSelect.id).selectpicker('refresh');
+		$('#'+conditionSelect.id).selectpicker('refresh');
+		newDataRequest.cols.push(newOptionValue);
+		document.getElementById('addSpecialColumnButtonFieldset').style.display = "block";
+		document.getElementById('addGroupedAttribute-fieldset').style.display = "none";
+
+	}
+
+	document.getElementById('addSpecialColumnButton').addEventListener('click', function() {
+		document.getElementById('addSpecialColumnButtonFieldset').style.display = "none";
+		document.getElementById('addGroupedAttribute-fieldset').style.display = "block";
+		document.getElementById('addGroupedAttribute-function').selectedIndex = 0;
+		document.getElementById('addGroupedAttribute-attribute').selectedIndex = 0;
+		$('#addGroupedAttribute-function').selectpicker('refresh');
+		$('#addGroupedAttribute-attribute').selectpicker('refresh');
+	});
+	document.getElementById('addGroupedAttribute-button').addEventListener('click', addGroupedAttribute);
+
+	$('#cols-groupby').on('hidden.bs.select', function() {
+		bringSelectedOptionsToTop(colsGroupBy);
 	});
 
+	bringSelectedOptionsToTop(colsSelect);
 	socket.emit('getTableData', dataRequest);
+
+  } );
 </script>
 
 <% include partials/footer.ejs %>
