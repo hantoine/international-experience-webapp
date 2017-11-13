@@ -1,6 +1,9 @@
 	<% var title = 'Experience'; var current = 'result' %>
 <% include partials/header.ejs %>
 	<div id="main-container">
+		<div class="text-center mb-3">
+		<a href="/list/experience" class="btn btn-secondary"> Switch to simple search </a>
+		</div>
 		<div id="Request" class="row">
 			<fieldset class="col-md-4, form-group" >
 			<legend>Selected columns</legend>
@@ -43,7 +46,7 @@
 				</button>
 			</fieldset>
 			<fieldset class="col-md-12" id="addSpecialColumnButtonFieldset">
-				<button class="btn" id="addSpecialColumnButton" >Add a special column</button>
+				<button class="btn btn-secondary" id="addSpecialColumnButton" >Add a special column</button>
 			</fieldset>
 			<fieldset class="col-md-12" style="display: none" id="addGroupedAttribute-fieldset">
 				<legend>Add a special column</legend>
@@ -70,12 +73,50 @@
 				<tr/>
 			</table>
 			</fieldset>
+		</div>
 			<fieldset style="display: none" id="conditions-fieldset">
 				<legend>Conditions</legend>
 			<table id="conditions-list">
 			</table>
 			</fieldset>
-		</div>
+		<div class="alert alert-danger" role="alert" style="display: none;" id="error-display">
+			<strong>Error</strong> There is an error in your request to the database
+	 	</div>
+			<fieldset class="col-md-12" id="drawChartButtonFieldset">
+				<button class="btn btn-secondary" id="drawChartButton" >Draw a chart</button>
+			</fieldset>
+			<fieldset class="col-md-12" style="display: none" id="drawChartFieldset">
+				<legend>Draw a chart</legend>
+			<table>
+				<tr>
+					<select id="drawChartFieldset-charttype" class="selectpicker dropup" data-dropup-auto="false">
+						<option value="" disabled selected>Select a type of chart</option>
+						<option value="bar" >Bar</option>
+						<option value="line" >Line</option>
+						<option value="pie" >Pie</option>
+						<option value="radar" >Radar</option>
+					</select>
+					<select class="selectpicker dropup" required data-live-search="true" autocomplete="off" data-dropup-auto="false" id="drawChartFieldset-label">
+						<option value="" disabled selected>Select label column</option>
+						<% for(var i = 0; i < defaultCols.length; i++) {
+							if(defaultCols[i].slice(-2) == 'id' || defaultCols[i].slice(-3) == "rid" || defaultCols[i] == "id_"+table) { continue; }
+						%>
+										<option value="<%=defaultCols[i] %>" ><%= defaultCols[i] %></option>
+						<% } %>
+					</select>
+					<select class="selectpicker dropup" required data-live-search="true" autocomplete="off" data-dropup-auto="false" id="drawChartFieldset-data">
+						<option value="" disabled selected>Select data column</option>
+						<% for(var i = 0; i < defaultCols.length; i++) {
+							if(defaultCols[i].slice(-2) == 'id' || defaultCols[i].slice(-3) == "rid" || defaultCols[i] == "id_"+table) { continue; }
+						%>
+										<option value="<%=defaultCols[i] %>" ><%= defaultCols[i] %></option>
+						<% } %>
+					</select>
+					<button id="drawChartFieldset-button" class="btn" >Add</button>
+					<canvas id="drawChartFieldset-canvas" width="0" height="0"></canvas>
+				<tr/>
+			</table>
+			</fieldset>
 		<br>
 		<div class="table-responsive">
 			<div id="pages">
@@ -89,7 +130,9 @@
 		</div>
 	</div>
 <% include partials/socket.io.ejs %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 <script>
+	var errorMessage = null;
 $( function() {
 	var tableheader = document.getElementById('table-header');
 	var tablebody = document.getElementById('table-body');
@@ -170,14 +213,17 @@ $( function() {
 			}
 			line.appendChild(cell);
 		}
-		var moreDetailsCell = document.createElement("td");
-		var moreDetailsLink = document.createElement("a");
-		moreDetailsLink.href = "/show/"+dataRequest.table+"/"+row.id;
-		moreDetailsLink.className = "btn btn-primary";
-		var moreDetailsText = document.createTextNode("More details");
-		moreDetailsLink.appendChild(moreDetailsText);
-		moreDetailsCell.appendChild(moreDetailsLink);
-		line.appendChild(moreDetailsCell);
+
+		if(dataRequest.groupby == null) {
+			var moreDetailsCell = document.createElement("td");
+			var moreDetailsLink = document.createElement("a");
+			moreDetailsLink.href = "/show/"+dataRequest.table+"/"+row.id;
+			moreDetailsLink.className = "btn btn-primary";
+			var moreDetailsText = document.createTextNode("More details");
+			moreDetailsLink.appendChild(moreDetailsText);
+			moreDetailsCell.appendChild(moreDetailsLink);
+			line.appendChild(moreDetailsCell);
+		}
 		tablebody.appendChild(line);
 	};
 
@@ -222,6 +268,8 @@ $( function() {
 	var updatePages = function(total, limit) {
 		removeChildren(pages);
 		var nbPages = Math.ceil(total / limit.size);
+		if(nbPages < 2)
+			return;
 		var pageTable = document.createElement("table");
 		pageTable.style = "margin: 0px auto;";
 		var pageRow = document.createElement("tr")
@@ -270,7 +318,16 @@ $( function() {
 		pageTable.appendChild(pageRow);
 		pages.appendChild(pageTable);
 	};
+
+	socket.on('error', function(message) {
+		document.getElementById('error-display').style.display = "block";
+		errorMessage = error;
+	});
 	socket.on('receiveTableData', function(data) {
+		if(data.id == "chart") {
+			drawChart(data.table);
+			return;
+		}
 		insertHeaderRow(data.attributes);
 		removeChildren(tablebody);
 		for(var i = 0 ; i < data.table.length; i++) {
@@ -278,6 +335,7 @@ $( function() {
 		}
 		updatePages(data.nbRow, dataRequest.limit);
 		$('#main-container').selectpicker();
+		document.getElementById('error-display').style.display = "none";
 	});
 	applyButton.addEventListener('click', function(evt) {
 		dataRequest.cols = newDataRequest.cols.slice(0);
@@ -287,14 +345,26 @@ $( function() {
 		if(!dataRequest.cols.includes(dataRequest.sorted)) {
 			dataRequest.sorted = null;
 		}
+		removeChart();
 		socket.emit('getTableData', dataRequest);
 	});
 
 	colsSelect.addEventListener('change', function(e) {
 		newDataRequest.cols = [];
+		var drawChartLabelSelect = document.getElementById('drawChartFieldset-label');
+		var drawChartDataSelect = document.getElementById('drawChartFieldset-data');
+		removeChildren(drawChartLabelSelect);
+		removeChildren(drawChartDataSelect);
+		addOption(drawChartLabelSelect, "", "Select label column", 'end', false, true);
+		addOption(drawChartDataSelect, "", "Select data column", 'end', false, true);
+
 		$.each($("#cols-select option:selected"), function(){
 			newDataRequest.cols.push($(this).val());
+			addOption(drawChartLabelSelect, $(this).val(), $(this).val(), 'end');
+			addOption(drawChartDataSelect, $(this).val(), $(this).val(), 'end');
 		});
+		$('#drawChartFieldset-label').selectpicker('refresh');
+		$('#drawChartFieldset-data').selectpicker('refresh');
 	});
 	$('#cols-select').on('hidden.bs.select', function() {
 		bringSelectedOptionsToTop(colsSelect);
@@ -331,7 +401,7 @@ $( function() {
 		tr.appendChild(tdColName);
 
 		//tdselect
-		var operators = ['=', '>', '<', '<=', '>=', 'contains', 'in', 'contains words', 'between', 'match regexp'];
+		var operators = ['=', '>', '<', '<=', '>=', '!=', 'contains', 'in', 'contains words', 'between', 'match regexp', 'is not null'];
 		var tdoperator = document.createElement('td');
 		var selectoperator = document.createElement('select');
 		selectoperator.id = 'condition-operator-'+column;
@@ -432,19 +502,16 @@ $( function() {
 		}
 
 		//creating new option for column selecter
-		var newPossibleColumn = document.createElement('option');
-		newPossibleColumn.value = newOptionValue
-		newPossibleColumn.selected = true;
-		var newPossibleColumnText = document.createTextNode(newOptionName);
-		newPossibleColumn.appendChild(newPossibleColumnText);
-		colsSelect.options.item(0).insertAdjacentElement('beforebegin', newPossibleColumn);
+		addOption(colsSelect, newOptionValue, newOptionName, 'begin', true)
 
 		//creating new option for conditions selecter
-		var newPossibleCondition = document.createElement('option');
-		newPossibleCondition.value = newOptionValue
-		var newPossibleConditionText = document.createTextNode(newOptionName);
-		newPossibleCondition.appendChild(newPossibleConditionText);
-		conditionSelect.appendChild(newPossibleCondition);
+		addOption(conditionSelect, newOptionValue, newOptionName, 'end')
+
+		//create new options for chart drawing
+		var drawChartLabelSelect = document.getElementById('drawChartFieldset-label');
+		var drawChartDataSelect = document.getElementById('drawChartFieldset-data');
+		addOption(drawChartLabelSelect, newOptionValue, newOptionName, 'end');
+		addOption(drawChartDataSelect, newOptionValue, newOptionName, 'end');
 
 		$('#'+colsSelect.id).selectpicker('refresh');
 		$('#'+conditionSelect.id).selectpicker('refresh');
@@ -452,6 +519,21 @@ $( function() {
 		document.getElementById('addSpecialColumnButtonFieldset').style.display = "block";
 		document.getElementById('addGroupedAttribute-fieldset').style.display = "none";
 
+	}
+
+	var addOption = function(select, value, text, position, selected, disabled) {
+		var newOption = document.createElement('option');
+		newOption.value = value
+		if(selected)
+			newOption.selected = true;
+		if(disabled)
+			newOption.disabled = true;
+		var newOptiontext = document.createTextNode(text);
+		newOption.appendChild(newOptiontext);
+		if(position != 'begin')
+			select.appendChild(newOption);
+		else
+			select.options.item(0).insertAdjacentElement('beforebegin', newOption);
 	}
 
 	document.getElementById('addSpecialColumnButton').addEventListener('click', function() {
@@ -462,8 +544,92 @@ $( function() {
 		$('#addGroupedAttribute-function').selectpicker('refresh');
 		$('#addGroupedAttribute-attribute').selectpicker('refresh');
 	});
-	document.getElementById('addGroupedAttribute-button').addEventListener('click', addGroupedAttribute);
 
+	var chartEnabled = false;
+	var removeChart = function() {
+		document.getElementById('drawChartButton').innerHTML = "Draw a chart";
+		document.getElementById('drawChartFieldset').style.display = "none";
+		if(chart) {
+			chart.destroy();
+		}
+		var ctx = document.getElementById('drawChartFieldset-canvas');
+		ctx.width = "0";
+		ctx.height= "0";
+		chartEnabled = false;
+	};
+	document.getElementById('drawChartButton').addEventListener('click', function(){
+		if(chartEnabled) {
+			removeChart();
+		} else {
+			document.getElementById('drawChartButton').innerHTML = "Remove the chart";
+			document.getElementById('drawChartFieldset').style.display = "block";
+			document.getElementById('drawChartFieldset-charttype').selectedIndex = 0;
+			document.getElementById('drawChartFieldset-label').selectedIndex = 0;
+			document.getElementById('drawChartFieldset-data').selectedIndex = 0;
+			$('#drawChartFieldset-charttype').selectpicker('refresh');
+			$('#drawChartFieldset-label').selectpicker('refresh');
+			$('#drawChartFieldset-data').selectpicker('refresh');
+			chartEnabled = true;
+		}
+	});
+
+	function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+	}
+
+	var chart = null;
+	document.getElementById('drawChartFieldset-button').addEventListener('click', function() {
+		var labelColumn = document.getElementById('drawChartFieldset-label').value;
+		var dataColumn = document.getElementById('drawChartFieldset-data').value;
+		var chartdataRequest = JSON.parse(JSON.stringify(dataRequest));
+		chartdataRequest.limit = null;
+		chartdataRequest.cols = [labelColumn, dataColumn];
+		chartdataRequest.id = "chart";
+		socket.emit('getTableData', chartdataRequest);
+	});
+
+	var drawChart = function(tableData) {
+		var ctx = document.getElementById('drawChartFieldset-canvas');
+		ctx.width = "400";
+		ctx.height= "250";
+
+		var chartType = document.getElementById('drawChartFieldset-charttype').value;
+		var labelColumn = document.getElementById('drawChartFieldset-label').value;
+		var dataColumn = document.getElementById('drawChartFieldset-data').value;
+		if(dataColumn.includes('(')) {
+			dataColumn = dataColumn.split('(')[0] + '(`' + dataColumn.split('(')[1].split(')')[0] + '`)';
+		}
+		var data = tableData.map(r => r[dataColumn]);
+		var labels = tableData.map(r => r[labelColumn]);
+		if(chart) {
+			chart.destroy();
+		}
+
+		chart = new Chart(ctx, {
+			type: chartType,
+			data: {
+				labels: labels,
+				datasets: [{
+					label: dataColumn,
+					data: data,
+					backgroundColor: labels.map(l => getRandomColor())
+				}]
+			},
+			options: {
+				legend: {
+            display: (labels.length < 10)
+         }
+			}
+		});
+	};
+
+
+	document.getElementById('addGroupedAttribute-button').addEventListener('click', addGroupedAttribute);
 	$('#cols-groupby').on('hidden.bs.select', function() {
 		bringSelectedOptionsToTop(colsGroupBy);
 	});

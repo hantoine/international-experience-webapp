@@ -9,16 +9,17 @@ module.exports = function(socket) {
 		}
 		if(!socket.request.session.adminLogged) {
 			var newCols = req.cols.filter(function(col) {
-				return !['firstname', 'lastname'].includes(col);
+				return !['firstname', 'lastname', 'gender'].includes(col);
 			});
 			req.cols = newCols;
 		}
 		genericModel.get(req.table).getList(req.cols, req.conditions, null, req.groupby, req.sorted ? [req.sorted] : null, req.limit, function(err, results, nbRow) {
-			if(err) return console.log(err);
+			if(err) return socker.emit('error', err);
 			socket.emit('receiveTableData', {
 				attributes: req.cols,
 				table: results,
-				nbRow: nbRow
+				nbRow: nbRow,
+				id: req.id
 			});
 		});
 	}

@@ -3,7 +3,7 @@
 
 <div id="main-container-noborder" >
 <a href="/util/back" >&lt; Back </a>
-<table>
+<table class="table table-hover table-sm">
 <%
 	for(var key in legend) {
 		if(legend[key]) {
@@ -54,13 +54,13 @@
 %>
 </table>
 <% if(allowEdit) { %>
-<form method="get" action="/edit/<%= item_id %>/<%= object.id %>" class="inline-block">
-	<input type="submit" value="Edit" />
+<form method="get" action="/edit/<%= item_id %>/<%= object.id %>" class="col-md-6">
+	<input type="submit" value="Edit" class="btn btn-primary" />
 </form>
 <% }
 if(allowDelete) { %>
-<form method="post" action="/delete/<%= item_id %>/<%= object.id %>" class="inline-block">
-	<input type="submit" value="Delete" />
+<form method="post" action="/delete/<%= item_id %>/<%= object.id %>" class="col-md-6">
+	<input type="submit" value="Delete" class="btn btn-primary" />
 </form>
 <% } %>
 </div>

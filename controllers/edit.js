@@ -8,7 +8,7 @@ var objectNewAuth = require('../config/new');
 var models = {}
 for (var objectType in objectList) {
 	models[objectType] = genericModel.get(objectType);
-	router.get('/'+objectType+'/:id', (function(objectType) { return function(req, res, next) {
+	router.get('/'+objectList[objectType].name+'/:id', (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectList[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}
@@ -26,7 +26,7 @@ for (var objectType in objectList) {
 				req.session.refererUsed = false
 				for (var key in legend) {
 					if(legend[key].type == genericModel.QuestionType.EXT) {
-						legend[key].roleNew = (typeof objectNewAuth[key] != 'undefined') ? objectNewAuth[key] : 10; 
+						legend[key].roleNew = (typeof objectNewAuth[key] != 'undefined') ? objectNewAuth[key] : 10;
 					}
 				}
 				res.render('generic/edit.ejs', {
@@ -44,7 +44,7 @@ for (var objectType in objectList) {
 			return res.status(403).end("Not authorized");
 		}
 		models[objectType].update(req.params.id, req.body, function(err){
-			if(err) return console.log('Error while updating ' + objectType + ' with id ' + req.params.id + ' : ' + err); 
+			if(err) return console.log('Error while updating ' + objectType + ' with id ' + req.params.id + ' : ' + err);
 			req.session.refererUsed = true;
 			res.redirect(req.session.referer.pop());
 		});

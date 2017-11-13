@@ -7,7 +7,7 @@ var objectsAuthorizations = require('../config/delete');
 var models = {}
 for (var objectType in objectsAuthorizations) {
 	models[objectType] = genericModel.get(objectType);
-	router.post('/'+objectType+'/:id', (function(objectType) { return function(req, res, next) {
+	router.post('/'+objectsAuthorizations[objectType].name+'/:id', (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectsAuthorizations[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}

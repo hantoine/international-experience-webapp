@@ -47,7 +47,7 @@
 		<thead><tr><th>Organisation name</th><th>City</th><th>Country</th><th>Type</th><th></th></tr></thead>
 	<tbody class="container">
 			<% for(var i = 0 ; i < organizations.length ; i++) { %>
-				<tr><td><%= organizations[i].name %></td><td><%= organizations[i].ville %></td><td><%= organizations[i].pays %></td><td><%= (organizations[i].estEcole != 0) ? 'School' : 'Company' %></td><td><a href="/show/organisation/<%= organizations[i].id %>"class="btn btn-primary" >More details</a></td></tr>
+				<tr><td><%= organizations[i].name %></td><td><%= organizations[i].ville %></td><td><%= organizations[i].pays %></td><td><%= (organizations[i].estEcole != 0) ? 'School' : 'Company' %></td><td><a href="/show/organization/<%= organizations[i].id %>"class="btn btn-primary" >More details</a></td></tr>
 			<% } %>
 	</tbody>
 	</table>

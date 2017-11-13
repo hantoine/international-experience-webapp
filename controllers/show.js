@@ -25,7 +25,7 @@ for (var objectType in objectList) {
 			for(var key in objectList[objectType].legend) {
 				var value = objectList[objectType].legend[key]
 				if(value && (typeof value == 'object') && value.type == 'list') {
-					value.canEdit = (objectEditInfos[value.contentTable]) ? (role >= objectEditInfos[value.contentTable].role) : false; 
+					value.canEdit = (objectEditInfos[value.contentTable]) ? (role >= objectEditInfos[value.contentTable].role) : false;
 				}
 			}
 			for (var key in object) {
@@ -42,10 +42,10 @@ for (var objectType in objectList) {
 			req.session.refererUsed = false;
 			res.render('generic/show.ejs', {
 				item_name: objectList[objectType].name,
-				item_id: objectType,
+				item_id: objectList[objectType].name,
 				object: object,
 				legend: objectList[objectType].legend,
-				allowEdit: (role >= objectEditInfos[objectType].role), 
+				allowEdit: (role >= objectEditInfos[objectType].role),
 				allowDelete: (role >= objectDeleteInfos[objectType]),
 			});
 		});
@@ -59,8 +59,9 @@ router.get('/experience/:id', function(req, res, next) {
 			res.render('show_experience.ejs', {exp: exp});
 		} else {
 			exp.lastname = null;
-			exp.firstname = null;	
-			exp['student name'] = null;	
+			exp.firstname = null;
+			exp.gender = null;
+			exp['student name'] = null;
 			res.render('show_experience.ejs', {exp: exp});
 		}
 

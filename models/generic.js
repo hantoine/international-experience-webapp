@@ -69,18 +69,20 @@ exports.get = function(table) {
 				if(typeof(conditions[condition]) == 'object') {
 					var conditionValue = conditions[condition];
 					query += conditionString + ' ';
-					var operators = ['=', '>', '<', '<=', '>=', 'contains', 'in', 'between', 'match regexp'];
+					var operators = ['=', '>', '<', '<=', '>=', 'contains', 'in', 'between', 'match regexp', 'is not null'];
 					var operatorString = {
 						'=':'=',
 						'>':'>',
 						'<':'<',
 						'<=': '<=',
 						'>=':'>=',
+						'!=': '!=',
 						'contains': 'LIKE',
 						'in':'IN',
 						'between':'BETWEEN',
 						'match regexp': 'REGEXP',
-						'contains words': ''
+						'contains words': '',
+						'is not null': 'IS NOT NULL'
 					};
 					query += operatorString[conditionValue.operator] + ' ';
 					if(conditionValue.operator == 'contains') {
@@ -105,8 +107,8 @@ exports.get = function(table) {
 							}
 							query += valuesQuery.join(' OR ');
 						}
-					}	else {
-						console.log(conditionValue.value);
+					} else if (conditionValue.operator == 'is not null') {
+					} else {
 						query += db.get().escape(conditionValue.value);
 					}
 				} else {

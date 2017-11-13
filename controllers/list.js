@@ -11,7 +11,7 @@ var rolesManager = require('../util/roles');
 var models = {}
 for (var objectType in objectList) {
 	models[objectType] = genericModel.get(objectType);
-	router.get('/'+objectType, (function(objectType) { return function(req, res, next) {
+	router.get('/'+objectList[objectType].name, (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectList[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}
@@ -23,7 +23,7 @@ for (var objectType in objectList) {
 			if(err) return next(err);
 			var allowNew = (rolesManager.getRole(req.session) >= objectNewInfo[objectType])
 			var allowShow = (objectShowInfo[objectType]) ? (rolesManager.getRole(req.session) >= objectShowInfo[objectType].role) : false;
-			res.render('generic/list.ejs', {objects: objects, item_name: objectList[objectType].name, item_id: objectType, legend: objectList[objectType].legend, allowNew: allowNew, allowShow: allowShow});
+			res.render('generic/list.ejs', {objects: objects, item_name: objectList[objectType].name, item_id: objectList[objectType].name, legend: objectList[objectType].legend, allowNew: allowNew, allowShow: allowShow});
 		});
 	}})(objectType));
 }
@@ -90,7 +90,7 @@ router.get('/organisation/:continent?/:country?/:city?/:typ?', function(req, res
 });
 
 
-router.get('/experience_beta/', function(req, res, next) {
+router.get('/experience_advanced/', function(req, res, next) {
 	if(typeof req.session.referer == 'undefined') {
 		req.session.referer = [];
 	}
