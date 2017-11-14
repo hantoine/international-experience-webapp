@@ -1,5 +1,6 @@
 <% var title = 'Show_Experience - ' + exp.id; var current = 'dest' %>
 <% include partials/header.ejs %>
+<% console.log(exp)%>
 <h3> Basic information </h3>
 
 
@@ -9,15 +10,31 @@
 			<th>Student ID</th>
 			<td> <%= exp['student id'] %> </td>
 		</tr>
+		<% if(exp['AGRESSO uid']) { %>
+		<tr>
+			<th>Agresso iu</th>
+			<td> <%= exp['AGRESSO uid'] %> </td>
+		</tr>
+		<% } %>
 		<% if(exp['lastname'] && exp['firstname']) { %>
 		<tr>
 			<th>Student name </th>
 			<td> <%= exp['firstname']+ " " + exp['lastname'] %> </td>
 		</tr>
 		<% } %>
+		<% if(exp['gender'] != null){ %>
+		<tr>
+			<th>Gender </th>
+			<td> <%= (exp['gender'] == 0) ? "Female" : "Male" %> </td>
+		</tr>
+		<% } %>
 		<tr>
 			<th>Age at the time of your mission</th>
 			<td> <%= exp['age'] %> </td>
+		</tr>
+		<tr>
+			<th>Study year at the time of your mission</th>
+			<td> <%= exp['study year'] %> </td>
 		</tr>
 		<tr>
 			<th>Your campus</th>
@@ -32,16 +49,55 @@
 			<td> <%= exp['organization'] %> </td>
 		</tr>
 		<tr>
+			<th>Duration of the mission</th>
+			<td> <%= exp['duration'] %> </td>
+		</tr>
+		<tr>
+			<th>City</th>
+			<td><a href="/show/city/<%= exp['city id'] %>"><%= exp['city'] %></a></td>
+		</tr>
+		<tr>
 			<th>Country</th>
-			<td><a href="/show/pays/<%= exp['country id'] %>"><%= exp['country'] %></a></td>
+			<td><a href="/show/country/<%= exp['country id'] %>"><%= exp['country'] %></a></td>
+		</tr>
+		<tr>
+			<th>Continent</th>
+			<td><a href="/show/continent/<%= exp['continent id'] %>"><%= exp['continent'] %></a></td>
 		</tr>
 		<tr>
 			<th>Accommodation</th>
-			<td><a href="/show/logement/<%= exp['accomodation'] %>"><%= exp['accomodation'] || "Accomodation" %></a></td>
+			<td><a href="/show/accommodation/<%= exp['accommodation'] %>"><%= exp['accommodation'] || "Accommodation" %></a></td>
 		</tr>
 		<tr>
 			<th>Spoken language</th>
 			<td> <%= exp['language used'] %> </td>
+		</tr>
+	</table>
+</div>
+
+
+	<h3> Costs </h3>
+
+	<table class="table table-bordered" >
+		<tr>
+		<th>Agencies's cost</th>
+		<td> <%= exp['agency cost'] %> </td>
+	</tr>
+	<tr>
+		<th>Education's cost</th>
+		<td> <%= exp['education cost'] %> </td>
+	</tr>
+		<tr>
+			<th>Transport's cost</th>
+			<td> <%= exp['cost'] %> </td>
+		</tr>
+		<tr>
+			<th>Location's cost</th>
+			<td> <%= exp['accomodation cost'] %> </td>
+		</tr>
+		<tr>
+			<th>Food's cost</th>
+			<td> <%= exp['food cost'] %> </td>
 		</tr>
 		<tr>
 			<th>Did you take a loan ?</th>
@@ -52,36 +108,62 @@
 			<th>If you did, how much did you borrow ?</th>
 			<td> <%= exp['borrowed money'] %> </td>
 		</tr>
-	</table>
-</div>
+		<% } %>
+		</table>
 
+		<h3> Before the experience </h3>
+		<table class="table table-responsive table-striped" >
+			<tr>
+				<th>Number one reason for the mission</th>
+				<td> <%= exp['reason for the mission'] %> </td>
+			</tr>
+			<tr>
+				<th>How did the student find out about this Mission ?</th>
+				<td> <%= exp['How did the student find out about this Mission?'] %> </td>
+			</tr>
+			<tr>
+				<th>Financial concerns</th>
+				<td> <%= exp['financial concerns'] %> </td>
+			</tr>
+			<tr>
+				<th>Feelings about the Mission</th>
+				<td> <%= exp['Feelings about the Mission'] %> </td>
+			</tr>
+			<tr>
+				<th>Language skills</th>
+				<td> <%= exp['language skills before'] %> </td>
+			</tr>
+			<tr>
+				<th>Dealing with the unknow</th>
+				<td> <%= exp['dealing with the unknow before'] %> </td>
+			</tr>
+			<tr>
+				<th>Meeting new people</th>
+				<td> <%= exp['meeting new people before'] %> </td>
+			</tr>
+			<tr>
+				<th>Adaptability</th>
+				<td> <%= exp['adaptability before'] %> </td>
+			</tr>
+			<tr>
+				<th>I believe that this mission... [will enrich me as a person.]</th>
+				<td> <%= exp['believe enrich'] %> </td>
+			</tr>
+			<tr>
+				<th>I believe that this mission... [will help me to improve my language skills.]</th>
+				<td> <%= exp['believe help improve language skills'] %> </td>
+			</tr><tr>
+				<th>	I believe that this mission... [will help me better understand and put into practice what I have learned during my studies.]</th>
+				<td> <%= exp['believe put into practice knowledge'] %> </td>
+			</tr><tr>
+				<th>I believe that this mission... [will make me a more interesting candidate for recruiters.]</th>
+				<td> <%= exp['believe make more interesting'] %> </td>
+			</tr>
+		</table>
 
-	<h3> During the experience </h3>
-
-	<table class="table table-bordered" >
-		<tr>
-			<th>Price</th>
-			<td> <%= exp['cost'] %> </td>
-		</tr>
-		<tr>
-			<th>Location's price</th>
-			<td> <%= exp['accomodation cost'] %> </td>
-		</tr>
-		<tr>
-			<th>Food's price</th>
-			<td> <%= exp['food cost'] %> </td>
-		</tr>
-		<tr>
-			<th>Education's price</th>
-			<td> <%= exp['education cost'] %> </td>
-		</tr>
-		<tr>
-			<th>Agencies's price</th>
-			<td> <%= exp['agency cost'] %> </td>
-		</tr>
-	</table>
 
 	<h3> After the experience </h3>
+
 	<table class="table table-responsive table-striped" >
 		<tr>
 			<th>New skills and knowledge</th>
@@ -91,16 +173,25 @@
 			<th>What did you do during your mission ?</th>
 			<td> <%= exp['what did the student do ?'] %> </td>
 		</tr>
-
-		<% if(exp['recommend num'] != -1) { %>
 		<tr>
 			<th>Would you recommend it ?</th>
-			<td> <%= exp['recommend txt'] %> </td>
+			<td> <%= exp['recommend'] %> </td>
 		</tr>
-		<% } %>
 		<tr>
 			<th>Feelings about language</th>
 			<td> <%= exp['language feeling'] %> </td>
+		</tr>
+		<tr>
+			<th>How did the student find the accommodation?</th>
+			<td> <%= exp['How did the student find the accomodation?'] %> </td>
+		</tr>
+		<tr>
+			<th>Accommodation advantage</th>
+			<td> <%= exp['accomodation advantage'] %> </td>
+		</tr>
+		<tr>
+			<th>Accommodation disadvantage</th>
+			<td> <%= exp['accomodation disadvantage'] %> </td>
 		</tr>
 		<tr>
 			<th>Something that surprised you</th>
@@ -138,12 +229,106 @@
 			<th>Most Difficult</th>
 			<td> <%= exp['most difficult to get accustomed to'] %> </td>
 		</tr>
-		<% if(exp['AGRESSO uid']) { %>
 		<tr>
-			<th>agresso iu</th>
-			<td> <%= exp['AGRESSO uid'] %> </td>
+			<th>I am happy to have had this experience.</th>
+			<td> <%= exp['the student is happy to have had this experience'] %> </td>
 		</tr>
-		<% } %>
+		<tr>
+			<th>I learned a lot from this experience.</th>
+			<td> <%= exp['The student learned a lot from this experience'] %> </td>
+		</tr>
+		<tr>
+			<th>This experience will help me in my future studies.</th>
+			<td> <%= exp['This experience will help the student in its future studies'] %> </td>
+		</tr>
+		<tr>
+			<th>This experience will help me in my future career.</th>
+			<td> <%= exp['This experience will help the student in its future career'] %> </td>
+		</tr>
+		<tr>
+			<th>This experience is an integral part of my professional development plan.</th>
+			<td> <%= exp['experience part of professional development plan'] %> </td>
+		</tr>
+		<tr>
+			<th>This experience is going to look great on my CV.</th>
+			<td> <%= exp['look great on CV'] %> </td>
+		</tr>
+		<tr>
+			<th>I have improved my language skills during this mission.</th>
+			<td> <%= exp['improve language skills'] %> </td>
+		</tr>
+		<tr>
+			<th>I have improved my social skills during this mission.</th>
+			<td> <%= exp['improve social skills'] %> </td>
+		</tr>
+		<tr>
+			<th>I have more self-confidence now.</th>
+			<td> <%= exp['increase self-confidence'] %> </td>
+		</tr>
+		<tr>
+			<th>I have discovered that I am able to face difficulties without getting too upset.</th>
+			<td> <%= exp['improve its ability to face difficulty'] %> </td>
+		</tr>
+		<tr>
+			<th>New experiences worry me less now.</th>
+			<td> <%= exp['less worried by new experiences'] %> </td>
+		</tr>
+		<tr>
+			<th>I was starting to "feel at home" in the country where I performed my mission.</th>
+			<td> <%= exp['started to feel at home'] %> </td>
+		</tr>
+		<tr>
+			<th>I miss certain things about the country where I performed my mission.</th>
+			<td> <%= exp['miss certain things about the country'] %> </td>
+		</tr>
+		<tr>
+			<th>I intend to stay in touch with the new friends I made during my mission.</th>
+			<td> <%= exp['intend to stay in touch'] %> </td>
+		</tr>
+		<tr>
+			<th>I want to return to the country where I performed my mission.</th>
+			<td> <%= exp['want to return to the country'] %> </td>
+		</tr>
+		<tr>
+			<th>I want to go abroad again to discover another country.</th>
+			<td> <%= exp['want to go abroad again'] %> </td>
+		</tr>
+		<tr>
+			<th>What is your overall rating of this experience?</th>
+			<td> <%= exp['overall rating'] %> </td>
+		</tr>
+		<tr>
+			<th>This mission has... [enriched me as a person.]</th>
+			<td> <%= exp['enrich'] %> </td>
+		</tr>
+		<tr>
+			<th>This mission has... [helped me improve my language skills.]</th>
+			<td> <%= exp['help improve language skills'] %> </td>
+		</tr>
+		<tr>
+			<th>This mission has... [helped me better understand and put into practice what I have learned during my studies.]</th>
+			<td> <%= exp['put into practice knowledge'] %> </td>
+		</tr>
+		<tr>
+			<th>This mission has... [made me a more interesting candidate for recruiters.]</th>
+			<td> <%= exp['made more interesting'] %> </td>
+		</tr>
+		<tr>
+			<th>How would you evaluate your language skills now? [Target language skills]</th>
+			<td> <%= exp['language skills'] %> </td>
+		</tr>
+		<tr>
+			<th>How do you feel about facing new and unknown situations? [Dealing with the unknown]</th>
+			<td> <%= exp['dealing with the unknow'] %> </td>
+		</tr>
+		<tr>
+			<th>How do you react when you are meeting people for the first time? [Meeting new people]</th>
+			<td> <%= exp['meeting new people'] %> </td>
+		</tr>
+		<tr>
+			<th>How would you evaluate your ability to adapt to new situations and environments? [Adaptability]</th>
+			<td> <%= exp['adaptability'] %> </td>
+		</tr>
 	</table>
 
 <% include partials/footer.ejs %>
