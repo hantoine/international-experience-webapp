@@ -162,7 +162,6 @@ exports.saveAnswers = function(expid, data, done) {
 				case exports.QuestionType.SELECT:
 				case exports.QuestionType.CHOICE:
 				case exports.QuestionType.HORIZONTAL_CHOICE:
-					console.log(expid +" "+ question + " "+data[question]);
 					db.get().query("INSERT INTO `avoir_reponse` (`numero`, `id_experience`, `id_question`, `id_reponse_possible`) \
 SELECT ? AS `numero`, ? AS `id_experience`, ? AS `id_question`, rp.id_reponse_possible AS `id_reponse_possible` from question q JOIN reponse_possible rp ON \
  (q.id_echelle_reponse = rp.id_echelle_reponse) WHERE q.id_question= ? AND rp.numero = ? \
