@@ -39,7 +39,7 @@ for (var objectType in objectList) {
 			});
 		});
 	}})(objectType));
-	router.post('/'+objectType+'/:id', (function(objectType) { return function(req, res, next) {
+	router.post('/'+objectList[objectType].name+'/:id', (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectList[objectType].role) {
 			return res.status(403).end("Not authorized");
 		}

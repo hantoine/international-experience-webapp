@@ -12,5 +12,5 @@ module.exports = {
 	etudiant: Roles.ADMIN,
 	langue: Roles.ADMIN,
 	groupe_questions: Roles.ADMIN,
-	echelle_reponses: Roles.ADMIN
+	echelle_reponse: Roles.ADMIN
 }

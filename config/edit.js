@@ -70,21 +70,21 @@ module.exports = {
 		name: "Country",
 		legend: {
 			nom: {text: "Name", type: QuestionType.TEXT },
-			continent: {text: "Continent", type: QuestionType.EXT }		
+			continent: {text: "Continent", type: QuestionType.EXT }
 		}
 	},
 	avantage_inconvenient: {
 		role: Roles.ADMIN,
 		name: "Advantage/Disadvantage",
 		legend: {
-			contenu: {text: "Text", type: QuestionType.TEXTAREA },	
+			contenu: {text: "Text", type: QuestionType.TEXTAREA },
 			avantage: {text: "Is it an advantage ?", type: QuestionType.BOOL },
 			displayed: {text: "Should it be displayed ?", type: QuestionType.BOOL}
 		}
 	},
 	organisation: {
 		role: Roles.STUDENT,
-		name: "Organisation",
+		name: "Organization",
 		legend: {
 			nom: {text:"Name", type: QuestionType.TEXT},
 			nombre_etudiants: {text: "Student Number", type: QuestionType.INT},
@@ -103,27 +103,27 @@ module.exports = {
 		legend: {
 			age: {text: "Age ?", type: QuestionType.INT},
 			duree: {text:"Duration", type:QuestionType.INT},
-			competences_acquises: {text:"Skills Acquired", QuestionType.TEXTAREA},
-			choses_faites: {text:"Things Done", QuestionType.TEXTAREA},
-			cout: {text:"Price", QuestionType.INT},
-			cout_location: {text: "Location's Price", QuestionType.INT},
-			cout_alimentation: {text: "Food's Price", QuestionType.INT},
-			cout_formation: {text: "Formation's Price", QuestionType.INT},
-			cout_recherche_agence: {text: "Location's Price", QuestionType.INT},
-			pret: {text: "Loan ?", QuestionType.BOOL},
-			somme_empruntee: {text: "How much ?", QuestionType.INT},
-			recommande: {text: "Recommand ?", QuestionType.BOOL},
-			ressenti_langue: {text: "How did you feel language use ?", QuestionType.TEXTAREA},
-			suprise: {text: "Something that suprised you", QuestionType.TEXTAREA},
-			made_angry: {text: "Something that made you angry", QuestionType.TEXTAREA},
-			made_laugh: {text: "Something that made you laugh", QuestionType.TEXTAREA}
-			what_missed: {text: "What did you miss the most ?", QuestionType.TEXTAREA},
-			things_appreciated_want_integrate_now: {text: "Are there things from the country where you lived that you want to integrate now ?", QuestionType.TEXTAREA},
-			interact_same_way: {text: "Did people in the country you lived interact the same way ?", QuestionType.TEXTAREA},
-			differences_time_organization: {text: "What differences did you notice in the way that time is organized in the country where you lived, as compared to France?", QuestionType.TEXTAREA},
-			advice: {text: "Advice to give to your fellow students ?", QuestionType.TEXTAREA},
-			most_difficult: {"What was the most difficult to accustume with ?", QuestionType.TEXTAREA},
-			agresso_ui: {text: "The unique identifier of your mission in AGERSSO", QuestionType.TEXT},	
+			competences_acquises: {text:"Skills Acquired", type: QuestionType.TEXTAREA},
+			choses_faites: {text:"Things Done", type: QuestionType.TEXTAREA},
+			cout: {text:"Price", type: QuestionType.INT},
+			cout_location: {text: "Location's Price", type: QuestionType.INT},
+			cout_alimentation: {text: "Food's Price", type: QuestionType.INT},
+			cout_formation: {text: "Formation's Price", type: QuestionType.INT},
+			cout_recherche_agence: {text: "Research's Price", type: QuestionType.INT},
+			pret: {text: "Loan ?", type: QuestionType.BOOL},
+			somme_empruntee: {text: "How much ?", type: QuestionType.INT},
+			recommande: {text: "Recommand ?", type: QuestionType.BOOL},
+			ressenti_langue: {text: "How did you feel language use ?", type: QuestionType.TEXTAREA},
+			suprise: {text: "Something that suprised you", type: QuestionType.TEXTAREA},
+			made_angry: {text: "Something that made you angry", type: QuestionType.TEXTAREA},
+			made_laugh: {text: "Something that made you laugh", type: QuestionType.TEXTAREA},
+			what_missed: {text: "What did you miss the most ?", type: QuestionType.TEXTAREA},
+			things_appreciated_want_integrate_now: {text: "Are there things from the country where you lived that you want to integrate now ?", type: QuestionType.TEXTAREA},
+			interact_same_way: {text: "Did people in the country you lived interact the same way ?", type: QuestionType.TEXTAREA},
+			differrences_time_organization: {text: "What differences did you notice in the way that time is organized in the country where you lived, as compared to France?", type: QuestionType.TEXTAREA},
+			advice: {text: "Advice to give to your fellow students ?", type: QuestionType.TEXTAREA},
+			most_difficult: {text: "What was the most difficult to accustume with ?", type: QuestionType.TEXTAREA},
+			agresso_ui: {text: "The unique identifier of your mission in AGRESSO", type: QuestionType.TEXT},
 		}
 	},
 
@@ -149,4 +149,3 @@ module.exports = {
 		}
 	},
 }
-

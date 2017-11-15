@@ -8,7 +8,7 @@ var objectAuthorizations = require('../config/new');
 var models = {}
 for (var objectType in objectList) {
 	models[objectType] = genericModel.get(objectType);
-	router.get('/'+objectList[objectType].name, (function(objectType) { return function(req, res, next) {
+	var routeHandler = function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectAuthorizations[objectType]) {
 			return res.status(403).end("Not authorized");
 		}
@@ -27,15 +27,19 @@ for (var objectType in objectList) {
 				role: rolesManager.getRole(req.session)
 			});
 		});
-	}})(objectType));
-	router.post('/'+objectType, (function(objectType) { return function(req, res, next) {
+	}};
+	router.get('/'+objectList[objectType].name, routeHandler(objectType));
+	router.get('/'+objectType, routeHandler(objectType));
+
+
+	router.post('/'+objectList[objectType].name, (function(objectType) { return function(req, res, next) {
 		if (rolesManager.getRole(req.session) < objectAuthorizations[objectType]) {
 			return res.status(403).end("Not authorized");
 		}
 		models[objectType].createNew(req.body, function(err, id){
 			if(err) return next(err);
 			res.cookie('lastCreated_'+objectType, id+' ' + req.body.nom, {maxAge: 2000});
-			res.redirect('/show/'+objectType+'/'+id);
+			res.redirect('/show/'+objectList[objectType].name+'/'+id);
 		});
 	}})(objectType));
 }

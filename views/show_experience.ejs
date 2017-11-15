@@ -329,5 +329,7 @@
 			<td> <%= exp['adaptability'] %> </td>
 		</tr>
 	</table>
-
+	<% if(admin) { %>
+	<a class="btn btn-primary" href="/admin/loginas/<%= exp['student id'] %>">Login as this student </a>
+	<%}%>
 <% include partials/footer.ejs %>

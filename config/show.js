@@ -6,7 +6,7 @@ module.exports = {
 		legend: {
 			id: null,
 			nom: "Name",
-			prix: "Price", 
+			prix: "Price",
 			localisation_lat: null,
 			localisation_long: null,
 			adresse: "Address",
@@ -79,7 +79,7 @@ module.exports = {
 	},
 
 	ville: {
-		roles: Roles.PUBLIC,
+		role: Roles.PUBLIC,
 		name: "City",
 		legend: {
 			id: null,
@@ -95,7 +95,7 @@ module.exports = {
 
 
 	avantage_inconvenient: {
-		roles: Roles.ADMIN,
+		role: Roles.ADMIN,
 		name: "Advantage/Disadvantage",
 		legend: {
 			id: null,
@@ -106,7 +106,7 @@ module.exports = {
 	},
 
 	organisation: {
-		roles: Roles.PUBLIC,
+		role: Roles.PUBLIC,
 		name: "Organization",
 		legend: {
 			id: null,
@@ -123,7 +123,7 @@ module.exports = {
 	},
 
 	eexperience: {
-		roles: Roles.PUBLIC,
+		role: Roles.PUBLIC,
 		name: "EExperience",
 		legend: {
 			id: null,
@@ -154,7 +154,7 @@ module.exports = {
 	},
 
 	groupe_questions: {
-		roles: Roles.PUBLIC,
+		role: Roles.PUBLIC,
 		name: "Questions",
 		legend: {
 			id: null,
@@ -169,7 +169,7 @@ module.exports = {
 	},
 
 	echelle_reponse: {
-		roles: Roles.PUBLIC,
+		role: Roles.PUBLIC,
 		name: "Answers",
 		legend: {
 			id: null,

@@ -174,18 +174,17 @@ exports.get = function(table) {
 	}
 
 	model.createNew = function(initValues, done) {
-		attributes = ''
-		values = ''
+		attributes = []
+		values = []
 		for(var lastInitValue in initValues);
 		for(var initValue in initValues) {
-			attributes += '`'+ initValue + '`';
-			values += db.escape(initValues[initValue]);
-			if( initValue != lastInitValue ) {
-				attributes += ',';
-				values += ',';
+			if(initValues[initValue] == '') {
+				continue;
 			}
+			attributes.push('`'+ initValue + '`');
+			values.push(db.escape(initValues[initValue]));
 		}
-		var query = 'INSERT INTO ' + table + ' (' + attributes + ') VALUES (' + values + ')'
+		var query = 'INSERT INTO ' + table + ' (' + attributes.join(', ') + ') VALUES (' + values.join(', ') + ')'
 		db.get().query(query, function(err, result) {
 			if(err) return done(err);
 			done(null, result.insertId);

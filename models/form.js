@@ -148,6 +148,14 @@ exports.validateFormGroup = function(questions_completed, formgroupname, expid, 
 
 exports.saveAnswers = function(expid, data, done) {
 	var asyncRequests = [];
+	var gen = function(d) {
+		console.log('next_form_page = form.click_button');
+		console.log('form = next_form_page.form_with!()');
+		for(var q in d) {
+			console.log("form['"+q+"'] = '"+d[q]+"'");
+		}
+	};
+	gen(data);
 	for (var question in data) {
 		asyncRequests.push((function (question) { return function(callback){
 		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
@@ -315,7 +323,7 @@ exports.addAnswers = function(expid, formgroup, done) {
 				break;
 			case exports.QuestionType.EXT_TEXTAREA:
 			case exports.QuestionType.EXT_TEXT:
-				if(result[0].identifiant.slice(0,2) == "2:") {
+				if(question.identifiant.slice(0,2) == "2:") {
 					console.log("Identifiant format V2 not implemented here.");
 					return callback();
 				}

@@ -1,7 +1,7 @@
 <% var title = 'Edit - ' + item_name; var current = 'home' %>
 <% include ../partials/header.ejs %>
 <div id="main-container-noborder" >
-<form method="post" action="/edit/<%= item_id %>/<%= object.id %>" id="main-form">
+<form method="post" action="/edit/<%= item_name %>/<%= object.id %>" id="main-form">
 	<fieldset>
 	<legend><%= item_name %></legend>
 	<ul class="no-list-style">
@@ -49,7 +49,7 @@
 			case 4: //EXT
 	%>
 		<label for="id_<%= key %>"><%= legend[key].text %></label><br />
-		<select name="id_<%= key %>" class="extselect" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
+		<select name="id_<%= key %>" class="extselect selectpicker" data-live-search="true" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
 		<option value></option>
 	<% for(var value in legend[key].answers ) { %>
 		<option value="<%= value %>" <%= (value == object[key]) ? 'selected' : '' %> ><%= legend[key].answers[value] %></option>
@@ -73,7 +73,7 @@
 		</div>
 	<% } %>
 	</ol>
-	<input type="submit" value="Send" />
+	<input type="submit" value="Send" class="btn btn-primary"/>
 	</fieldset>
 </form>
 </div>

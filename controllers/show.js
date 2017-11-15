@@ -56,7 +56,7 @@ router.get('/experience/:id', function(req, res, next) {
 	experience.getById(req.params.id, function(err, exp) {
 		if(err) return next(err);
 		if (rolesManager.getRole(req.session) >= rolesManager.Roles.ADMIN) {
-			res.render('show_experience.ejs', {exp: exp});
+			res.render('show_experience.ejs', {exp: exp, admin: true});
 		} else {
 			exp.lastname = null;
 			exp.firstname = null;

@@ -50,6 +50,7 @@
 							option.value = newObject.id;
 							evt.target.add(option);
 							evt.target.value = newObject.id;
+							$('#'+evt.target.id).selectpicker('refresh');
 							createWindow.close();
 						} else {
 							window.setTimeout(checkCreationFinished, 200)

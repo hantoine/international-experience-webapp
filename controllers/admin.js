@@ -43,4 +43,14 @@ router.get('/experience_done/:idexp', function(req, res, next) {
 		res.redirect('/admin');
 	});
 });
+
+router.get('/loginas/:studentid', function(req, res, next) {
+	if(! req.session.adminLogged) {
+		res.redirect('/admin/login');
+		return;
+	}
+	req.session.studentid = req.params.studentid;
+	res.redirect('/form');
+});
+
 module.exports = router;

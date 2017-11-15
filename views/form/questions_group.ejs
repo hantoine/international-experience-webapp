@@ -58,7 +58,7 @@
 			case 4: //EXT
 	%>
 		<label for="<%= formgroup[i].id %>"><%= formgroup[i].texte %></label><br />
-		<select class="<%= formgroup[i].identifiant %> extselect" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %> >
+		<select class="<%= formgroup[i].identifiant %> extselect selectpicker" name="<%= formgroup[i].id %>" id="<%= formgroup[i].id %>" <%= formgroup[i].optionelle ? '' : 'required' %> >
 		<option value></option>
 	<% for(var reponse in formgroup[i].reponses) { %>
 		<option value="<%= reponse %>" <%= (formgroup[i].prec_reponse == reponse) ? 'selected' : '' %> ><%= formgroup[i].reponses[reponse] %></option>
@@ -118,11 +118,14 @@
 	};
 	socket.on('receiveData', function(data) {
 		var select = document.getElementsByClassName(data.identifiant);
+		console.log(data);
 		if(select.length < 0) {
 			console.log('Select ' + data.identifiant + ' not found.');
 			return;
 		}
-		select = select[0];
+		select = select[1];
+		console.log(select);
+
 		for (var i=0; i < data.options.length; i++) {
 			var option = document.createElement("option");
 			option.text = data.options[i].nom;
@@ -133,20 +136,33 @@
 		option.text = "Create a new one";
 		option.value = "new";
 		select.add(option);
+		$('#'+select.id).selectpicker('refresh');
 	});
+	var addLiveSearch = function(id) {
+		$('#'+id).selectpicker('destroy');
+		$('#'+id).data('live-search', true);
+		$('#'+id).selectpicker();
+	};
 	var selectCountry = document.getElementById('22');
 	var selectCity = document.getElementById('23');
 	var selectOrganisation = document.getElementById('25');
+	$( function() {
+	addLiveSearch(22);
+	addLiveSearch(23);
+	addLiveSearch(25);
+	});
 	if(selectCountry) {
 		selectCountry.addEventListener('change', function(event) {
 			clearOptions('23');
+
 			socket.emit('getData', {table: 'ville', conditions: {'id_pays': event.target.value} });
 		})
 	}
 	if(selectCity) {
 		selectCity.addEventListener('change', function(event) {
-
+			console.log('city changed');
 			clearOptions('25');
+			$('#25').selectpicker('refresh');
 			socket.emit('getData', {table: 'organisation', conditions: {'id_ville': event.target.value} });
 		})
 	}

@@ -1,7 +1,7 @@
 var Roles = require('../util/roles').Roles;
 module.exports = {
 	logement: Roles.STUDENT,
-	pays: Roles.STUDENT,
+	pays: Roles.ADMIN,
 	transport: Roles.ADMIN,
 	ville: Roles.STUDENT,
 	avantage_inconvenient: Roles.ADMIN,

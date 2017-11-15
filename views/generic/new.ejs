@@ -12,7 +12,7 @@
 			"select column_name, is_nullable, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='logement'"
 */ %>
 <div id="main-container-noborder" >
-<form method="post" action="/new/<%= item_id %>" id="main-form">
+<form method="post" action="/new/<%= item_name %>" id="main-form">
 	<fieldset>
 	<legend><%= item_name %></legend>
 	<ul class="no-lis-style">
@@ -60,7 +60,7 @@
 			case 4: //EXT
 	%>
 		<label for="id_<%= key %>"><%= legend[key].text %></label><br />
-		<select name="id_<%= key %>" class="extselect" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
+		<select name="id_<%= key %>" class="extselect selectpicker" data-live-search="true" id="id_<%= key %>" <%= legend[key].optionel ? '' : 'required' %> >
 		<option value></option>
 	<% for(var value in legend[key].answers ) { %>
 		<option value="<%= value %>" ><%= legend[key].answers[value] %></option>

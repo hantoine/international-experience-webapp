@@ -69,7 +69,7 @@ router.get('/organisation/:continent?/:country?/:city?/:typ?', function(req, res
 		if(err) return next(err);
 		models['continent'].getList(['nom'], null, null, null, null, null, function(err, continents) {
 			if(err) return next(err);
-			genericModel.get('experience_view').getList(['country', 'country id'], (req.params.continent) ? {'continent': req.params.continent} : null, null, "country", null, null, function(err, countries) {
+			genericModel.get('experience_view').getList(['country', 'country id'], (req.params.continent) ? {'continent': req.params.continent, 'country id': {operator: 'is not null'}} : {'country id': {operator: 'is not null'}}, null, "country", null, null, function(err, countries) {
 				if(err) return next(err);
 				models['ville'].getList(['nom'], (req.params.country) ? {'pays.nom': req.params.country} : ((req.params.continent) ? {'continent.nom': req.params.continent} : null), [{table: 'pays', extTables: [{table: 'continent'}]}], null, null, null, function(err, cities) {
 					if(err) return next(err);
