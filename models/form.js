@@ -148,14 +148,6 @@ exports.validateFormGroup = function(questions_completed, formgroupname, expid, 
 
 exports.saveAnswers = function(expid, data, done) {
 	var asyncRequests = [];
-	var gen = function(d) {
-		console.log('next_form_page = form.click_button');
-		console.log('form = next_form_page.form_with!()');
-		for(var q in d) {
-			console.log("form['"+q+"'] = '"+d[q]+"'");
-		}
-	};
-	gen(data);
 	for (var question in data) {
 		asyncRequests.push((function (question) { return function(callback){
 		db.get().query("SELECT identifiant, type FROM `question` WHERE id_question = ?", question, function(err, result) {
@@ -298,10 +290,8 @@ exports.addAnswers = function(expid, formgroup, done) {
 						return done("Error while reading answer to question " + question + " : " + err);
 					} else if(result.length > 0) {
 						question.prec_reponse = result[0].numero;
-						callback()
-					} else {
-						callback('Erreur : Pas d\'echelle de réponses pour question '+ question.id);
-					}
+					}	
+					callback()
 				});
 				break;
 			case exports.QuestionType.INT:

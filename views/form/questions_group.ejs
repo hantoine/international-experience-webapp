@@ -24,7 +24,7 @@
 	%>
 		<%= formgroup[i].texte %> <br />
 	<% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
-		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
+		<input type="radio" name="<%= formgroup[i].id %>" value="<%= j+1 %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j+1) ? 'checked' : '' %> />
 		<label for="<%= formgroup[i].id %>.<%= j %>"><%= formgroup[i].reponses[j] %></label><br />
 	<% } %>
 	<%		break;
@@ -92,7 +92,7 @@
 	<tr><td><%= formgroup[i].reponses[0] %></td>
 <% for(var j=0; j < formgroup[i].reponses.length; j++) { %>
 	<td>
-	<input type="radio" name="<%= formgroup[i].id %>" value="<%= j %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j) ? 'checked' : '' %> />
+	<input type="radio" name="<%= formgroup[i].id %>" value="<%= j+1 %>" id="<%= formgroup[i].id %>.<%= j %>" <%= formgroup[i].optionelle ? '' : 'required' %> <%= (formgroup[i].prec_reponse == j+1) ? 'checked' : '' %> />
 </td>
 <% } %>
 	<td>
