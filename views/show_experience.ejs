@@ -75,9 +75,9 @@
 </div>
 
 
-	<h3> Costs </h3>
+	<h3><a href="javascript:void(0);" id="costs-link" > Costs </a></h3>
 
-	<table class="table table-bordered" >
+	<table class="table table-bordered" id="costs-table" style="display: none;">
 		<tr>
 		<th>Agencies's cost</th>
 		<td> <%= exp['agency cost'] %> </td>
@@ -110,8 +110,9 @@
 		<% } %>
 		</table>
 
-		<h3> Before the experience </h3>
-		<table class="table table-responsive table-striped" >
+		<h3><a href="javascript:void(0);" id="costs-link" > Before the experience </a></h3>
+
+		<table class="table table-responsive table-striped" style="display: none;">
 			<tr>
 				<th>Number one reason for the mission</th>
 				<td> <%= exp['reason for the mission'] %> </td>
@@ -158,12 +159,35 @@
 				<th>I believe that this mission... [will make me a more interesting candidate for recruiters.]</th>
 				<td> <%= exp['believe make more interesting'] %> </td>
 			</tr>
+			<canvas id="before-radar" width="600" height="400"></canvas>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+			<script>
+				var ctx = document.getElementById('before-radar');
+				var chart = new Chart(ctx, {
+					type: 'radar',
+					data: {
+						labels: ['language skills', 'dealing with the unknow', 'meeting new people', 'adaptability'],
+						datasets: [{
+							label: "Before",
+							data: ['<%= exp['language skills before num'] %>', '<%= exp['dealing with the unknow before num'] %>', '<%= exp['meeting new people before num'] %>', '<%= exp['adaptability before num'] %>'],
+						}]
+					},
+					options: {
+						scale: {
+							ticks: {
+								min: 0,
+								max: 5
+							}
+						}
+					}
+				});
+			</script>
 		</table>
 
 
-	<h3> After the experience </h3>
+	<h3><a href="javascript:void(0);" id="after-link"> After the experience </a></h3>
 
-	<table class="table table-responsive table-striped" >
+	<table class="table table-responsive table-striped" id="after-table" style="display: none;">
 		<tr>
 			<th>New skills and knowledge</th>
 			<td> <%= exp['new skills gained'] %> </td>
@@ -332,4 +356,19 @@
 	<% if(admin) { %>
 	<a class="btn btn-primary" href="/admin/loginas/<%= exp['student id'] %>">Login as this student </a>
 	<%}%>
+	<script>
+		var sections={'costs': {state: false}, 'before': {state: false}, 'after': {state: false}};
+		for (var section in sections) {
+			var table = document.getElementById(section + '-table');
+			var link = document.getElementById(section + '-link');
+
+			link.addEventListener('click', function() {
+				if(sections[section].state) {
+					table.style.display = "block";
+				} else {
+					table.style.display = "none";
+				}
+			});
+		}
+	</script>
 <% include partials/footer.ejs %>
