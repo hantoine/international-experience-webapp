@@ -62,7 +62,7 @@ router.get('/experience/:id', function(req, res, next) {
 			exp.firstname = null;
 			exp.gender = null;
 			exp['student name'] = null;
-			res.render('show_experience.ejs', {exp: exp});
+			res.render('show_experience.ejs', {exp: exp, admin: false});
 		}
 
 	});

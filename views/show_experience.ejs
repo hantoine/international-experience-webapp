@@ -77,7 +77,7 @@
 
 	<h3><a href="javascript:void(0);" id="costs-link" > Costs </a></h3>
 
-	<table class="table table-bordered" id="costs-table" style="display: none;">
+	<table class="table table-bordered" id="costs-section" style="display: none;">
 		<tr>
 		<th>Agencies's cost</th>
 		<td> <%= exp['agency cost'] %> </td>
@@ -110,9 +110,9 @@
 		<% } %>
 		</table>
 
-		<h3><a href="javascript:void(0);" id="costs-link" > Before the experience </a></h3>
+		<h3><a href="javascript:void(0);" id="before-link" > Before the experience </a></h3>
 
-		<table class="table table-responsive table-striped" style="display: none;">
+		<table class="table table-responsive table-striped" id="before-section" style="display: none;">
 			<tr>
 				<th>Number one reason for the mission</th>
 				<td> <%= exp['reason for the mission'] %> </td>
@@ -145,49 +145,176 @@
 				<th>Adaptability</th>
 				<td> <%= exp['adaptability before'] %> </td>
 			</tr>
-			<tr>
-				<th>I believe that this mission... [will enrich me as a person.]</th>
-				<td> <%= exp['believe enrich'] %> </td>
-			</tr>
-			<tr>
-				<th>I believe that this mission... [will help me to improve my language skills.]</th>
-				<td> <%= exp['believe help improve language skills'] %> </td>
-			</tr><tr>
-				<th>	I believe that this mission... [will help me better understand and put into practice what I have learned during my studies.]</th>
-				<td> <%= exp['believe put into practice knowledge'] %> </td>
-			</tr><tr>
-				<th>I believe that this mission... [will make me a more interesting candidate for recruiters.]</th>
-				<td> <%= exp['believe make more interesting'] %> </td>
-			</tr>
-			<canvas id="before-radar" width="600" height="400"></canvas>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-			<script>
-				var ctx = document.getElementById('before-radar');
-				var chart = new Chart(ctx, {
-					type: 'radar',
-					data: {
-						labels: ['language skills', 'dealing with the unknow', 'meeting new people', 'adaptability'],
-						datasets: [{
-							label: "Before",
-							data: ['<%= exp['language skills before num'] %>', '<%= exp['dealing with the unknow before num'] %>', '<%= exp['meeting new people before num'] %>', '<%= exp['adaptability before num'] %>'],
-						}]
-					},
-					options: {
-						scale: {
-							ticks: {
-								min: 0,
-								max: 5
-							}
+		</table>
+		<h3><a href="javascript:void(0);" id="before-after-ability-link"> Radar Abilities before/after </a></h3>
+		<div id="before-after-ability-section" style="display:none;">
+		<canvas id="before-radar" width="600" height="250"></canvas>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+		<script>
+			var ctx = document.getElementById('before-radar');
+			var chart = new Chart(ctx, {
+				type: 'radar',
+				data: {
+					labels: ['language skills', 'dealing with the unknow', 'meeting new people', 'adaptability'],
+					datasets: [{
+						label: "Before",
+						backgroundColor: "rgba(0, 0, 255, 0.3)",
+						borderColor: "rgba(0, 0, 255, 0.6)",
+						data: ['<%= exp['language skills before num']*0.8 %>', '<%= exp['dealing with the unknow before num'] %>', '<%= exp['meeting new people before num'] %>', '<%= exp['adaptability before num'] %>'],
+					}, {
+						label: "After",
+						backgroundColor: "rgba(0, 255, 0, 0.3)",
+						borderColor: "rgba(0, 255, 0, 0.6)",
+						data: ['<%= exp['language skills num']*0.8 %>', '<%= exp['dealing with the unknow num'] %>', '<%= exp['meeting new people num'] %>', '<%= exp['adaptability num'] %>'],
+					}]
+				},
+				options: {
+					scale: {
+						ticks: {
+							min: 0,
+							max: 4
 						}
 					}
-				});
-			</script>
-		</table>
+				}
+			});
+		</script>
+	</div>
 
+	<h3><a href="javascript:void(0);" id="benefit-expectations-reality-link"> Radar Benefits Expectations VS Reality </a></h3>
+	<div id="benefit-expectations-reality-section" style="display:none;">
+	<canvas id="benefit-expectations-reality-radar" width="600" height="250"></canvas>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<script>
+		var ctx = document.getElementById('benefit-expectations-reality-radar');
+		var chart = new Chart(ctx, {
+			type: 'radar',
+			data: {
+				labels: ['Enrich me as a person', 'Help improve language skills', 'Put into practise studies', 'Make more interesting for recruiters'],
+				datasets: [{
+					label: "Expectations",
+					backgroundColor: "rgba(0, 0, 255, 0.3)",
+					borderColor: "rgba(0, 0, 255, 0.6)",
+					data: ['<%= exp['believe enrich num'] %>', '<%= exp['believe help improve language skills num'] %>', '<%= exp['believe put into practice knowledge num'] %>', '<%= exp['believe make more interesting num'] %>'],
+				}, {
+					label: "Reality",
+					backgroundColor: "rgba(0, 255, 0, 0.3)",
+					borderColor: "rgba(0, 255, 0, 0.6)",
+					data: ['<%= exp['enrich num']*1.333 %>', '<%= exp['help improve language skills num']*1.333 %>', '<%= exp['put into practice knowledge num']*1.333 %>', '<%= exp['made more interesting num']*1.333 %>'],
+				}]
+			},
+			options: {
+				scale: {
+					ticks: {
+						min: 0,
+						max: 4,
+						stepSize: 1
+					}
+				}
+			}
+		});
+	</script>
+</div>
 
-	<h3><a href="javascript:void(0);" id="after-link"> After the experience </a></h3>
+<h3><a href="javascript:void(0);" id="results-link"> Results </a></h3>
+<div id="results-section" style="display:none;">
+<canvas id="results-radar" width="600" height="180"></canvas>
+<canvas id="results2-radar" width="600" height="330"></canvas>
 
-	<table class="table table-responsive table-striped" id="after-table" style="display: none;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script>
+	var ctx = document.getElementById('results-radar');
+	var colorFromValue = ["rgba(255, 0, 0, ", "rgba(255, 170, 0, ", "rgba(169, 255, 0, ", "rgba(0, 255, 0, "];
+	var data = ['<%= exp['the student is happy to have had this experience num'] %>', '<%= exp['The student learned a lot from this experience num'] %>', '<%= exp['This experience will help the student in its future studies num'] %>', '<%= exp['This experience will help the student in its future career num'] %>', '<%= exp['experience part of professional development plan num'] %>', '<%= exp['look great on CV num'] %>'];
+	var backgroundColors = data.map(function(value) {
+		return colorFromValue[value-1]+'0.3)';
+	});
+	var borderColors = data.map(function(value) {
+		return colorFromValue[value-1]+'0.6)';
+	});
+	var chart = new Chart(ctx, {
+		type: 'horizontalBar',
+		data: {
+			labels: ['I am happy to have had this experience.', 'I learned a lot from this experience.', 'This experience will help me in my future studies.', 'This experience will help me in my future career.', '      This experience is an integral part of my professional development plan.', 'This experience is going to look great on my CV.'],
+			datasets: [{
+				data: data,
+				backgroundColor: backgroundColors,
+				borderColor: borderColors
+			}]
+		},
+		options: {
+			legend: {
+				display: false
+			},
+			elements: {
+          rectangle: {
+              borderWidth: 2
+          }
+      },
+			scales: {
+				xAxes: [
+					{
+						ticks: {
+							min: 0,
+							max: 4,
+							stepSize: 1
+						}
+					}
+				]
+			}
+		}
+	});
+</script>
+<script>
+	var ctx = document.getElementById('results2-radar');
+	var colorFromValue = ["rgba(255, 0, 0, ", "rgba(255, 85, 0, ", "rgba(255, 170, 0, ", "rgba(254, 255, 0, ", "rgba(169, 255, 0, ", "rgba(84, 255, 0, ", "rgba(0, 255, 0, "];
+	<%
+		var cols = ['improve language skills', 'improve social skills', 'increase self-confidence', 'improve its ability to face difficulty', 'less worried by new experiences', 'started to feel at home', 'miss certain things about the country', 'intend to stay in touch', 'want to return to the country', 'want to go abroad again', 'overall rating'];
+		var values = cols.map((col) => exp[col+' num']);
+	%>
+	var data = [<%= values.join(', ') %>];
+	var backgroundColors = data.map(function(value) {
+		return colorFromValue[value-1]+'0.3)';
+	});
+	var borderColors = data.map(function(value) {
+		return colorFromValue[value-1]+'0.6)';
+	});
+	var chart = new Chart(ctx, {
+		type: 'horizontalBar',
+		data: {
+			labels: ['I have improved my language skills during this mission.', 'I have improved my social skills during this mission.', 'I have more self-confidence now.', 'I have discovered that I am able to face difficulties without getting too upset.', 'New experiences worry me less now.', 'I was starting to "feel at home" in the country where I performed my mission.', 'I miss certain things about the country where I performed my mission.', 'I intend to stay in touch with the new friends I made during my mission.', 'I want to return to the country where I performed my mission.', 'I want to go abroad again to discover another country.', 'What is your overall rating of this experience?'],
+			datasets: [{
+				data: data,
+				backgroundColor: backgroundColors,
+				borderColor: borderColors
+			}]
+		},
+		options: {
+			legend: {
+				display: false
+			},
+			elements: {
+          rectangle: {
+              borderWidth: 2
+          }
+      },
+			scales: {
+				xAxes: [
+					{
+						ticks: {
+							min: 0,
+							max: 7
+						}
+					}
+				]
+			}
+		}
+	});
+</script>
+</div>
+
+	<h3><a href="javascript:void(0);" id="stories-link"> Stories </a></h3>
+
+	<table class="table table-responsive table-striped" id="stories-section" style="display: none;">
 		<tr>
 			<th>New skills and knowledge</th>
 			<td> <%= exp['new skills gained'] %> </td>
@@ -195,10 +322,6 @@
 		<tr>
 			<th>What did you do during your mission ?</th>
 			<td> <%= exp['what did the student do ?'] %> </td>
-		</tr>
-		<tr>
-			<th>Would you recommend it ?</th>
-			<td> <%= exp['recommend'] %> </td>
 		</tr>
 		<tr>
 			<th>Feelings about language</th>
@@ -252,90 +375,11 @@
 			<th>Most Difficult</th>
 			<td> <%= exp['most difficult to get accustomed to'] %> </td>
 		</tr>
-		<tr>
-			<th>I am happy to have had this experience.</th>
-			<td> <%= exp['the student is happy to have had this experience'] %> </td>
-		</tr>
-		<tr>
-			<th>I learned a lot from this experience.</th>
-			<td> <%= exp['The student learned a lot from this experience'] %> </td>
-		</tr>
-		<tr>
-			<th>This experience will help me in my future studies.</th>
-			<td> <%= exp['This experience will help the student in its future studies'] %> </td>
-		</tr>
-		<tr>
-			<th>This experience will help me in my future career.</th>
-			<td> <%= exp['This experience will help the student in its future career'] %> </td>
-		</tr>
-		<tr>
-			<th>This experience is an integral part of my professional development plan.</th>
-			<td> <%= exp['experience part of professional development plan'] %> </td>
-		</tr>
-		<tr>
-			<th>This experience is going to look great on my CV.</th>
-			<td> <%= exp['look great on CV'] %> </td>
-		</tr>
-		<tr>
-			<th>I have improved my language skills during this mission.</th>
-			<td> <%= exp['improve language skills'] %> </td>
-		</tr>
-		<tr>
-			<th>I have improved my social skills during this mission.</th>
-			<td> <%= exp['improve social skills'] %> </td>
-		</tr>
-		<tr>
-			<th>I have more self-confidence now.</th>
-			<td> <%= exp['increase self-confidence'] %> </td>
-		</tr>
-		<tr>
-			<th>I have discovered that I am able to face difficulties without getting too upset.</th>
-			<td> <%= exp['improve its ability to face difficulty'] %> </td>
-		</tr>
-		<tr>
-			<th>New experiences worry me less now.</th>
-			<td> <%= exp['less worried by new experiences'] %> </td>
-		</tr>
-		<tr>
-			<th>I was starting to "feel at home" in the country where I performed my mission.</th>
-			<td> <%= exp['started to feel at home'] %> </td>
-		</tr>
-		<tr>
-			<th>I miss certain things about the country where I performed my mission.</th>
-			<td> <%= exp['miss certain things about the country'] %> </td>
-		</tr>
-		<tr>
-			<th>I intend to stay in touch with the new friends I made during my mission.</th>
-			<td> <%= exp['intend to stay in touch'] %> </td>
-		</tr>
-		<tr>
-			<th>I want to return to the country where I performed my mission.</th>
-			<td> <%= exp['want to return to the country'] %> </td>
-		</tr>
-		<tr>
-			<th>I want to go abroad again to discover another country.</th>
-			<td> <%= exp['want to go abroad again'] %> </td>
-		</tr>
-		<tr>
-			<th>What is your overall rating of this experience?</th>
-			<td> <%= exp['overall rating'] %> </td>
-		</tr>
-		<tr>
-			<th>This mission has... [enriched me as a person.]</th>
-			<td> <%= exp['enrich'] %> </td>
-		</tr>
-		<tr>
-			<th>This mission has... [helped me improve my language skills.]</th>
-			<td> <%= exp['help improve language skills'] %> </td>
-		</tr>
-		<tr>
-			<th>This mission has... [helped me better understand and put into practice what I have learned during my studies.]</th>
-			<td> <%= exp['put into practice knowledge'] %> </td>
-		</tr>
-		<tr>
-			<th>This mission has... [made me a more interesting candidate for recruiters.]</th>
-			<td> <%= exp['made more interesting'] %> </td>
-		</tr>
+		</table>
+
+		<h3><a href="javascript:void(0);" id="after-link"> After the experience </a></h3>
+
+		<table class="table table-responsive table-striped" id="after-section" style="display: none;">
 		<tr>
 			<th>How would you evaluate your language skills now? [Target language skills]</th>
 			<td> <%= exp['language skills'] %> </td>
@@ -357,18 +401,26 @@
 	<a class="btn btn-primary" href="/admin/loginas/<%= exp['student id'] %>">Login as this student </a>
 	<%}%>
 	<script>
-		var sections={'costs': {state: false}, 'before': {state: false}, 'after': {state: false}};
-		for (var section in sections) {
-			var table = document.getElementById(section + '-table');
-			var link = document.getElementById(section + '-link');
+		var sections = {};
+		var sectionNames = ['costs', 'before', 'after', 'before-after-ability', 'benefit-expectations-reality', 'results', 'stories'];
+		for (var i in sectionNames)
+			sections[sectionNames[i]] = {state: false};
 
-			link.addEventListener('click', function() {
-				if(sections[section].state) {
-					table.style.display = "block";
-				} else {
-					table.style.display = "none";
+			console.log(sections);
+		for (var section in sections) {
+			var link = document.getElementById(section + '-link');
+			link.addEventListener('click', (function(section) {
+				return function() {
+					var table = document.getElementById(section + '-section');
+					if(!sections[section].state) {
+						table.style.display = "block";
+						sections[section].state = true;
+					} else {
+						table.style.display = "none";
+						sections[section].state = false;
+					}
 				}
-			});
+			})(section));
 		}
 	</script>
 <% include partials/footer.ejs %>
