@@ -45,14 +45,28 @@ io.sockets.on('connection', function(socket) {
 	socket.on('getTableData', require('./controllers/onGetTableData.io')(socket));
 });
 
+
+var tryConnect = function(nbAttempts, callback) {
+	if(nbAttempts == 0) {
+		return callback("Unable to connect to MySQL");
+	}
+	db.connect(function(err) {
+	    if(err) {
+		return setTimeout(tryConnect, 3000, nbAttempts-1, callback);
+	    }
+	    callback();
+	});
+
+};
+
 // Connect to database
-db.connect(function(err) {
-  if (err) {
-    console.log('Unable to connect to MySQL.');
-    process.exit(1);
-  } else {
-    // update experience view using questions
-    question.updateExperienceView(function(err) {
+tryConnect(5, function(err) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	} else {
+    	// update experience view using questions
+		question.updateExperienceView(function(err) {
 	    if(err) {
 	    	console.log(err);
 	    	db.close();
@@ -62,6 +76,6 @@ db.connect(function(err) {
 	    server.listen(config.listeningPort, function() {
 	      console.log('Listening on port ' + config.listeningPort + '...');
 	    })
-    });
-  }
-})
+    	});
+  	}
+});

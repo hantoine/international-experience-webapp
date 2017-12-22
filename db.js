@@ -8,7 +8,13 @@ var state = {
 
 exports.connect = function(done) {
   state.pool = mysql.createPool(config.databaseParams)
-  done()
+  state.pool.getConnection(function(err, connection) {
+	if(err) {
+	  return done(err);
+	}
+	connection.release();
+	done();
+  });
 }
 
 exports.get = function() {

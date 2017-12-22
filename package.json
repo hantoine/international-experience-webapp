@@ -1,10 +1,14 @@
 {
-  "name": "projetbdd",
+  "name": "International_Student_Experience",
   "version": "1.2.0",
-  "description": "",
+  "description": "Web application to collect student feedback from exchange experiences, analyse the collected data, and draw charts in order to compare destinations and better advise students on the destination that will meet their needs.",
   "main": "app.js",
   "author": "Antoine Hébert <ahebert@et.esiea.fr>",
-  "license": "ISC",
+  "license": "GPL-3.0",
+  "repository": {
+  	"type": "git",
+	"url": "https://gitlab.legendia.fr/hantoine/international_dataset.git"
+  },
   "dependencies": {
     "async": "^2.3.0",
     "body-parser": "^1.17.1",
