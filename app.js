@@ -47,11 +47,11 @@ io.sockets.on('connection', function(socket) {
 
 
 var tryConnect = function(nbAttempts, callback) {
-	if(nbAttempts == 0) {
-		return callback("Unable to connect to MySQL");
-	}
 	db.connect(function(err) {
 	    if(err) {
+		if(nbAttempts == 1) {
+			return callback("Unable to connect to MySQL ("+err+")");
+		}
 		return setTimeout(tryConnect, 3000, nbAttempts-1, callback);
 	    }
 	    callback();
