@@ -62,30 +62,30 @@
 
 	selectContinent.addEventListener('change', function(evt) {
 		if(selectContinent.selectedIndex == 0) {
-			window.location.replace('/list/organisation/');
+			window.location.replace('/list/organization/');
 		} else {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text);
 		}
 	});
 	selectCountry.addEventListener('change', function(evt) {
 		if(selectCountry.selectedIndex == 0) {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text);
 		} else {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		}
 	});
 	selectCity.addEventListener('change', function(evt) {
 		if(selectCity.selectedIndex == 0) {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text);
 		} else {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		}
 	});
 	selectType.addEventListener('change', function(evt) {
 		if(selectType.selectedIndex == 0) {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text);
 		} else {
-			window.location.replace('/list/organisation/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectType[selectType.selectedIndex].text);
+			window.location.replace('/list/organization/'+selectContinent[selectContinent.selectedIndex].text+'/' + selectCountry[selectCountry.selectedIndex].text + '/' + selectCity[selectCity.selectedIndex].text + '/' + selectType[selectType.selectedIndex].text);
 		}
 	});
 

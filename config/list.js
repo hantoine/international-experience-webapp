@@ -9,8 +9,7 @@ module.exports = {
 	etudiant: {role: Roles.PUBLIC, name: "Student"},
 	langue: {role: Roles.PUBLIC, name: "Languages"},
 	pays: {role: Roles.PUBLIC, name: "Country"},
-	avantage_inconvenient: { role: Roles.PUBLIC, name: "Advantage/Disadvantage"}
-	organisation: {role: Roles.PUBLIC, name: "Organisation"},
+	organisation: {role: Roles.PUBLIC, name: "Organization"},
 	avantage_inconvenient: { role: Roles.NOBODY, name: "Advantage/Disadvantage"},
 	continent: {role: Roles.PUBLIC, name: "Continent"},
 	groupe_questions: {role: Roles.PUBLIC, name: "Questions"},

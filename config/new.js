@@ -9,7 +9,7 @@ module.exports = {
 	certification: Roles.ADMIN,
 	domaine_etude: Roles.ADMIN,
 	etudiant: Roles.ADMIN,
-	langue: Roles.ADMIN,
+	langue: Roles.STUDENT,
 	groupe_questions: Roles.ADMIN,
 	echelle_reponses: Roles.ADMIN
 }
