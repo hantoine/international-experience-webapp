@@ -1,5 +1,5 @@
 node_modules
 npm-debug.log
-docker_db/
+database_docker_image/
 .git
 .gitignore

@@ -20,7 +20,7 @@ start_database_docker () {
 		fi
 		docker rm -f international_dataset_mariadb
 	fi
-	docker build -t international_dataset_db docker_db
+	docker build -t international_dataset_db database_docker_image 
 	docker run -d --name international_dataset_mariadb -p 3306:3306 international_dataset_db
 	sleep 10 # Ensure database is ready before starting webapp
 }
